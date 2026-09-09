@@ -120,10 +120,20 @@ const enterArchive = () => {
 .home__title {
   margin: 0;
 
-  font-size: clamp(64px, 12vw, 150px);
-  line-height: 0.85;
-  letter-spacing: -0.07em;
+  color: var(--text);
+
+  font-family: var(--font-sans);
+
+  font-size: clamp(72px, 12vw, 156px);
+
   font-weight: 800;
+
+  line-height: 0.86;
+
+  letter-spacing: -0.075em;
+
+  text-shadow:
+    0 0 40px rgba(0, 229, 255, 0.08);
 }
 
 .home__role {
@@ -146,26 +156,36 @@ const enterArchive = () => {
 }
 
 .home__enter {
-  display: flex;
+  display: inline-flex;
+
   align-items: center;
-  gap: 32px;
+  gap: 12px;
 
-  padding: 16px 22px;
+  padding: 14px 20px;
 
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
+  border: 1px solid var(--accent);
 
-  background: var(--surface);
+  background: var(--accent-soft);
 
-  color: var(--text);
+  color: var(--accent);
+
+  font-family: var(--font-mono);
+
+  font-size: 12px;
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
 
   cursor: pointer;
 
-  backdrop-filter: blur(16px);
+  box-shadow:
+    inset 0 0 20px rgba(0, 229, 255, 0.035),
+    0 0 16px rgba(0, 229, 255, 0.08);
 
   transition:
-    transform 0.2s ease,
-    background 0.2s ease;
+    background var(--transition-fast),
+    box-shadow var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .home__enter:hover {

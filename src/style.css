@@ -1,64 +1,285 @@
 :root {
-  --bg: #eef1f4;
-  --bg-deep: #dce2e8;
+  /* ========================================
+   * Cyberpunk palette
+   * ======================================== */
 
-  --surface: rgba(255, 255, 255, 0.72);
-  --surface-solid: #ffffff;
+  --bg: #05050a;
 
-  --text: #1c232b;
-  --text-secondary: #69737d;
-  --text-muted: #9aa3ab;
+  --surface: #090912;
+  --surface-solid: #0d0d18;
+  --surface-raised: #111120;
 
-  --line: rgba(28, 35, 43, 0.12);
+  --text: #f4f7ff;
+  --text-secondary: #aeb5ca;
+  --text-muted: #666d86;
 
-  --accent: #3d647d;
-  --accent-light: #dceaf2;
+  --line: rgba(115, 125, 170, 0.22);
+  --line-strong: rgba(115, 125, 170, 0.38);
 
-  --shadow: 0 20px 60px rgba(30, 40, 50, 0.12);
+  --accent: #00e5ff;
+  --accent-light: #8af5ff;
 
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 24px;
-}
+  --accent-secondary: #ff2bd6;
+  --accent-purple: #8b5cf6;
 
-* {
-  box-sizing: border-box;
-}
+  --accent-soft: rgba(0, 229, 255, 0.07);
+  --accent-line: rgba(0, 229, 255, 0.32);
 
-html,
-body,
-#app {
-  margin: 0;
-  width: 100%;
-  min-height: 100%;
-}
+  --pink-soft: rgba(255, 43, 214, 0.07);
+  --pink-line: rgba(255, 43, 214, 0.28);
 
-body {
-  font-family:
+  --shadow:
+    0 0 30px rgba(0, 229, 255, 0.06),
+    0 20px 60px rgba(0, 0, 0, 0.45);
+
+  --glow-cyan:
+    0 0 8px rgba(0, 229, 255, 0.65),
+    0 0 24px rgba(0, 229, 255, 0.18);
+
+  --glow-pink:
+    0 0 8px rgba(255, 43, 214, 0.65),
+    0 0 24px rgba(255, 43, 214, 0.18);
+
+  /* ========================================
+   * Radius
+   * ======================================== */
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+
+  /* ========================================
+   * Typography
+   * ======================================== */
+
+  --font-sans:
     Inter,
+    "Noto Sans SC",
+    "Microsoft YaHei",
+    ui-sans-serif,
+    system-ui,
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
 
-  color: var(--text);
+  --font-mono:
+    "JetBrains Mono",
+    "Cascadia Code",
+    "SFMono-Regular",
+    Consolas,
+    monospace;
+
+  /* ========================================
+   * Layout
+   * ======================================== */
+
+  --content-width: 1440px;
+
+  /* ========================================
+   * Motion
+   * ======================================== */
+
+  --transition-fast: 140ms ease;
+  --transition-normal: 220ms ease;
+}
+
+
+/* ==========================================
+ * Reset
+ * ========================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+
   background: var(--bg);
+  color: var(--text);
+
+  color-scheme: dark;
+
+  font-family: var(--font-sans);
+  font-synthesis: none;
+
+  text-rendering: optimizeLegibility;
 
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+
+  background: var(--bg);
+  color: var(--text);
+
+  font-family: var(--font-sans);
 }
 
 button,
 input,
-textarea {
+textarea,
+select {
   font: inherit;
+}
+
+button {
+  color: inherit;
 }
 
 a {
   color: inherit;
-  text-decoration: none;
 }
 
-.page {
-  min-height: 100vh;
-  padding: 48px;
+img {
+  display: block;
+  max-width: 100%;
+}
+
+
+/* ==========================================
+ * Selection
+ * ========================================== */
+
+::selection {
+  background: var(--accent);
+  color: #020307;
+}
+
+
+/* ==========================================
+ * Scrollbar
+ * ========================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #05050a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #25273a;
+  border: 1px solid #11121d;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+
+/* ==========================================
+ * Cyberpunk background
+ * ========================================== */
+
+body {
+  position: relative;
+
+  background:
+    radial-gradient(
+      circle at 80% 15%,
+      rgba(0, 229, 255, 0.055),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 20% 80%,
+      rgba(255, 43, 214, 0.045),
+      transparent 30%
+    ),
+    linear-gradient(
+      rgba(255, 255, 255, 0.018) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.018) 1px,
+      transparent 1px
+    ),
+    var(--bg);
+
+  background-size:
+    auto,
+    auto,
+    40px 40px,
+    40px 40px,
+    auto;
+}
+
+
+/* ==========================================
+ * Scanline overlay
+ * ========================================== */
+
+body::before {
+  content: "";
+
+  position: fixed;
+  inset: 0;
+
+  pointer-events: none;
+  z-index: 9999;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.012) 0,
+      rgba(255, 255, 255, 0.012) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+
+  opacity: 0.35;
+}
+
+
+/* ==========================================
+ * Utility
+ * ========================================== */
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.accent {
+  color: var(--accent);
+}
+
+.pink {
+  color: var(--accent-secondary);
+}
+
+
+/* ==========================================
+ * Responsive
+ * ========================================== */
+
+@media (max-width: 1024px) {
+  :root {
+    --content-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    background-size:
+      auto,
+      auto,
+      24px 24px,
+      24px 24px,
+      auto;
+  }
 }
