@@ -7,15 +7,26 @@ const router = createRouter({
   history: createWebHistory(),
 
   routes: [
+    // =========================
+    // Landing
+    // =========================
     {
       path: '/',
+      name: 'home',
+      component: () => import('../views/Home.vue'),
+    },
+
+    // =========================
+    // Developer Archive
+    // =========================
+    {
+      path: '/archive',
       component: () => import('../layouts/ArchiveLayout.vue'),
 
       children: [
         {
           path: '',
-          name: 'home',
-          component: () => import('../views/Home.vue'),
+          redirect: '/archive/profile',
         },
 
         {
@@ -59,13 +70,13 @@ const router = createRouter({
           name: 'about',
           component: () => import('../views/About.vue'),
         },
-
-        {
-          path: ':pathMatch(.*)*',
-          name: 'not-found',
-          component: () => import('../views/NotFound.vue'),
-        },
       ],
+    },
+
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('../views/NotFound.vue'),
     },
   ],
 })

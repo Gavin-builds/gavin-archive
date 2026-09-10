@@ -27,7 +27,7 @@ const project = computed(() => {
     class="project-detail"
   >
     <RouterLink
-      to="/projects"
+      to="/archive/projects"
       class="back"
     >
       ← BACK TO PROJECTS

@@ -42,7 +42,7 @@ defineProps<{
       </span>
 
       <RouterLink
-        :to="`/projects/${project.slug}`"
+        :to="`/archive/projects/${project.slug}`"
         class="project-card__link"
       >
         OPEN →
