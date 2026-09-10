@@ -15,15 +15,15 @@ const navigationGroups = [
   {
     title: 'SYSTEM',
     items: [
-      {
-        label: 'HOME',
-        path: '/',
-        number: '01',
-      },
+      // {
+      //   label: 'HOME',
+      //   path: '/',
+      //   number: '01',
+      // },
       {
         label: 'PROFILE',
         path: '/profile',
-        number: '02',
+        number: '01',
       },
     ],
   },
@@ -33,12 +33,12 @@ const navigationGroups = [
       {
         label: 'PROJECTS',
         path: '/projects',
-        number: '03',
+        number: '02',
       },
       {
         label: 'LAB',
         path: '/lab',
-        number: '04',
+        number: '03',
       },
     ],
   },
@@ -48,7 +48,7 @@ const navigationGroups = [
       {
         label: 'BLOG',
         path: '/blog',
-        number: '05',
+        number: '04',
       },
     ],
   },
@@ -58,12 +58,12 @@ const navigationGroups = [
       {
         label: 'GITHUB',
         path: '/github',
-        number: '06',
+        number: '05',
       },
       {
         label: 'ABOUT',
         path: '/about',
-        number: '07',
+        number: '06',
       },
     ],
   },

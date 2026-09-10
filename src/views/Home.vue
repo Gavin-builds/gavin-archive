@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useRouter } from "vue-router";
 
-const router = useRouter()
+const router = useRouter();
 
 const enterArchive = () => {
-  router.push('/projects')
-}
+  router.push("/projects");
+};
 </script>
 
 <template>
@@ -18,23 +18,15 @@ const enterArchive = () => {
         SYSTEM ONLINE
       </div>
 
-      <h1 class="home__title">
-        GAVINLIN
-      </h1>
+      <h1 class="home__title">GAVINLIN</h1>
 
-      <p class="home__role">
-        AI FULL-STACK ENGINEER
-      </p>
+      <p class="home__role">AI FULL-STACK ENGINEER</p>
 
       <p class="home__description">
-        Building tools, products and experiments
-        with code and AI.
+        Building tools, products and experiments with code and AI.
       </p>
 
-      <button
-        class="home__enter"
-        @click="enterArchive"
-      >
+      <button class="home__enter" @click="enterArchive">
         <span>ENTER ARCHIVE</span>
         <span>→</span>
       </button>
@@ -59,11 +51,16 @@ const enterArchive = () => {
 
   background:
     radial-gradient(
-      circle at 50% 40%,
-      #ffffff 0,
-      var(--bg) 45%,
-      var(--bg-deep) 100%
-    );
+      circle at 50% 42%,
+      rgba(0, 229, 255, 0.07),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 70% 65%,
+      rgba(255, 43, 214, 0.05),
+      transparent 28%
+    ),
+    var(--bg);
 }
 
 .home__grid {
@@ -72,24 +69,25 @@ const enterArchive = () => {
 
   background-image:
     linear-gradient(
-      rgba(28, 35, 43, 0.035) 1px,
+      rgba(0, 229, 255, 0.025) 1px,
       transparent 1px
     ),
     linear-gradient(
       90deg,
-      rgba(28, 35, 43, 0.035) 1px,
+      rgba(0, 229, 255, 0.025) 1px,
       transparent 1px
     );
 
   background-size: 48px 48px;
 
-  mask-image: linear-gradient(
-    to bottom,
-    transparent,
-    black 30%,
-    black 70%,
-    transparent
-  );
+  mask-image:
+    linear-gradient(
+      to bottom,
+      transparent,
+      black 25%,
+      black 75%,
+      transparent
+    );
 }
 
 .home__content {
@@ -132,8 +130,7 @@ const enterArchive = () => {
 
   letter-spacing: -0.075em;
 
-  text-shadow:
-    0 0 40px rgba(0, 229, 255, 0.08);
+  text-shadow: 0 0 40px rgba(0, 229, 255, 0.08);
 }
 
 .home__role {

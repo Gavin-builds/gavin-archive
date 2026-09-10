@@ -31,6 +31,12 @@ const router = createRouter({
         },
 
         {
+          path: 'projects/:slug',
+          name: 'project-detail',
+          component: () => import('../views/ProjectDetail.vue'),
+        },
+
+        {
           path: 'lab',
           name: 'lab',
           component: () => import('../views/Lab.vue'),
@@ -43,15 +49,15 @@ const router = createRouter({
         },
 
         {
-          path: 'about',
-          name: 'about',
-          component: () => import('../views/About.vue'),
-        },
-
-        {
           path: 'github',
           name: 'github',
           component: () => import('../views/GitHub.vue'),
+        },
+
+        {
+          path: 'about',
+          name: 'about',
+          component: () => import('../views/About.vue'),
         },
 
         {

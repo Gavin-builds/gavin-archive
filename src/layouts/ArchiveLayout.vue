@@ -19,12 +19,12 @@ const currentPage = computed(() => {
     home: 'HOME',
     profile: 'PROFILE',
     projects: 'PROJECTS',
-    projectDetail: 'PROJECT DETAIL',
+    'project-detail': 'PROJECT DETAIL',
     lab: 'LAB',
     blog: 'BLOG',
-    article: 'ARTICLE',
     github: 'GITHUB',
     about: 'ABOUT',
+    'not-found': '404',
   }
 
   return pageMap[name] ?? 'ARCHIVE'
@@ -52,16 +52,20 @@ const currentPage = computed(() => {
 <style scoped>
 .archive-shell {
   min-height: 100vh;
+
   display: flex;
   flex-direction: column;
+
   background: var(--bg);
   color: var(--text);
 }
 
 .archive-body {
   flex: 1;
+
   display: grid;
   grid-template-columns: 240px minmax(0, 1fr);
+
   min-height: 0;
 }
 
@@ -72,9 +76,11 @@ const currentPage = computed(() => {
 }
 
 .archive-content {
-  width: min(100%, 1440px);
+  width: min(100%, 1480px);
   min-height: 100%;
+
   margin: 0 auto;
+
   padding: 52px 64px 80px;
 }
 
@@ -94,7 +100,7 @@ const currentPage = computed(() => {
   }
 
   .archive-content {
-    padding: 32px 20px 56px;
+    padding: 32px 20px 64px;
   }
 }
 </style>
