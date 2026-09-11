@@ -147,7 +147,7 @@ export default {
     log: '日志',
     network: '网络',
     archiveIndex: '档案索引',
-    modules: '07 模块',
+    modules: '模块',
   },
 
   footer: {
@@ -162,20 +162,63 @@ export default {
 
     description:
       'Gavin Archive 是一个持续更新的开发者数字档案，用来记录项目、实验、文章、代码与开发过程。',
+    whatIBuild: '我构建什么',
+    whatIBuildText: '开发者工具、AI 应用、独立产品与实验性软件。',
+    howIWork: '我如何工作',
+    howIWorkText: '先做最小可用版本，再通过真实项目验证想法，让代码和结果证明能力。',
+    now: 'NOW',
+    currentlyBuilding: '正在构建',
+    buildingValue: 'Gavin Archive / AI Developer Tools',
+    currentlyLearning: '正在学习',
+    learningValue: 'AI Engineering / System Design / English',
+    exploring: '正在探索',
+    exploringValue: 'Open Source / Indie Development / Japan',
+    archiveText: '一个持续更新的开发者数字档案。',
   },
 
   github: {
     title: 'GitHub',
     subtitle: '开源与代码活动',
+    repositories: '公开仓库',
+    unavailable: 'GitHub 暂时不可用',
+    retry: '重试',
+    noDescription: '暂无描述',
   },
 
   lab: {
     title: '实验室',
     subtitle: '实验、研究与未完成想法',
+    description: '记录正在验证、尚未成熟或最终失败的想法。',
+    countLabel: '实验',
+    all: '全部',
+    relatedProject: '关联项目',
+    empty: '暂无实验',
+    status: {
+      EXPERIMENT: '实验中',
+      TESTING: '测试中',
+      PROMISING: '有潜力',
+      PAUSED: '暂停',
+      FAILED: '失败',
+      ARCHIVED: '已归档',
+    },
   },
 
   blog: {
     title: '博客',
     subtitle: '技术文章、开发记录与思考',
+    description: '技术文章、开发日志与构建过程。',
+    search: '搜索',
+    searchPlaceholder: '搜索文章、标签…',
+    minRead: '分钟阅读',
+    read: '阅读文章',
+    empty: '未找到匹配文章',
+    backToList: '← 返回博客',
+    relatedProjects: '关联项目',
+    notFound: '文章不存在',
+    type: {
+      ARTICLE: '文章',
+      DEVLOG: '开发日志',
+      NOTE: '笔记',
+    },
   },
 }

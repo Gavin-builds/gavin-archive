@@ -22,6 +22,7 @@ const currentPage = computed(() => {
     'project-detail': 'PROJECT DETAIL',
     lab: 'LAB',
     blog: 'BLOG',
+    'blog-article': 'ARTICLE',
     github: 'GITHUB',
     about: 'ABOUT',
     'not-found': '404',

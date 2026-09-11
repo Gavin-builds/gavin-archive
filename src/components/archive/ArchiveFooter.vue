@@ -60,7 +60,7 @@ const year = new Date().getFullYear()
   color: var(--text-muted);
 
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 12px;
 
   letter-spacing: 0.1em;
 }

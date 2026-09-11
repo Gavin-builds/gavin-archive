@@ -34,7 +34,7 @@ const { t } = useI18n()
   color: var(--text-secondary);
 
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
 
   letter-spacing: 0.08em;
 }

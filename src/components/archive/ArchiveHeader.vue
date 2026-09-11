@@ -179,7 +179,7 @@ onUnmounted(() => {
   color: var(--text);
 
   font-family: var(--font-mono);
-  font-size: 15px;
+  font-size: 12px;
   font-weight: 800;
 
   letter-spacing: 0.14em;
@@ -189,7 +189,7 @@ onUnmounted(() => {
   color: var(--text-muted);
 
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
 
   letter-spacing: 0.12em;
 }
@@ -204,7 +204,7 @@ onUnmounted(() => {
   gap: 12px;
 
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
 
   letter-spacing: 0.12em;
 }
@@ -231,7 +231,7 @@ onUnmounted(() => {
   gap: 28px;
 
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
 
   letter-spacing: 0.08em;
 }

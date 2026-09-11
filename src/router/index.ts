@@ -60,6 +60,12 @@ const router = createRouter({
         },
 
         {
+          path: 'blog/:slug',
+          name: 'blog-article',
+          component: () => import('../views/BlogArticle.vue'),
+        },
+
+        {
           path: 'github',
           name: 'github',
           component: () => import('../views/GitHub.vue'),

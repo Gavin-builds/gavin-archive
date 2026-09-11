@@ -234,7 +234,7 @@ const project = computed(() => {
       {{ t('projects.notFound') }}
     </h1>
 
-    <RouterLink to="/projects">
+    <RouterLink to="/archive/projects">
       {{ t('projects.backToList') }}
     </RouterLink>
   </section>

@@ -115,7 +115,7 @@ const { t } = useI18n()
   color: var(--text-muted);
 
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
 
   letter-spacing: 0.14em;
 }
@@ -161,7 +161,7 @@ const { t } = useI18n()
   color: var(--text-muted);
 
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .project-card__bottom {
@@ -175,7 +175,7 @@ const { t } = useI18n()
   color: var(--text-muted);
 
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .project-card__link {

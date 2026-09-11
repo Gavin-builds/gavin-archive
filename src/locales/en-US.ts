@@ -147,7 +147,7 @@ export default {
     log: 'LOG',
     network: 'NETWORK',
     archiveIndex: 'ARCHIVE INDEX',
-    modules: '07 MODULES',
+    modules: 'MODULES',
   },
 
   footer: {
@@ -162,20 +162,63 @@ export default {
 
     description:
       'Gavin Archive is a living developer archive for projects, experiments, articles, code and the process behind building them.',
+    whatIBuild: 'WHAT I BUILD',
+    whatIBuildText: 'Developer tools, AI applications, independent products and technical experiments.',
+    howIWork: 'HOW I WORK',
+    howIWorkText: 'Start with the smallest useful version, validate ideas through real projects, and let the work speak.',
+    now: 'NOW',
+    currentlyBuilding: 'CURRENTLY BUILDING',
+    buildingValue: 'Gavin Archive / AI Developer Tools',
+    currentlyLearning: 'CURRENTLY LEARNING',
+    learningValue: 'AI Engineering / System Design / English',
+    exploring: 'CURRENTLY EXPLORING',
+    exploringValue: 'Open Source / Indie Development / Japan',
+    archiveText: 'A living archive of what I build, learn and explore.',
   },
 
   github: {
     title: 'GITHUB',
     subtitle: 'Open source and code activity',
+    repositories: 'PUBLIC REPOSITORIES',
+    unavailable: 'GITHUB UNAVAILABLE',
+    retry: 'RETRY',
+    noDescription: 'No description',
   },
 
   lab: {
     title: 'LAB',
     subtitle: 'Experiments, research and unfinished ideas',
+    description: 'Experiments, prototypes and ideas that are still being tested.',
+    countLabel: 'EXPERIMENTS',
+    all: 'ALL',
+    relatedProject: 'RELATED PROJECT',
+    empty: 'NO EXPERIMENTS FOUND',
+    status: {
+      EXPERIMENT: 'EXPERIMENT',
+      TESTING: 'TESTING',
+      PROMISING: 'PROMISING',
+      PAUSED: 'PAUSED',
+      FAILED: 'FAILED',
+      ARCHIVED: 'ARCHIVED',
+    },
   },
 
   blog: {
     title: 'BLOG',
     subtitle: 'Technical articles, development logs and thoughts',
+    description: 'Technical articles, development logs and the process behind building.',
+    search: 'SEARCH',
+    searchPlaceholder: 'Search articles, tags…',
+    minRead: 'MIN READ',
+    read: 'READ ARTICLE',
+    empty: 'NO MATCHING ARTICLES',
+    backToList: '← BACK TO BLOG',
+    relatedProjects: 'RELATED PROJECTS',
+    notFound: 'ARTICLE NOT FOUND',
+    type: {
+      ARTICLE: 'ARTICLE',
+      DEVLOG: 'DEVLOG',
+      NOTE: 'NOTE',
+    },
   },
 }
