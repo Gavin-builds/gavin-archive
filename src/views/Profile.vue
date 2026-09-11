@@ -1,8 +1,21 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
+const focusKeys = [
+  'profile.focusItems.ai',
+  'profile.focusItems.tools',
+  'profile.focusItems.openSource',
+  'profile.focusItems.products',
+] as const
+</script>
+
 <template>
   <section class="profile">
     <header class="profile__header">
       <div class="eyebrow">
-        / 01 PROFILE
+        {{ t('profile.sectionLabel') }}
       </div>
 
       <h1>
@@ -10,56 +23,53 @@
       </h1>
 
       <p class="role">
-        AI FULL-STACK ENGINEER
+        {{ t('profile.role') }}
       </p>
 
       <p class="intro">
-        I build tools, products and experiments
-        around software engineering and AI.
+        {{ t('profile.description') }}
       </p>
     </header>
 
     <div class="profile__grid">
       <section class="panel">
         <div class="label">
-          ABOUT ME
+          {{ t('profile.subtitle') }}
         </div>
 
         <p>
-          I am a developer focused on full-stack
-          development, AI applications and
-          independent product building.
+          {{ t('profile.aboutIntro') }}
         </p>
 
         <p>
-          Gavin Archive is where I document what
-          I build, what I learn and how I think
-          about software.
+          {{ t('profile.aboutArchive') }}
         </p>
       </section>
 
       <section class="panel">
         <div class="label">
-          CURRENT FOCUS
+          {{ t('profile.focus') }}
         </div>
 
         <ul>
-          <li>AI Full-Stack Engineering</li>
-          <li>Developer Tools</li>
-          <li>Open Source</li>
-          <li>Independent Products</li>
+          <li
+            v-for="key in focusKeys"
+            :key="key"
+          >
+            {{ t(key) }}
+          </li>
         </ul>
       </section>
     </div>
 
     <section class="skills">
       <div class="label">
-        TECH STACK
+        {{ t('profile.techStack') }}
       </div>
 
       <div class="skills__grid">
         <div>
-          <h2>FRONTEND</h2>
+          <h2>{{ t('profile.frontend') }}</h2>
 
           <p>
             Vue · React · TypeScript · Vite
@@ -67,7 +77,7 @@
         </div>
 
         <div>
-          <h2>BACKEND</h2>
+          <h2>{{ t('profile.backend') }}</h2>
 
           <p>
             Node.js · Midway · REST API
@@ -75,7 +85,7 @@
         </div>
 
         <div>
-          <h2>AI</h2>
+          <h2>{{ t('profile.ai') }}</h2>
 
           <p>
             LLM · AI Application · AI Agents
@@ -83,7 +93,7 @@
         </div>
 
         <div>
-          <h2>ENGINEERING</h2>
+          <h2>{{ t('profile.engineering') }}</h2>
 
           <p>
             Git · Docker · API · PWA

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 const year = new Date().getFullYear()
 </script>
 
@@ -7,11 +11,11 @@ const year = new Date().getFullYear()
     <div class="footer-left">
       <span>© {{ year }} GAVIN</span>
       <span class="separator">/</span>
-      <span>DEVELOPER ARCHIVE</span>
+      <span>{{ t('footer.developerArchive') }}</span>
     </div>
 
     <div class="footer-center">
-      BUILT WITH VUE
+      {{ t('footer.builtWith') }}
     </div>
 
     <div class="footer-right">
@@ -20,11 +24,11 @@ const year = new Date().getFullYear()
         target="_blank"
         rel="noopener noreferrer"
       >
-        GITHUB ↗
+        {{ t('nav.github') }} ↗
       </a>
 
       <a href="mailto:lejob@qq.com">
-        EMAIL ↗
+        {{ t('footer.email') }}
       </a>
     </div>
   </footer>

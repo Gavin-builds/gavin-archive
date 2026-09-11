@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 import ProjectStatus from '../components/projects/ProjectStatus.vue'
 
@@ -9,6 +10,8 @@ import {
 } from '../data/projects'
 
 const route = useRoute()
+
+const { t } = useI18n()
 
 const project = computed(() => {
   const slug = route.params.slug
@@ -30,7 +33,7 @@ const project = computed(() => {
       to="/archive/projects"
       class="back"
     >
-      ← BACK TO PROJECTS
+      {{ t('projects.backToList') }}
     </RouterLink>
 
     <header class="project-detail__hero">
@@ -59,7 +62,7 @@ const project = computed(() => {
           target="_blank"
           rel="noreferrer"
         >
-          GITHUB ↗
+          {{ t('projects.github') }} ↗
         </a>
 
         <a
@@ -68,7 +71,7 @@ const project = computed(() => {
           target="_blank"
           rel="noreferrer"
         >
-          LIVE DEMO ↗
+          {{ t('projects.demo') }} ↗
         </a>
       </div>
     </header>
@@ -80,7 +83,7 @@ const project = computed(() => {
           class="content-section"
         >
           <div class="section-label">
-            01 / PROBLEM
+            01 / {{ t('projects.problem') }}
           </div>
 
           <p>
@@ -93,7 +96,7 @@ const project = computed(() => {
           class="content-section"
         >
           <div class="section-label">
-            02 / SOLUTION
+            02 / {{ t('projects.solution') }}
           </div>
 
           <p>
@@ -106,7 +109,7 @@ const project = computed(() => {
           class="content-section"
         >
           <div class="section-label">
-            03 / FEATURES
+            03 / {{ t('projects.features') }}
           </div>
 
           <ul>
@@ -124,7 +127,7 @@ const project = computed(() => {
           class="content-section"
         >
           <div class="section-label">
-            04 / ARCHITECTURE
+            04 / {{ t('projects.architecture') }}
           </div>
 
           <div class="architecture">
@@ -160,7 +163,7 @@ const project = computed(() => {
           class="content-section"
         >
           <div class="section-label">
-            05 / DEVELOPMENT LOG
+            05 / {{ t('projects.developmentLog') }}
           </div>
 
           <div class="timeline">
@@ -191,7 +194,7 @@ const project = computed(() => {
 
       <aside class="project-meta">
         <div>
-          <span>STACK</span>
+          <span>{{ t('projects.stack') }}</span>
 
           <div class="stack">
             <span
@@ -204,7 +207,7 @@ const project = computed(() => {
         </div>
 
         <div>
-          <span>TAGS</span>
+          <span>{{ t('projects.tags') }}</span>
 
           <div class="stack">
             <span
@@ -224,15 +227,15 @@ const project = computed(() => {
     class="not-found"
   >
     <div class="eyebrow">
-      PROJECT ERROR
+      {{ t('projects.notFoundError') }}
     </div>
 
     <h1>
-      PROJECT NOT FOUND
+      {{ t('projects.notFound') }}
     </h1>
 
     <RouterLink to="/projects">
-      ← RETURN TO PROJECTS
+      {{ t('projects.backToList') }}
     </RouterLink>
   </section>
 </template>

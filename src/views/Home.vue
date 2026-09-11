@@ -1,67 +1,67 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted, onBeforeUnmount, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 
-const router = useRouter()
+const { t } = useI18n();
 
-const canvas = ref<HTMLCanvasElement | null>(null)
-const scene = ref<HTMLElement | null>(null)
+const router = useRouter();
 
-const mouseX = ref(0)
-const mouseY = ref(0)
+const canvas = ref<HTMLCanvasElement | null>(null);
+const scene = ref<HTMLElement | null>(null);
+
+const mouseX = ref(0);
+const mouseY = ref(0);
 
 const enterArchive = () => {
-  router.push('/archive/projects')
-}
+  router.push("/archive/projects");
+};
 
-let animationFrame = 0
-let resizeHandler: (() => void) | null = null
-let mouseHandler: ((event: MouseEvent) => void) | null = null
+let animationFrame = 0;
+let resizeHandler: (() => void) | null = null;
+let mouseHandler: ((event: MouseEvent) => void) | null = null;
 
 onMounted(() => {
-  const element = scene.value
-  const canvasElement = canvas.value
+  const element = scene.value;
+  const canvasElement = canvas.value;
 
-  if (!element || !canvasElement) return
+  if (!element || !canvasElement) return;
 
-  const ctx = canvasElement.getContext('2d')
+  const ctx = canvasElement.getContext("2d");
 
-  if (!ctx) return
+  if (!ctx) return;
 
   const particles: Array<{
-    x: number
-    y: number
-    vx: number
-    vy: number
-    size: number
-    alpha: number
-  }> = []
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    size: number;
+    alpha: number;
+  }> = [];
 
-  let width = 0
-  let height = 0
+  let width = 0;
+  let height = 0;
 
   const resize = () => {
-    const dpr = window.devicePixelRatio || 1
+    const dpr = window.devicePixelRatio || 1;
 
-    width = window.innerWidth
-    height = window.innerHeight
+    width = window.innerWidth;
+    height = window.innerHeight;
 
-    canvasElement.width = width * dpr
-    canvasElement.height = height * dpr
+    canvasElement.width = width * dpr;
+    canvasElement.height = height * dpr;
 
-    canvasElement.style.width = `${width}px`
-    canvasElement.style.height = `${height}px`
+    canvasElement.style.width = `${width}px`;
+    canvasElement.style.height = `${height}px`;
 
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-  }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
 
   const createParticles = () => {
-    particles.length = 0
+    particles.length = 0;
 
-    const count = Math.min(
-      130,
-      Math.floor((width * height) / 11000),
-    )
+    const count = Math.min(130, Math.floor((width * height) / 11000));
 
     for (let index = 0; index < count; index += 1) {
       particles.push({
@@ -71,127 +71,107 @@ onMounted(() => {
         vy: (Math.random() - 0.5) * 0.25,
         size: Math.random() * 1.5 + 0.3,
         alpha: Math.random() * 0.6 + 0.1,
-      })
+      });
     }
-  }
+  };
 
   const drawParticles = () => {
-    ctx.clearRect(0, 0, width, height)
+    ctx.clearRect(0, 0, width, height);
 
     for (const particle of particles) {
-      particle.x += particle.vx
-      particle.y += particle.vy
+      particle.x += particle.vx;
+      particle.y += particle.vy;
 
-      if (particle.x < 0) particle.x = width
-      if (particle.x > width) particle.x = 0
+      if (particle.x < 0) particle.x = width;
+      if (particle.x > width) particle.x = 0;
 
-      if (particle.y < 0) particle.y = height
-      if (particle.y > height) particle.y = 0
+      if (particle.y < 0) particle.y = height;
+      if (particle.y > height) particle.y = 0;
 
-      ctx.beginPath()
+      ctx.beginPath();
 
-      ctx.arc(
-        particle.x,
-        particle.y,
-        particle.size,
-        0,
-        Math.PI * 2,
-      )
+      ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
 
-      ctx.fillStyle = `rgba(0,229,255,${particle.alpha})`
+      ctx.fillStyle = `rgba(0,229,255,${particle.alpha})`;
 
-      ctx.fill()
+      ctx.fill();
     }
 
     // connect nearby particles
     for (let i = 0; i < particles.length; i += 1) {
       for (let j = i + 1; j < particles.length; j += 1) {
-        const a = particles[i]
-        const b = particles[j]
+        const a = particles[i];
+        const b = particles[j];
 
-        const dx = a.x - b.x
-        const dy = a.y - b.y
+        const dx = a.x - b.x;
+        const dy = a.y - b.y;
 
-        const distance = Math.sqrt(dx * dx + dy * dy)
+        const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance > 120) continue
+        if (distance > 120) continue;
 
-        const opacity = (1 - distance / 120) * 0.08
+        const opacity = (1 - distance / 120) * 0.08;
 
-        ctx.beginPath()
+        ctx.beginPath();
 
-        ctx.moveTo(a.x, a.y)
-        ctx.lineTo(b.x, b.y)
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
 
-        ctx.strokeStyle = `rgba(0,229,255,${opacity})`
-        ctx.lineWidth = 1
+        ctx.strokeStyle = `rgba(0,229,255,${opacity})`;
+        ctx.lineWidth = 1;
 
-        ctx.stroke()
+        ctx.stroke();
       }
     }
 
-    animationFrame = requestAnimationFrame(drawParticles)
-  }
+    animationFrame = requestAnimationFrame(drawParticles);
+  };
 
   resizeHandler = () => {
-    resize()
-    createParticles()
-  }
+    resize();
+    createParticles();
+  };
 
   mouseHandler = (event: MouseEvent) => {
-    mouseX.value =
-      (event.clientX / window.innerWidth - 0.5) * 2
+    mouseX.value = (event.clientX / window.innerWidth - 0.5) * 2;
 
-    mouseY.value =
-      (event.clientY / window.innerHeight - 0.5) * 2
+    mouseY.value = (event.clientY / window.innerHeight - 0.5) * 2;
 
-    element.style.setProperty(
-      '--mouse-x',
-      `${mouseX.value}`,
-    )
+    element.style.setProperty("--mouse-x", `${mouseX.value}`);
 
-    element.style.setProperty(
-      '--mouse-y',
-      `${mouseY.value}`,
-    )
-  }
+    element.style.setProperty("--mouse-y", `${mouseY.value}`);
+  };
 
-  resize()
+  resize();
 
-  createParticles()
+  createParticles();
 
-  window.addEventListener('resize', resizeHandler)
+  window.addEventListener("resize", resizeHandler);
 
-  window.addEventListener('mousemove', mouseHandler)
+  window.addEventListener("mousemove", mouseHandler);
 
-  drawParticles()
-})
+  drawParticles();
+});
 
 onBeforeUnmount(() => {
   if (animationFrame) {
-    cancelAnimationFrame(animationFrame)
+    cancelAnimationFrame(animationFrame);
   }
 
   if (resizeHandler) {
-    window.removeEventListener('resize', resizeHandler)
+    window.removeEventListener("resize", resizeHandler);
   }
 
   if (mouseHandler) {
-    window.removeEventListener('mousemove', mouseHandler)
+    window.removeEventListener("mousemove", mouseHandler);
   }
-})
+});
 </script>
 
 <template>
-  <main
-    ref="scene"
-    class="landing"
-  >
+  <main ref="scene" class="landing">
     <!-- particle canvas -->
-    <canvas
-      ref="canvas"
-      class="landing__particles"
-    />
+    <canvas ref="canvas" class="landing__particles" />
 
     <!-- background grid -->
     <div class="landing__grid" />
@@ -210,68 +190,66 @@ onBeforeUnmount(() => {
 
         <div>
           <div class="hud__title">
-            GAVIN ARCHIVE
+            {{ t("home.archive") }}
           </div>
 
           <div class="hud__sub">
-            DEVELOPER OPERATING SYSTEM
+            {{ t("home.system") }}
           </div>
         </div>
       </div>
 
       <div class="hud__status">
         <span class="status-dot" />
-        SYSTEM ONLINE
+        {{ t("common.online") }}
       </div>
     </header>
 
     <!-- left panel -->
     <aside class="panel panel--left">
       <div class="panel__label">
-        IDENTITY
+        {{ t("home.identity") }}
       </div>
 
       <div class="panel__value">
-        GAVINLIN
+        {{ t("home.identityValue") }}
       </div>
 
       <div class="panel__line" />
 
       <div class="panel__row">
-        <span>ROLE</span>
-        <strong>AI ENGINEER</strong>
+        <span>{{ t("home.role") }}</span>
+        <strong>{{ t("home.roleValue") }}</strong>
       </div>
 
       <div class="panel__row">
-        <span>STACK</span>
-        <strong>VUE / NODE</strong>
+        <span>{{ t("home.stack") }}</span>
+        <strong>{{ t("home.stackValue") }}</strong>
       </div>
 
       <div class="panel__row">
-        <span>MODE</span>
-        <strong>BUILDING</strong>
+        <span>{{ t("home.mode") }}</span>
+        <strong>{{ t("home.modeValue") }}</strong>
       </div>
     </aside>
 
     <!-- right panel -->
     <aside class="panel panel--right">
-      <div class="panel__label">
-        ARCHIVE
-      </div>
+      <div class="panel__label">{{ t("home.archiveLabel") }}</div>
 
       <div class="panel__metric">
         <span>2026</span>
-        <small>YEAR</small>
+        <small>{{ t("home.year") }}</small>
       </div>
 
       <div class="panel__metric">
         <span>∞</span>
-        <small>EXPERIMENTS</small>
+        <small>{{ t("home.experiments") }}</small>
       </div>
 
       <div class="panel__metric">
         <span>01</span>
-        <small>ACTIVE CORE</small>
+        <small>{{ t("home.activeCore") }}</small>
       </div>
     </aside>
 
@@ -284,46 +262,31 @@ onBeforeUnmount(() => {
       <div class="hero__core">
         <div class="hero__core-ring" />
 
-        <div class="hero__core-center">
-          G
-        </div>
+        <div class="hero__core-center">G</div>
       </div>
 
       <div class="hero__content">
         <div class="hero__eyebrow">
-          <span>// INITIALIZING</span>
-          <span>ARCHIVE_001</span>
+          <span>{{ t("home.initializing") }}</span>
+          <span>{{ t("home.archiveId") }}</span>
         </div>
 
-        <h1
-          class="hero__title"
-          data-text="GAVINLIN"
-        >
-          GAVINLIN
-        </h1>
+        <h1 class="hero__title" data-text="GAVINLIN">GAVINLIN</h1>
 
-        <div class="hero__role">
-          AI FULL-STACK ENGINEER
-        </div>
+        <div class="hero__role">{{ t("home.engineer") }}</div>
 
         <p class="hero__description">
-          Building tools, products and experiments
-          with code and AI.
+          {{ t("home.description") }}
         </p>
 
-        <button
-          class="enter"
-          @click="enterArchive"
-        >
+        <button class="enter" @click="enterArchive">
           <span class="enter__line" />
 
           <span>
-            ENTER ARCHIVE
+            {{ t("home.enterArchive") }}
           </span>
 
-          <span class="enter__arrow">
-            →
-          </span>
+          <span class="enter__arrow"> → </span>
 
           <span class="enter__line" />
         </button>
@@ -332,17 +295,9 @@ onBeforeUnmount(() => {
 
     <!-- bottom HUD -->
     <footer class="hud hud--bottom">
-      <span>
-        GAVIN ARCHIVE / 2026
-      </span>
+      <span> {{ t("home.footer.slogan") }} </span>
 
-      <span>
-        BUILD · EXPERIMENT · ARCHIVE
-      </span>
-
-      <span>
-        v0.1.0
-      </span>
+      <span> {{ t("home.footer.version") }} </span>
     </footer>
 
     <!-- corner decorations -->
@@ -353,9 +308,7 @@ onBeforeUnmount(() => {
 
     <!-- cursor coordinates -->
     <div class="coordinates">
-      X {{ Math.round(mouseX * 100) }}
-      /
-      Y {{ Math.round(mouseY * 100) }}
+      X {{ Math.round(mouseX * 100) }} / Y {{ Math.round(mouseY * 100) }}
     </div>
   </main>
 </template>
@@ -405,32 +358,19 @@ onBeforeUnmount(() => {
   z-index: -4;
 
   background-image:
-    linear-gradient(
-      rgba(0, 229, 255, 0.055) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      rgba(0, 229, 255, 0.055) 1px,
-      transparent 1px
-    );
+    linear-gradient(rgba(0, 229, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 229, 255, 0.055) 1px, transparent 1px);
 
   background-size: 50px 50px;
 
-  transform:
-    translate(
-      calc(var(--mouse-x, 0) * -8px),
-      calc(var(--mouse-y, 0) * -8px)
-    );
+  transform: translate(
+    calc(var(--mouse-x, 0) * -8px),
+    calc(var(--mouse-y, 0) * -8px)
+  );
 
   transition: transform 0.15s linear;
 
-  mask-image:
-    radial-gradient(
-      circle at center,
-      black,
-      transparent 75%
-    );
+  mask-image: radial-gradient(circle at center, black, transparent 75%);
 }
 
 .landing__scanline {
@@ -441,13 +381,12 @@ onBeforeUnmount(() => {
 
   pointer-events: none;
 
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent 3px,
-      rgba(255, 255, 255, 0.018) 4px
-    );
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 3px,
+    rgba(255, 255, 255, 0.018) 4px
+  );
 
   opacity: 0.5;
 }
@@ -538,8 +477,7 @@ onBeforeUnmount(() => {
 
   font-size: 16px;
 
-  box-shadow:
-    0 0 20px rgba(0, 229, 255, 0.1);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
 }
 
 .hud__title {
@@ -568,8 +506,7 @@ onBeforeUnmount(() => {
 
   background: #00e5ff;
 
-  box-shadow:
-    0 0 12px #00e5ff;
+  box-shadow: 0 0 12px #00e5ff;
 
   animation: pulse 1.5s infinite;
 }
@@ -589,23 +526,18 @@ onBeforeUnmount(() => {
 
   border: 1px solid rgba(115, 125, 170, 0.18);
 
-  background:
-    linear-gradient(
-      135deg,
-      rgba(10, 12, 25, 0.75),
-      rgba(5, 6, 14, 0.35)
-    );
+  background: linear-gradient(
+    135deg,
+    rgba(10, 12, 25, 0.75),
+    rgba(5, 6, 14, 0.35)
+  );
 
   backdrop-filter: blur(8px);
 
   font-family: var(--font-mono);
 
-  transform:
-    translateY(-50%)
-    translate(
-      calc(var(--mouse-x, 0) * 4px),
-      calc(var(--mouse-y, 0) * 4px)
-    );
+  transform: translateY(-50%)
+    translate(calc(var(--mouse-x, 0) * 4px), calc(var(--mouse-y, 0) * 4px));
 
   transition: transform 0.15s linear;
 }
@@ -641,12 +573,7 @@ onBeforeUnmount(() => {
 
   margin: 14px 0;
 
-  background:
-    linear-gradient(
-      90deg,
-      rgba(0, 229, 255, 0.4),
-      transparent
-    );
+  background: linear-gradient(90deg, rgba(0, 229, 255, 0.4), transparent);
 }
 
 .panel__row {
@@ -706,11 +633,10 @@ onBeforeUnmount(() => {
 
   place-items: center;
 
-  transform:
-    translate(
-      calc(var(--mouse-x, 0) * 7px),
-      calc(var(--mouse-y, 0) * 7px)
-    );
+  transform: translate(
+    calc(var(--mouse-x, 0) * 7px),
+    calc(var(--mouse-y, 0) * 7px)
+  );
 
   transition: transform 0.15s linear;
 }
@@ -766,8 +692,7 @@ onBeforeUnmount(() => {
     0 0 30px rgba(0, 229, 255, 0.1),
     0 0 100px rgba(0, 229, 255, 0.05);
 
-  animation:
-    titleFloat 5s ease-in-out infinite;
+  animation: titleFloat 5s ease-in-out infinite;
 }
 
 .hero__title::before,
@@ -841,10 +766,7 @@ onBeforeUnmount(() => {
 
   border-radius: 50%;
 
-  transform:
-    translate(-50%, -50%)
-    rotateX(65deg)
-    rotateZ(0deg);
+  transform: translate(-50%, -50%) rotateX(65deg) rotateZ(0deg);
 }
 
 .hero__orbit--outer {
@@ -860,8 +782,7 @@ onBeforeUnmount(() => {
 
   border-color: rgba(139, 92, 246, 0.16);
 
-  animation:
-    orbitReverse 20s linear infinite;
+  animation: orbitReverse 20s linear infinite;
 }
 
 .hero__orbit--inner {
@@ -885,11 +806,10 @@ onBeforeUnmount(() => {
 
   place-items: center;
 
-  transform:
-    translate(
-      calc(var(--mouse-x, 0) * -12px),
-      calc(var(--mouse-y, 0) * -12px)
-    );
+  transform: translate(
+    calc(var(--mouse-x, 0) * -12px),
+    calc(var(--mouse-y, 0) * -12px)
+  );
 
   transition: transform 0.15s linear;
 }
@@ -901,8 +821,7 @@ onBeforeUnmount(() => {
 
   border-radius: 50%;
 
-  border:
-    1px solid rgba(0, 229, 255, 0.4);
+  border: 1px solid rgba(0, 229, 255, 0.4);
 
   box-shadow:
     0 0 30px rgba(0, 229, 255, 0.08),
@@ -930,8 +849,7 @@ onBeforeUnmount(() => {
 
   font-size: 22px;
 
-  box-shadow:
-    0 0 25px rgba(0, 229, 255, 0.2);
+  box-shadow: 0 0 25px rgba(0, 229, 255, 0.2);
 }
 
 /* =========================
@@ -970,8 +888,7 @@ onBeforeUnmount(() => {
 .enter:hover {
   background: rgba(0, 229, 255, 0.1);
 
-  box-shadow:
-    0 0 30px rgba(0, 229, 255, 0.16);
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.16);
 
   transform: translateY(-3px);
 }
@@ -1085,33 +1002,21 @@ onBeforeUnmount(() => {
 
 @keyframes orbit {
   from {
-    transform:
-      translate(-50%, -50%)
-      rotateX(65deg)
-      rotateZ(0deg);
+    transform: translate(-50%, -50%) rotateX(65deg) rotateZ(0deg);
   }
 
   to {
-    transform:
-      translate(-50%, -50%)
-      rotateX(65deg)
-      rotateZ(360deg);
+    transform: translate(-50%, -50%) rotateX(65deg) rotateZ(360deg);
   }
 }
 
 @keyframes orbitReverse {
   from {
-    transform:
-      translate(-50%, -50%)
-      rotateX(65deg)
-      rotateZ(360deg);
+    transform: translate(-50%, -50%) rotateX(65deg) rotateZ(360deg);
   }
 
   to {
-    transform:
-      translate(-50%, -50%)
-      rotateX(65deg)
-      rotateZ(0deg);
+    transform: translate(-50%, -50%) rotateX(65deg) rotateZ(0deg);
   }
 }
 

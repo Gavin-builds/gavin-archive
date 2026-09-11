@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 interface NavigationItem {
-  label: string
+  labelKey: string
   path: string
   number: string
 }
@@ -11,57 +12,54 @@ interface NavigationItem {
 const router = useRouter()
 const route = useRoute()
 
+const { t } = useI18n()
+
 const navigationGroups = [
   {
-    title: 'SYSTEM',
+    titleKey: 'sidebar.system',
     items: [
-      // {
-      //   label: 'HOME',
-      //   path: '/',
-      //   number: '01',
-      // },
       {
-        label: 'PROFILE',
+        labelKey: 'nav.profile',
         path: '/archive/profile',
         number: '01',
       },
     ],
   },
   {
-    title: 'WORK',
+    titleKey: 'sidebar.work',
     items: [
       {
-        label: 'PROJECTS',
+        labelKey: 'nav.projects',
         path: '/archive/projects',
         number: '02',
       },
       {
-        label: 'LAB',
+        labelKey: 'nav.lab',
         path: '/archive/lab',
         number: '03',
       },
     ],
   },
   {
-    title: 'LOG',
+    titleKey: 'sidebar.log',
     items: [
       {
-        label: 'BLOG',
+        labelKey: 'nav.blog',
         path: '/archive/blog',
         number: '04',
       },
     ],
   },
   {
-    title: 'NETWORK',
+    titleKey: 'sidebar.network',
     items: [
       {
-        label: 'GITHUB',
+        labelKey: 'nav.github',
         path: '/archive/github',
         number: '05',
       },
       {
-        label: 'ABOUT',
+        labelKey: 'nav.about',
         path: '/archive/about',
         number: '06',
       },
@@ -91,12 +89,12 @@ function navigate(path: string) {
     <div class="sidebar-inner">
       <div
         v-for="group in navigationGroups"
-        :key="group.title"
+        :key="group.titleKey"
         class="nav-group"
       >
         <div class="group-title">
           <span class="group-line"></span>
-          <span>{{ group.title }}</span>
+          <span>{{ t(group.titleKey) }}</span>
         </div>
 
         <nav class="nav-list">
@@ -113,7 +111,7 @@ function navigate(path: string) {
             </span>
 
             <span class="nav-label">
-              {{ item.label }}
+              {{ t(item.labelKey) }}
             </span>
 
             <span class="nav-arrow">
@@ -126,8 +124,8 @@ function navigate(path: string) {
 
     <div class="sidebar-bottom">
       <div class="archive-index">
-        <span>ARCHIVE INDEX</span>
-        <span>07 MODULES</span>
+        <span>{{ t('sidebar.archiveIndex') }}</span>
+        <span>{{ t('sidebar.modules') }}</span>
       </div>
 
       <div class="sidebar-decoration">

@@ -1,71 +1,73 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from "vue";
+import LanguageSwitcher from "./LanguageSwitcher.vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 defineProps<{
-  currentPage: string
-}>()
+  currentPage: string;
+}>();
 
-const now = ref(new Date())
+const now = ref(new Date());
 
-let timer: number | undefined
+let timer: number | undefined;
 
 const currentTime = computed(() => {
-  return new Intl.DateTimeFormat('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
+  return new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
     hour12: false,
-  }).format(now.value)
-})
+  }).format(now.value);
+});
 
 const currentDate = computed(() => {
-  return new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(now.value)
-})
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(now.value);
+});
 
 onMounted(() => {
   timer = window.setInterval(() => {
-    now.value = new Date()
-  }, 1000)
-})
+    now.value = new Date();
+  }, 1000);
+});
 
 onUnmounted(() => {
   if (timer) {
-    window.clearInterval(timer)
+    window.clearInterval(timer);
   }
-})
+});
 </script>
 
 <template>
   <header class="archive-header">
     <div class="header-brand">
-      <div class="brand-mark">
-        GA
-      </div>
+      <div class="brand-mark">GA</div>
 
       <div class="brand-info">
-        <div class="brand-name">
-          GAVIN ARCHIVE
-        </div>
+        <div class="brand-name">GAVIN ARCHIVE</div>
 
-        <div class="brand-subtitle">
-          DEVELOPER OS / PERSONAL ARCHIVE
-        </div>
+        <div class="brand-subtitle">{{ t("archive.headerSubtitle") }}</div>
       </div>
     </div>
 
     <div class="header-center">
-      <span class="header-label">CURRENT</span>
+      <span class="header-label">{{ t("common.current") }}</span>
       <span class="header-page">{{ currentPage }}</span>
     </div>
 
     <div class="header-status">
       <div class="status-item">
-        <span class="status-dot"></span>
-        <span>SYSTEM ONLINE</span>
+        <LanguageSwitcher />
+
+        <div class="status-item">
+          <span class="status-dot" />
+          {{ t("common.online") }}
+        </div>
       </div>
 
       <div class="header-time">
@@ -101,7 +103,6 @@ onUnmounted(() => {
   z-index: 20;
 }
 
-
 /* HUD top line */
 
 .archive-header::before {
@@ -114,17 +115,10 @@ onUnmounted(() => {
 
   height: 1px;
 
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      var(--accent),
-      transparent
-    );
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
 
   opacity: 0.7;
 }
-
 
 /* ========================================
  * Brand
@@ -171,7 +165,6 @@ onUnmounted(() => {
   background: var(--accent-secondary);
 }
 
-
 /* ========================================
  * Brand text
  * ======================================== */
@@ -201,7 +194,6 @@ onUnmounted(() => {
   letter-spacing: 0.12em;
 }
 
-
 /* ========================================
  * Current page
  * ======================================== */
@@ -226,7 +218,6 @@ onUnmounted(() => {
 
   text-shadow: 0 0 12px rgba(0, 229, 255, 0.45);
 }
-
 
 /* ========================================
  * Status
@@ -270,7 +261,6 @@ onUnmounted(() => {
 
   color: var(--text-muted);
 }
-
 
 /* ========================================
  * Mobile

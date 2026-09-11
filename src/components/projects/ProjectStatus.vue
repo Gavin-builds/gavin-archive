@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 import type { ProjectStatus } from '../../types/project'
 
 defineProps<{
   status: ProjectStatus
 }>()
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -13,7 +17,7 @@ defineProps<{
   >
     <span class="dot"></span>
 
-    {{ status }}
+    {{ t(`projects.status.${status}`) }}
   </span>
 </template>
 

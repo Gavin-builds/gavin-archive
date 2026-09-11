@@ -1,17 +1,21 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 import type { Project } from '../../types/project'
 import ProjectStatus from './ProjectStatus.vue'
 
 defineProps<{
   project: Project
 }>()
+
+const { t } = useI18n()
 </script>
 
 <template>
   <article class="project-card">
     <div class="project-card__top">
       <span class="project-card__index">
-        PROJECT
+        {{ t('projects.cardLabel') }}
       </span>
 
       <ProjectStatus :status="project.status" />
@@ -45,7 +49,7 @@ defineProps<{
         :to="`/archive/projects/${project.slug}`"
         class="project-card__link"
       >
-        OPEN →
+        {{ t('projects.open') }}
       </RouterLink>
     </div>
   </article>

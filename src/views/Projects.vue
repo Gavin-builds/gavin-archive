@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import ProjectCard from '../components/projects/ProjectCard.vue'
 
@@ -11,19 +12,26 @@ import type {
   ProjectCategory,
 } from '../types/project'
 
+const { t } = useI18n()
+
 type Filter =
   | 'ALL'
   | ProjectCategory
 
 const filter = ref<Filter>('ALL')
 
-const filters: Filter[] = [
-  'ALL',
-  'AI',
-  'Web',
-  'Open Source',
-  'Tools',
-  'Experiment',
+interface FilterOption {
+  value: Filter
+  labelKey: string
+}
+
+const filters: FilterOption[] = [
+  { value: 'ALL', labelKey: 'projects.all' },
+  { value: 'AI', labelKey: 'projects.ai' },
+  { value: 'Web', labelKey: 'projects.web' },
+  { value: 'Open Source', labelKey: 'projects.openSource' },
+  { value: 'Tools', labelKey: 'projects.tools' },
+  { value: 'Experiment', labelKey: 'projects.experiment' },
 ]
 
 const filteredProjects = computed(() => {
@@ -42,16 +50,15 @@ const filteredProjects = computed(() => {
     <header class="projects__header">
       <div>
         <div class="eyebrow">
-          / 02 PROJECT ARCHIVE
+          {{ t('projects.sectionLabel') }}
         </div>
 
         <h1>
-          Projects
+          {{ t('projects.title') }}
         </h1>
 
         <p>
-          Tools, products and experiments
-          built with code and AI.
+          {{ t('projects.description') }}
         </p>
       </div>
 
@@ -61,7 +68,7 @@ const filteredProjects = computed(() => {
         </strong>
 
         <span>
-          PROJECTS
+          {{ t('projects.countLabel') }}
         </span>
       </div>
     </header>
@@ -69,11 +76,11 @@ const filteredProjects = computed(() => {
     <div class="projects__filters">
       <button
         v-for="item in filters"
-        :key="item"
-        :class="{ active: filter === item }"
-        @click="filter = item"
+        :key="item.value"
+        :class="{ active: filter === item.value }"
+        @click="filter = item.value"
       >
-        {{ item }}
+        {{ t(item.labelKey) }}
       </button>
     </div>
 
