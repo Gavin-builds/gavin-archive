@@ -31,6 +31,9 @@ export const projects: Project[] = [
 
     featured: true,
 
+    cover: '/images/projects/gavin-archive.svg',
+    accent: 'cyan',
+
     github:
       'https://github.com/Gavin-builds/gavin-archive',
 
@@ -112,6 +115,9 @@ export const projects: Project[] = [
 
     featured: true,
 
+    cover: '/images/projects/ai-context-manager.svg',
+    accent: 'purple',
+
     date: '2026-09',
 
     problem:
@@ -168,6 +174,9 @@ export const projects: Project[] = [
     ],
 
     featured: false,
+
+    cover: '/images/projects/webhook-debugger.svg',
+    accent: 'pink',
 
     date: '2026-09',
 

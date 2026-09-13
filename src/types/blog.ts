@@ -8,4 +8,5 @@ export interface BlogPost {
   type: 'ARTICLE' | 'DEVLOG' | 'NOTE'
   content: string[]
   relatedProjects?: string[]
+  cover?: string
 }

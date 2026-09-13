@@ -35,6 +35,7 @@ export interface Project {
   demo?: string
 
   cover?: string
+  accent?: 'cyan' | 'pink' | 'purple'
 
   date: string
 

@@ -25,6 +25,12 @@ const post = computed(() => {
       <h1>{{ post.title }}</h1>
       <p>{{ post.description }}</p>
 
+      <div v-if="post.cover" class="article__cover">
+        <img :src="post.cover" :alt="`${post.title} cover`" />
+        <div />
+        <span>ARTICLE VISUAL / {{ post.date }}</span>
+      </div>
+
       <div class="meta">
         <span>{{ post.readTime }} {{ t('blog.minRead') }}</span>
         <span v-for="tag in post.tags" :key="tag">{{ tag }}</span>
@@ -101,6 +107,38 @@ h1 {
   line-height: 1.7;
 }
 
+.article__cover {
+  position: relative;
+  height: min(440px, 42vw);
+  margin-top: 30px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: #060810;
+}
+
+.article__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: .9;
+}
+
+.article__cover > div {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 42%, rgba(0,0,0,.58)), repeating-linear-gradient(0deg, transparent 0 5px, rgba(255,255,255,.018) 6px);
+}
+
+.article__cover span {
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .1em;
+}
+
 .meta {
   display: flex;
   flex-wrap: wrap;
@@ -136,6 +174,18 @@ h1 {
 .related a {
   display: block;
   margin-top: 14px;
+}
+
+@media (max-width: 640px) {
+  .article__cover {
+    height: 240px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .article__cover img {
+    transition: none;
+  }
 }
 
 .not-found h1 {

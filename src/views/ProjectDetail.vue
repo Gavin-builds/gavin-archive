@@ -55,6 +55,12 @@ const project = computed(() => {
         {{ project.description }}
       </p>
 
+      <div v-if="project.cover" class="project-cover">
+        <img :src="project.cover" :alt="`${project.title} visual`" />
+        <div class="project-cover__scan" />
+        <span>VISUAL NODE / {{ project.date }}</span>
+      </div>
+
       <div class="actions">
         <a
           v-if="project.github"
@@ -306,6 +312,42 @@ const project = computed(() => {
   line-height: 1.7;
 }
 
+.project-cover {
+  position: relative;
+  height: min(460px, 42vw);
+  margin-top: 34px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: #060810;
+}
+
+.project-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: .9;
+  animation: cover-enter 700ms ease both;
+}
+
+.project-cover__scan {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, transparent 40%, rgba(0,0,0,.58)),
+    repeating-linear-gradient(0deg, transparent 0 5px, rgba(255,255,255,.018) 6px);
+  pointer-events: none;
+}
+
+.project-cover span {
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .1em;
+}
+
 .actions {
   display: flex;
   gap: 10px;
@@ -507,6 +549,11 @@ const project = computed(() => {
   text-decoration: none;
 }
 
+@keyframes cover-enter {
+  from { opacity: 0; transform: scale(1.035); }
+  to { opacity: .9; transform: scale(1); }
+}
+
 @media (max-width: 900px) {
   .project-detail__layout {
     grid-template-columns: 1fr;
@@ -517,6 +564,12 @@ const project = computed(() => {
     padding-bottom: 40px;
 
     border-top: 1px solid var(--line);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-cover img {
+    animation: none;
   }
 }
 
@@ -531,6 +584,11 @@ const project = computed(() => {
 
   .description {
     font-size: 16px;
+  }
+
+  .project-cover {
+    height: 260px;
+    margin-top: 24px;
   }
 
   .timeline__item {

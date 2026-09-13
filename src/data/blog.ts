@@ -11,6 +11,7 @@ export const blogPosts: BlogPost[] = [
     readTime: 5,
     type: 'ARTICLE',
     relatedProjects: ['gavin-archive'],
+    cover: '/images/blog/archive-log.svg',
     content: [
       'Most developer portfolios are designed to answer one question: what have you built?',
       'I wanted something that could also answer what I am building now, how I think, what failed, and where the code lives.',
@@ -28,6 +29,7 @@ export const blogPosts: BlogPost[] = [
     readTime: 7,
     type: 'DEVLOG',
     relatedProjects: ['ai-context-manager'],
+    cover: '/images/blog/context-log.svg',
     content: [
       'Large software projects are difficult for AI coding tools because useful context is distributed across files, modules and conventions.',
       'My current direction is to build a context layer that indexes a project and exposes the relationships an AI system needs.',

@@ -9,6 +9,7 @@ export const labExperiments: LabExperiment[] = [
     status: 'TESTING',
     tags: ['AI', 'LLM', 'Codebase'],
     date: '2026-09',
+    cover: '/images/lab/codebase-context.svg',
     relatedProject: 'ai-context-manager',
   },
   {
@@ -19,6 +20,7 @@ export const labExperiments: LabExperiment[] = [
     status: 'PROMISING',
     tags: ['UI', 'CSS', 'Cyberpunk'],
     date: '2026-09',
+    cover: '/images/lab/ui-system.svg',
     relatedProject: 'gavin-archive',
   },
   {
@@ -29,6 +31,7 @@ export const labExperiments: LabExperiment[] = [
     status: 'EXPERIMENT',
     tags: ['Webhook', 'API', 'Developer Tools'],
     date: '2026-09',
+    cover: '/images/lab/webhook-flow.svg',
     relatedProject: 'webhook-debugger',
   },
 ]

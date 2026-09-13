@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#090713"/><stop offset="1" stop-color="#07131b"/></linearGradient>
+    <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0V36" fill="none" stroke="#aa72ff" stroke-opacity=".08"/></pattern>
+  </defs>
+  <rect width="1200" height="760" fill="url(#bg)"/>
+  <rect width="1200" height="760" fill="url(#grid)"/>
+  <g fill="none" stroke-linecap="round">
+    <path d="M180 410 C330 180 450 560 610 310 S880 220 1030 420" stroke="#8b5cf6" stroke-width="5" stroke-opacity=".55"/>
+    <path d="M210 470 C380 280 470 520 620 370 S860 260 1000 360" stroke="#00e5ff" stroke-width="2" stroke-opacity=".45"/>
+  </g>
+  <g fill="#090f18" stroke="#8b5cf6" stroke-opacity=".65">
+    <rect x="120" y="330" width="170" height="100"/>
+    <rect x="420" y="250" width="190" height="110"/>
+    <rect x="770" y="190" width="190" height="110"/>
+  </g>
+  <g font-family="monospace" font-size="13" fill="#b6b0ff">
+    <text x="145" y="366">PROJECT</text><text x="145" y="392" fill="#7f8aa2">INDEX</text>
+    <text x="447" y="286">CONTEXT GRAPH</text><text x="447" y="312" fill="#7f8aa2">SYMBOL / DEP / FILE</text>
+    <text x="797" y="226">LLM PROVIDER</text><text x="797" y="252" fill="#7f8aa2">REUSABLE CONTEXT</text>
+  </g>
+  <text x="82" y="670" fill="#00e5ff" font-family="monospace" font-size="13" letter-spacing="3">AI CONTEXT MANAGER / PROTOTYPE</text>
+</svg>

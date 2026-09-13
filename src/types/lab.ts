@@ -13,5 +13,6 @@ export interface LabExperiment {
   status: LabStatus
   tags: string[]
   date: string
+  cover?: string
   relatedProject?: string
 }
