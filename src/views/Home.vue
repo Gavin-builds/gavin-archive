@@ -186,7 +186,9 @@ onBeforeUnmount(() => {
     <!-- top HUD -->
     <header class="hud hud--top">
       <div class="hud__brand">
-        <span class="hud__mark">G</span>
+        <span class="hud__mark">
+          <img src="/favicon.svg" alt="GA" />
+        </span>
 
         <div>
           <div class="hud__title">
@@ -262,7 +264,9 @@ onBeforeUnmount(() => {
       <div class="hero__core">
         <div class="hero__core-ring" />
 
-        <div class="hero__core-center">G</div>
+        <div class="hero__core-center">
+          <img src="/favicon.svg" alt="GA" />
+        </div>
       </div>
 
       <div class="hero__content">
@@ -473,11 +477,16 @@ onBeforeUnmount(() => {
 
   border: 1px solid rgba(0, 229, 255, 0.5);
 
-  color: #00e5ff;
-
-  font-size: 16px;
-
   box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
+
+  overflow: hidden;
+}
+
+.hud__mark img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
 }
 
 .hud__title {
@@ -843,13 +852,17 @@ onBeforeUnmount(() => {
 
   border: 1px solid rgba(0, 229, 255, 0.5);
 
-  color: #00e5ff;
-
-  font-family: var(--font-mono);
-
-  font-size: 22px;
-
   box-shadow: 0 0 25px rgba(0, 229, 255, 0.2);
+
+  overflow: hidden;
+}
+
+.hero__core-center img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+  object-position: center;
 }
 
 /* =========================

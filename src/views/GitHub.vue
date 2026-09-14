@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-import { useGitHub } from '../composables/useGitHub'
+import { useI18n } from "vue-i18n";
+import { useGitHub } from "../composables/useGitHub";
 
-const { t } = useI18n()
-const { profile, repositories, loading, error, username, refresh } = useGitHub()
+const { t } = useI18n();
+const { profile, repositories, loading, error, username, refresh } =
+  useGitHub();
 
 const formatDate = (value: string) =>
-  new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(new Date(value))
+  new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(value));
 </script>
 
 <template>
@@ -18,8 +19,16 @@ const formatDate = (value: string) =>
     <header class="header">
       <div>
         <div class="eyebrow">/ 05 NETWORK</div>
-        <h1>{{ t('github.title') }}</h1>
-        <p>{{ t('github.subtitle') }}</p>
+        <h1>{{ t("github.title") }}</h1>
+        <p>{{ t("github.subtitle") }}</p>
+      </div>
+
+      <div class="github__signal" aria-hidden="true">
+        <div class="github__pulse"></div>
+        <div class="github__orbit github__orbit--1"></div>
+        <div class="github__orbit github__orbit--2"></div>
+        <span>SOURCE NODE</span>
+        <strong>ONLINE</strong>
       </div>
 
       <a
@@ -32,28 +41,34 @@ const formatDate = (value: string) =>
       </a>
     </header>
 
-    <div v-if="loading" class="state">{{ t('common.loading') }}</div>
+    <div v-if="loading" class="state">{{ t("common.loading") }}</div>
 
     <div v-else-if="error" class="state state--error">
-      <strong>{{ t('github.unavailable') }}</strong>
+      <strong>{{ t("github.unavailable") }}</strong>
       <span>{{ error }}</span>
-      <button @click="refresh">{{ t('github.retry') }}</button>
+      <button @click="refresh">{{ t("github.retry") }}</button>
     </div>
 
     <template v-else-if="profile">
       <section class="stats">
-        <div><span>REPOSITORIES</span><strong>{{ profile.public_repos }}</strong></div>
-        <div><span>FOLLOWERS</span><strong>{{ profile.followers }}</strong></div>
-        <div><span>FOLLOWING</span><strong>{{ profile.following }}</strong></div>
+        <div>
+          <span>REPOSITORIES</span><strong>{{ profile.public_repos }}</strong>
+        </div>
+        <div>
+          <span>FOLLOWERS</span><strong>{{ profile.followers }}</strong>
+        </div>
+        <div>
+          <span>FOLLOWING</span><strong>{{ profile.following }}</strong>
+        </div>
       </section>
 
       <section class="repos">
-        <div class="section-label">{{ t('github.repositories') }}</div>
+        <div class="section-label">{{ t("github.repositories") }}</div>
 
         <article v-for="repo in repositories" :key="repo.id" class="repo">
           <div>
             <h2>{{ repo.name }}</h2>
-            <p>{{ repo.description || t('github.noDescription') }}</p>
+            <p>{{ repo.description || t("github.noDescription") }}</p>
           </div>
 
           <div class="repo__meta">
@@ -70,45 +85,107 @@ const formatDate = (value: string) =>
 </template>
 
 <style scoped>
+.github {
+  position: relative;
+}
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  gap: 32px;
+  position: relative;
+  min-height: 300px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px auto;
+  gap: 28px;
   padding-bottom: 44px;
   border-bottom: 1px solid var(--line);
+  overflow: hidden;
 }
-
 .eyebrow,
 .section-label {
   color: var(--accent);
   font-family: var(--font-mono);
   font-size: 10px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.15em;
 }
-
 h1 {
   margin: 12px 0 0;
-  font-size: clamp(48px, 7vw, 88px);
-  line-height: 0.95;
-  letter-spacing: -0.06em;
+  font-size: clamp(54px, 8vw, 102px);
+  line-height: 0.9;
+  letter-spacing: -0.07em;
 }
-
 .header p {
-  max-width: 600px;
+  max-width: 650px;
   margin: 22px 0 0;
   color: var(--text-secondary);
   font-size: 17px;
-  line-height: 1.7;
+  line-height: 1.72;
 }
-
 .profile-link {
+  justify-self: end;
+  align-self: end;
   color: var(--accent);
   font-family: var(--font-mono);
   font-size: 10px;
   text-decoration: none;
+  letter-spacing: 0.1em;
+  padding: 10px 12px;
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
 }
-
+.profile-link:hover {
+  box-shadow: var(--glow-cyan);
+}
+.github__signal {
+  position: relative;
+  height: 190px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-left: 1px solid var(--line);
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.08), transparent 62%);
+}
+.github__orbit {
+  position: absolute;
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  border-radius: 50%;
+}
+.github__orbit--1 {
+  width: 148px;
+  height: 148px;
+  animation: gh-spin 15s linear infinite;
+}
+.github__orbit--2 {
+  width: 92px;
+  height: 92px;
+  border-color: rgba(255, 43, 214, 0.24);
+  border-style: dashed;
+  animation: gh-spin 10s linear reverse infinite;
+}
+.github__pulse {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 36px rgba(0, 229, 255, 0.48);
+  animation: gh-pulse 2.4s ease-in-out infinite;
+}
+.github__signal span,
+.github__signal strong {
+  position: absolute;
+  font-family: var(--font-mono);
+}
+.github__signal span {
+  top: 14px;
+  left: 14px;
+  color: var(--text-muted);
+  font-size: 8px;
+  letter-spacing: 0.14em;
+}
+.github__signal strong {
+  right: 14px;
+  bottom: 12px;
+  color: var(--accent);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
 .stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -116,55 +193,68 @@ h1 {
   margin: 16px 0 56px;
   background: var(--line);
 }
-
 .stats div {
-  padding: 24px;
+  position: relative;
+  padding: 26px;
+  min-height: 130px;
   background: var(--surface);
+  overflow: hidden;
 }
-
+.stats div::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent 70%);
+  opacity: 0.6;
+}
 .stats span {
   display: block;
   color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: 9px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
 }
-
 .stats strong {
   display: block;
-  margin-top: 12px;
+  margin-top: 14px;
   color: var(--accent);
-  font-size: 38px;
+  font-size: 42px;
+  line-height: 1;
 }
-
 .repos {
   border-top: 1px solid var(--line);
 }
-
 .section-label {
   padding: 18px 0;
 }
-
 .repo {
   display: flex;
   justify-content: space-between;
   gap: 30px;
-  padding: 26px 0;
+  padding: 28px 0;
   border-top: 1px solid var(--line);
+  transition:
+    transform var(--transition-normal),
+    padding-left var(--transition-normal);
 }
-
+.repo:hover {
+  transform: translateX(6px);
+  padding-left: 6px;
+}
 .repo h2 {
   margin: 0;
-  font-size: 24px;
+  font-size: 25px;
+  letter-spacing: -0.03em;
 }
-
 .repo p {
   max-width: 700px;
   margin: 10px 0 0;
   color: var(--text-secondary);
-  line-height: 1.7;
+  line-height: 1.72;
 }
-
 .repo__meta {
   display: flex;
   flex-wrap: wrap;
@@ -176,18 +266,15 @@ h1 {
   font-size: 9px;
   color: var(--text-muted);
 }
-
 .repo__meta span,
 .repo__meta a {
   padding: 5px 7px;
   border: 1px solid var(--line);
   text-decoration: none;
 }
-
 .repo__meta a {
   color: var(--accent);
 }
-
 .state {
   display: flex;
   flex-direction: column;
@@ -196,11 +283,9 @@ h1 {
   color: var(--text-muted);
   font-family: var(--font-mono);
 }
-
 .state--error strong {
   color: #ff6b8a;
 }
-
 .state button {
   width: fit-content;
   padding: 9px 12px;
@@ -209,28 +294,57 @@ h1 {
   color: var(--accent);
   cursor: pointer;
 }
-
-@media (max-width: 800px) {
+@keyframes gh-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes gh-pulse {
+  0%,
+  100% {
+    transform: scale(0.84);
+    opacity: 0.72;
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+}
+@media (max-width: 1050px) {
   .header {
-    display: block;
+    grid-template-columns: minmax(0, 1fr) 210px auto;
   }
-
+}
+@media (max-width: 860px) {
+  .header {
+    grid-template-columns: 1fr;
+  }
+  .github__signal {
+    display: none;
+  }
   .profile-link {
-    display: inline-block;
-    margin-top: 24px;
+    justify-self: start;
+    margin-top: 8px;
   }
-
   .stats {
     grid-template-columns: 1fr;
   }
-
+}
+@media (max-width: 800px) {
   .repo {
     flex-direction: column;
   }
-
   .repo__meta {
     justify-content: start;
     min-width: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .github__orbit,
+  .github__pulse,
+  .repo {
+    animation: none;
+    transition: none;
   }
 }
 </style>

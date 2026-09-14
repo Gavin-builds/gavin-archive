@@ -1,53 +1,53 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
+import { useI18n } from "vue-i18n";
 
-const { t } = useI18n()
+const { t } = useI18n();
 
 const links = [
   {
-    label: 'GitHub',
-    href: 'https://github.com/Gavin-builds',
+    label: "GitHub",
+    href: "https://github.com/Gavin-builds",
   },
   {
-    label: 'Email',
-    href: 'mailto:lejob@qq.com',
+    label: "Email",
+    href: "mailto:lejob@qq.com",
   },
-]
+];
 </script>
 
 <template>
   <section class="about">
     <header class="header">
       <div class="eyebrow">/ 06 SYSTEM INFO</div>
-      <h1>{{ t('about.title') }}</h1>
-      <p>{{ t('about.description') }}</p>
+      <h1>{{ t("about.title") }}</h1>
+      <p>{{ t("about.description") }}</p>
     </header>
 
     <div class="grid">
       <section class="panel">
-        <div class="label">{{ t('about.whatIBuild') }}</div>
-        <p>{{ t('about.whatIBuildText') }}</p>
+        <div class="label">{{ t("about.whatIBuild") }}</div>
+        <p>{{ t("about.whatIBuildText") }}</p>
       </section>
 
       <section class="panel">
-        <div class="label">{{ t('about.howIWork') }}</div>
-        <p>{{ t('about.howIWorkText') }}</p>
+        <div class="label">{{ t("about.howIWork") }}</div>
+        <p>{{ t("about.howIWorkText") }}</p>
       </section>
 
       <section class="panel panel--wide">
-        <div class="label">{{ t('about.now') }}</div>
+        <div class="label">{{ t("about.now") }}</div>
         <div class="now">
           <div>
-            <span>{{ t('about.currentlyBuilding') }}</span>
-            <strong>{{ t('about.buildingValue') }}</strong>
+            <span>{{ t("about.currentlyBuilding") }}</span>
+            <strong>{{ t("about.buildingValue") }}</strong>
           </div>
           <div>
-            <span>{{ t('about.currentlyLearning') }}</span>
-            <strong>{{ t('about.learningValue') }}</strong>
+            <span>{{ t("about.currentlyLearning") }}</span>
+            <strong>{{ t("about.learningValue") }}</strong>
           </div>
           <div>
-            <span>{{ t('about.exploring') }}</span>
-            <strong>{{ t('about.exploringValue') }}</strong>
+            <span>{{ t("about.exploring") }}</span>
+            <strong>{{ t("about.exploringValue") }}</strong>
           </div>
         </div>
       </section>
@@ -68,66 +68,98 @@ const links = [
       </section>
 
       <section class="panel">
-        <div class="label">{{ t('about.archive') }}</div>
-        <p class="mono">GAVIN ARCHIVE / {{ t('home.footer.version') }}</p>
-        <p>{{ t('about.archiveText') }}</p>
+        <div class="label">{{ t("about.archive") }}</div>
+        <p class="mono">GAVIN ARCHIVE / {{ t("home.footer.version") }}</p>
+        <p>{{ t("about.archiveText") }}</p>
       </section>
     </div>
   </section>
 </template>
 
 <style scoped>
+.about {
+  position: relative;
+}
 .header {
+  position: relative;
+  min-height: 330px;
   padding-bottom: 54px;
   border-bottom: 1px solid var(--line);
+  overflow: hidden;
 }
-
+.header::after {
+  content: "ARCHIVE";
+  position: absolute;
+  right: -18px;
+  bottom: -34px;
+  color: rgba(255, 255, 255, 0.025);
+  font-size: 160px;
+  font-weight: 900;
+  letter-spacing: -0.08em;
+  pointer-events: none;
+}
 .eyebrow,
 .label {
   color: var(--accent);
   font-family: var(--font-mono);
   font-size: 10px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.15em;
 }
-
 h1 {
   margin: 14px 0 0;
-  font-size: clamp(48px, 8vw, 88px);
-  line-height: 0.95;
-  letter-spacing: -0.06em;
+  font-size: clamp(54px, 8vw, 100px);
+  line-height: 0.9;
+  letter-spacing: -0.07em;
 }
-
 .header > p {
-  max-width: 760px;
+  max-width: 780px;
   margin: 24px 0 0;
   color: var(--text-secondary);
   font-size: 18px;
   line-height: 1.8;
 }
-
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   margin-top: 16px;
 }
-
 .panel {
-  padding: 28px;
+  position: relative;
+  padding: 30px;
   border: 1px solid var(--line);
-  background: var(--surface);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.018), transparent 50%),
+    var(--surface);
+  overflow: hidden;
+  transition:
+    transform var(--transition-normal),
+    border-color var(--transition-normal),
+    box-shadow var(--transition-normal);
 }
-
+.panel::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 72px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent));
+  opacity: 0.55;
+}
+.panel:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-line);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
+}
 .panel--wide {
-  grid-column: 1 / -1;
+  grid-column: 1/-1;
 }
-
 .panel p {
   margin: 18px 0 0;
   color: var(--text-secondary);
   line-height: 1.85;
 }
-
 .now {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -135,55 +167,72 @@ h1 {
   margin-top: 20px;
   background: var(--line);
 }
-
 .now > div {
-  min-height: 130px;
+  min-height: 140px;
   padding: 22px;
   background: var(--surface-solid);
 }
-
 .now span {
   display: block;
   color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: 10px;
 }
-
 .now strong {
   display: block;
   margin-top: 16px;
   color: var(--text);
   line-height: 1.6;
 }
-
 .links {
   display: flex;
   flex-direction: column;
   gap: 12px;
   margin-top: 20px;
 }
-
 .links a {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
   color: var(--accent);
   font-family: var(--font-mono);
   font-size: 11px;
   text-decoration: none;
 }
-
 .mono {
   color: var(--accent) !important;
   font-family: var(--font-mono);
   font-size: 11px;
 }
-
+@keyframes about-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 @media (max-width: 760px) {
   .grid,
   .now {
     grid-template-columns: 1fr;
   }
-
   .panel--wide {
     grid-column: auto;
+  }
+  .header {
+    min-height: 0;
+  }
+  .header::after {
+    font-size: 88px;
+    bottom: -16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .matrix__orb {
+    animation: none;
+  }
+  .panel,
+  .links a {
+    transition: none;
   }
 }
 </style>

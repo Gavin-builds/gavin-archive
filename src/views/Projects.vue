@@ -132,7 +132,7 @@ const filteredProjects = computed(() => {
   place-items: center;
   border-left: 1px solid var(--line);
   overflow: hidden;
-  animation: telemetry-in 900ms ease both;
+  /* animation: telemetry-in 900ms ease both; */
 }
 
 .telemetry-orbit {

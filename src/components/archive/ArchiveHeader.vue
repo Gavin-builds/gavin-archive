@@ -46,7 +46,13 @@ onUnmounted(() => {
 <template>
   <header class="archive-header">
     <div class="header-brand">
-      <div class="brand-mark">GA</div>
+      <div class="brand-mark">
+        <img
+          class="brand-mark__img"
+          src="/favicon.svg"
+          alt="GA"
+        />
+      </div>
 
       <div class="brand-info">
         <div class="brand-name">GAVIN ARCHIVE</div>
@@ -131,8 +137,8 @@ onUnmounted(() => {
 }
 
 .brand-mark {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
 
   display: grid;
   place-items: center;
@@ -149,6 +155,13 @@ onUnmounted(() => {
   box-shadow: var(--glow-cyan);
 
   position: relative;
+}
+
+.brand-mark__img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
 }
 
 .brand-mark::after {
