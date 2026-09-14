@@ -63,26 +63,47 @@ const post = computed(() => {
 </template>
 
 <style scoped>
-.back,
-.related a,
-.not-found a {
+.related a {
   color: var(--accent);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-sm);
   text-decoration: none;
 }
 
-.back {
+.back,
+.not-found a {
   display: inline-block;
+
+  padding: 10px 14px;
+
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
+
+  color: var(--accent);
+
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+
+  text-decoration: none;
+  letter-spacing: 0.08em;
+
+  transition: box-shadow var(--transition-fast);
+}
+
+.back {
   margin-bottom: 44px;
-  color: var(--text-muted);
+}
+
+.back:hover,
+.not-found a:hover {
+  box-shadow: var(--glow-cyan);
 }
 
 .eyebrow,
 .section-label {
   color: var(--accent);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-sm);
   letter-spacing: 0.14em;
 }
 
@@ -103,7 +124,7 @@ h1 {
   max-width: 760px;
   margin: 26px 0 0;
   color: var(--text-secondary);
-  font-size: 19px;
+  font-size: var(--fs-2xl);
   line-height: 1.7;
 }
 
@@ -135,7 +156,7 @@ h1 {
   bottom: 14px;
   color: var(--accent);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-xs);
   letter-spacing: .1em;
 }
 
@@ -151,7 +172,7 @@ h1 {
   border: 1px solid var(--line);
   color: var(--text-muted);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-sm);
 }
 
 .article__body {
@@ -162,7 +183,7 @@ h1 {
 .article__body p {
   margin: 0 0 28px;
   color: var(--text-secondary);
-  font-size: 17px;
+  font-size: var(--fs-xl);
   line-height: 1.95;
 }
 

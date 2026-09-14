@@ -212,7 +212,7 @@ export default {
     minRead: 'MIN READ',
     read: 'READ ARTICLE',
     empty: 'NO MATCHING ARTICLES',
-    backToList: '← BACK TO BLOG',
+    backToList: '← BACK TO BLOG LIST',
     relatedProjects: 'RELATED PROJECTS',
     notFound: 'ARTICLE NOT FOUND',
     type: {

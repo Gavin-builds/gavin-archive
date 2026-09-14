@@ -54,7 +54,7 @@ const year = new Date().getFullYear();
     var(--surface);
   color: var(--text-muted);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-sm);
   letter-spacing: 0.1em;
   overflow: hidden;
 }

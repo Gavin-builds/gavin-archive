@@ -106,7 +106,7 @@ const filteredProjects = computed(() => {
 .toolbar__label {
   color: var(--accent);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-sm);
   letter-spacing: .16em;
 }
 
@@ -121,7 +121,7 @@ const filteredProjects = computed(() => {
   max-width: 620px;
   margin: 24px 0 0;
   color: var(--text-secondary);
-  font-size: 17px;
+  font-size: var(--fs-xl);
   line-height: 1.7;
 }
 
@@ -176,7 +176,7 @@ const filteredProjects = computed(() => {
 .telemetry-copy span,
 .telemetry-copy small {
   color: var(--text-muted);
-  font-size: 8px;
+  font-size: var(--fs-2xs);
   letter-spacing: .14em;
 }
 
@@ -209,7 +209,7 @@ const filteredProjects = computed(() => {
   background: rgba(9,9,18,.65);
   color: var(--text-muted);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-sm);
   cursor: pointer;
   transition: color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), background var(--transition-fast);
 }
@@ -259,12 +259,12 @@ const filteredProjects = computed(() => {
 
 .empty-state span {
   color: var(--text-muted);
-  font-size: 10px;
+  font-size: var(--fs-sm);
 }
 
 .empty-state strong {
   color: var(--accent);
-  font-size: 18px;
+  font-size: var(--fs-xl);
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -301,7 +301,7 @@ const filteredProjects = computed(() => {
   }
 
   .page-intro p {
-    font-size: 15px;
+    font-size: var(--fs-body);
   }
 }
 

@@ -164,7 +164,7 @@ const { t } = useI18n()
   position: absolute;
   z-index: 2;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-xs);
   letter-spacing: .12em;
 }
 
@@ -221,7 +221,7 @@ const { t } = useI18n()
 .project-card__index {
   color: var(--text-muted);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-xs);
   letter-spacing: .12em;
   white-space: nowrap;
   overflow: hidden;
@@ -244,7 +244,7 @@ const { t } = useI18n()
   max-width: 540px;
   margin: 14px 0 0;
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: var(--fs-body);
   line-height: 1.75;
 }
 
@@ -260,7 +260,7 @@ const { t } = useI18n()
   border: 1px solid var(--line);
   color: var(--text-muted);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-xs);
 }
 
 .project-card__bottom {
@@ -273,12 +273,13 @@ const { t } = useI18n()
   gap: 16px;
   color: var(--text-muted);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-xs);
   letter-spacing: .08em;
 }
 
 .project-card__link {
   color: var(--accent);
+  font-size: var(--fs-sm);
   text-decoration: none;
 }
 

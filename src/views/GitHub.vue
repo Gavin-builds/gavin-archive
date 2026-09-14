@@ -102,7 +102,7 @@ const formatDate = (value: string) =>
 .section-label {
   color: var(--accent);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-sm);
   letter-spacing: 0.15em;
 }
 h1 {
@@ -115,7 +115,7 @@ h1 {
   max-width: 650px;
   margin: 22px 0 0;
   color: var(--text-secondary);
-  font-size: 17px;
+  font-size: var(--fs-xl);
   line-height: 1.72;
 }
 .profile-link {
@@ -123,7 +123,7 @@ h1 {
   align-self: end;
   color: var(--accent);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-sm);
   text-decoration: none;
   letter-spacing: 0.1em;
   padding: 10px 12px;
@@ -176,14 +176,14 @@ h1 {
   top: 14px;
   left: 14px;
   color: var(--text-muted);
-  font-size: 8px;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.14em;
 }
 .github__signal strong {
   right: 14px;
   bottom: 12px;
   color: var(--accent);
-  font-size: 9px;
+  font-size: var(--fs-xs);
   letter-spacing: 0.12em;
 }
 .stats {
@@ -214,7 +214,7 @@ h1 {
   display: block;
   color: var(--text-muted);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-xs);
   letter-spacing: 0.12em;
 }
 .stats strong {
@@ -263,7 +263,7 @@ h1 {
   gap: 8px;
   min-width: 280px;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-xs);
   color: var(--text-muted);
 }
 .repo__meta span,

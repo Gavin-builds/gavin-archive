@@ -212,7 +212,7 @@ export default {
     minRead: '分钟阅读',
     read: '阅读文章',
     empty: '未找到匹配文章',
-    backToList: '← 返回博客',
+    backToList: '← 返回博客列表',
     relatedProjects: '关联项目',
     notFound: '文章不存在',
     type: {

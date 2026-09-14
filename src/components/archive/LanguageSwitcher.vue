@@ -42,7 +42,7 @@ const switchLocale = (locale: Locale) => {
   gap: 6px;
 
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: var(--fs-base);
 
   letter-spacing: 0.08em;
 }

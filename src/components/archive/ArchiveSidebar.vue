@@ -213,7 +213,7 @@ function navigate(path: string) {
   color: var(--text-muted);
 
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: var(--fs-body);
   font-weight: 700;
 
   letter-spacing: 0.18em;
@@ -303,7 +303,7 @@ function navigate(path: string) {
 .nav-number {
   font-family: var(--font-mono);
 
-  font-size: 12px;
+  font-size: var(--fs-md);
 
   color: var(--text-muted);
 }
@@ -320,7 +320,7 @@ function navigate(path: string) {
 .nav-label {
   font-family: var(--font-mono);
 
-  font-size: 13px;
+  font-size: var(--fs-base);
   font-weight: 650;
 
   letter-spacing: 0.12em;
@@ -337,7 +337,7 @@ function navigate(path: string) {
   color: var(--accent);
 
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: var(--fs-body);
 
   transform: translateX(-5px);
 
@@ -371,7 +371,7 @@ function navigate(path: string) {
   color: var(--text-muted);
 
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-sm);
 
   letter-spacing: 0.08em;
 }

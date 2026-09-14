@@ -111,7 +111,7 @@ const filteredExperiments = computed(() => {
 .lab-card__date {
   color: var(--accent);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-sm);
   letter-spacing: .16em;
 }
 
@@ -126,7 +126,7 @@ h1 {
   max-width: 640px;
   margin: 24px 0 0;
   color: var(--text-secondary);
-  font-size: 17px;
+  font-size: var(--fs-xl);
   line-height: 1.7;
 }
 
@@ -145,7 +145,7 @@ h1 {
   padding: 10px 0;
   border-bottom: 1px solid var(--line);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-xs);
 }
 
 .console-line span { color: var(--text-muted); }
@@ -199,7 +199,7 @@ h1 {
   background: rgba(9,9,18,.65);
   color: var(--text-muted);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-sm);
   cursor: pointer;
   transition: color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), background var(--transition-fast);
 }
@@ -272,7 +272,7 @@ h1 {
   background: rgba(5,5,10,.48);
   backdrop-filter: blur(8px);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-xs);
   letter-spacing: .08em;
 }
 
@@ -287,18 +287,18 @@ h1 {
 .status--archived { color: var(--text-muted); }
 
 .lab-card__body { padding: 20px; }
-.lab-card__date { color: var(--text-muted); font-size: 9px; }
+.lab-card__date { color: var(--text-muted); font-size: var(--fs-xs); }
 .lab-card h2 { margin: 12px 0 0; font-size: 25px; line-height: 1.12; letter-spacing: -.03em; }
-.lab-card p { margin: 12px 0 0; color: var(--text-secondary); font-size: 14px; line-height: 1.75; }
+.lab-card p { margin: 12px 0 0; color: var(--text-secondary); font-size: var(--fs-body); line-height: 1.75; }
 
 .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 18px; }
-.tags span { padding: 5px 8px; border: 1px solid var(--line); color: var(--text-muted); font-family: var(--font-mono); font-size: 9px; }
-.related { display: inline-block; margin-top: 22px; color: var(--accent); font-family: var(--font-mono); font-size: 10px; text-decoration: none; }
+.tags span { padding: 5px 8px; border: 1px solid var(--line); color: var(--text-muted); font-family: var(--font-mono); font-size: var(--fs-xs); }
+.related { display: inline-block; margin-top: 22px; color: var(--accent); font-family: var(--font-mono); font-size: var(--fs-sm); text-decoration: none; }
 .related:hover { text-shadow: var(--glow-cyan); }
 
 .empty { padding: 60px 0; text-align: center; font-family: var(--font-mono); border: 1px dashed var(--line); }
-.empty span { display: block; color: var(--text-muted); font-size: 10px; }
-.empty strong { display: block; margin-top: 8px; color: var(--accent); font-size: 15px; }
+.empty span { display: block; color: var(--text-muted); font-size: var(--fs-sm); }
+.empty strong { display: block; margin-top: 8px; color: var(--accent); font-size: var(--fs-body); }
 
 .lab-list-enter-active,
 .lab-list-leave-active,

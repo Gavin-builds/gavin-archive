@@ -148,7 +148,7 @@ onUnmounted(() => {
   color: var(--accent);
 
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--fs-md);
   font-weight: 800;
   letter-spacing: 0.08em;
 
@@ -192,7 +192,7 @@ onUnmounted(() => {
   color: var(--text);
 
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--fs-md);
   font-weight: 800;
 
   letter-spacing: 0.14em;
@@ -202,7 +202,7 @@ onUnmounted(() => {
   color: var(--text-muted);
 
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--fs-md);
 
   letter-spacing: 0.12em;
 }
@@ -217,7 +217,7 @@ onUnmounted(() => {
   gap: 12px;
 
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--fs-md);
 
   letter-spacing: 0.12em;
 }
@@ -244,7 +244,7 @@ onUnmounted(() => {
   gap: 28px;
 
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--fs-md);
 
   letter-spacing: 0.08em;
 }
@@ -294,7 +294,7 @@ onUnmounted(() => {
   }
 
   .brand-name {
-    font-size: 12px;
+    font-size: var(--fs-md);
   }
 
   .brand-mark {

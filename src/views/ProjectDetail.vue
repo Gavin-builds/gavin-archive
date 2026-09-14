@@ -251,18 +251,24 @@ const project = computed(() => {
   display: inline-block;
 
   margin-bottom: 44px;
+  padding: 10px 14px;
 
-  color: var(--text-muted);
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
+
+  color: var(--accent);
 
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-sm);
 
   text-decoration: none;
   letter-spacing: 0.08em;
+
+  transition: box-shadow var(--transition-fast);
 }
 
 .back:hover {
-  color: var(--accent);
+  box-shadow: var(--glow-cyan);
 }
 
 .project-detail__hero {
@@ -276,7 +282,7 @@ const project = computed(() => {
   color: var(--accent);
 
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-sm);
 
   letter-spacing: 0.14em;
 }
@@ -308,7 +314,7 @@ const project = computed(() => {
 
   color: var(--text-secondary);
 
-  font-size: 19px;
+  font-size: var(--fs-2xl);
   line-height: 1.7;
 }
 
@@ -344,7 +350,7 @@ const project = computed(() => {
   bottom: 14px;
   color: var(--accent);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-xs);
   letter-spacing: .1em;
 }
 
@@ -363,7 +369,7 @@ const project = computed(() => {
   color: var(--accent);
 
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-sm);
 
   text-decoration: none;
 
@@ -392,7 +398,7 @@ const project = computed(() => {
 
   color: var(--text-secondary);
 
-  font-size: 16px;
+  font-size: var(--fs-lg);
   line-height: 1.9;
 }
 
@@ -444,7 +450,7 @@ const project = computed(() => {
   color: var(--text-muted);
 
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-sm);
 }
 
 .architecture__arrow {
@@ -472,7 +478,7 @@ const project = computed(() => {
   color: var(--text-muted);
 
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-xs);
 
   letter-spacing: 0.12em;
 }
@@ -492,7 +498,7 @@ const project = computed(() => {
   color: var(--text-secondary);
 
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-xs);
 }
 
 .timeline {
@@ -515,13 +521,13 @@ const project = computed(() => {
   color: var(--accent);
 
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-sm);
 }
 
 .timeline h3 {
   margin: 0;
 
-  font-size: 17px;
+  font-size: var(--fs-xl);
 }
 
 .timeline p {
@@ -541,12 +547,26 @@ const project = computed(() => {
 }
 
 .not-found a {
+  display: inline-block;
+
+  padding: 10px 14px;
+
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
+
   color: var(--accent);
 
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--fs-sm);
 
   text-decoration: none;
+  letter-spacing: 0.08em;
+
+  transition: box-shadow var(--transition-fast);
+}
+
+.not-found a:hover {
+  box-shadow: var(--glow-cyan);
 }
 
 @keyframes cover-enter {
@@ -583,7 +603,7 @@ const project = computed(() => {
   }
 
   .description {
-    font-size: 16px;
+    font-size: var(--fs-lg);
   }
 
   .project-cover {

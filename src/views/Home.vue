@@ -445,7 +445,7 @@ onBeforeUnmount(() => {
 
   font-family: var(--font-mono);
 
-  font-size: 11px;
+  font-size: var(--fs-md);
 
   letter-spacing: 0.14em;
 
@@ -496,7 +496,7 @@ onBeforeUnmount(() => {
 .hud__sub {
   margin-top: 4px;
 
-  font-size: 9px;
+  font-size: var(--fs-xs);
 
   color: #666d86;
 }
@@ -562,7 +562,7 @@ onBeforeUnmount(() => {
 .panel__label {
   color: #666d86;
 
-  font-size: 9px;
+  font-size: var(--fs-xs);
 
   letter-spacing: 0.18em;
 }
@@ -594,7 +594,7 @@ onBeforeUnmount(() => {
 
   margin-top: 9px;
 
-  font-size: 8px;
+  font-size: var(--fs-2xs);
 }
 
 .panel__row span {
@@ -626,7 +626,7 @@ onBeforeUnmount(() => {
 .panel__metric small {
   color: #666d86;
 
-  font-size: 8px;
+  font-size: var(--fs-2xs);
 }
 
 /* =========================
@@ -671,7 +671,7 @@ onBeforeUnmount(() => {
 
   font-family: var(--font-mono);
 
-  font-size: 9px;
+  font-size: var(--fs-xs);
 
   letter-spacing: 0.18em;
 }
@@ -744,7 +744,7 @@ onBeforeUnmount(() => {
 
   font-family: var(--font-mono);
 
-  font-size: 14px;
+  font-size: var(--fs-body);
 
   letter-spacing: 0.32em;
 }
@@ -756,7 +756,7 @@ onBeforeUnmount(() => {
 
   color: #aeb5ca;
 
-  font-size: 16px;
+  font-size: var(--fs-lg);
 
   line-height: 1.7;
 }
@@ -886,7 +886,7 @@ onBeforeUnmount(() => {
 
   font-family: var(--font-mono);
 
-  font-size: 11px;
+  font-size: var(--fs-md);
 
   letter-spacing: 0.16em;
 
@@ -921,7 +921,7 @@ onBeforeUnmount(() => {
 }
 
 .enter__arrow {
-  font-size: 16px;
+  font-size: var(--fs-lg);
 }
 
 /* =========================
@@ -981,7 +981,7 @@ onBeforeUnmount(() => {
 
   font-family: var(--font-mono);
 
-  font-size: 8px;
+  font-size: var(--fs-2xs);
 
   letter-spacing: 0.1em;
 }
@@ -1109,7 +1109,7 @@ onBeforeUnmount(() => {
   }
 
   .hud__status {
-    font-size: 8px;
+    font-size: var(--fs-2xs);
   }
 
   .hero__eyebrow {
@@ -1122,13 +1122,13 @@ onBeforeUnmount(() => {
   }
 
   .hero__role {
-    font-size: 10px;
+    font-size: var(--fs-sm);
     letter-spacing: 0.2em;
   }
 
   .hero__description {
     width: calc(100vw - 48px);
-    font-size: 14px;
+    font-size: var(--fs-body);
   }
 
   .hero__core {
@@ -1139,11 +1139,11 @@ onBeforeUnmount(() => {
   .hero__core-center {
     width: 42px;
     height: 42px;
-    font-size: 16px;
+    font-size: var(--fs-lg);
   }
 
   .hud--bottom {
-    font-size: 8px;
+    font-size: var(--fs-2xs);
   }
 
   .hud--bottom span:nth-child(2) {

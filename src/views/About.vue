@@ -102,7 +102,7 @@ const links = [
 .label {
   color: var(--accent);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-sm);
   letter-spacing: 0.15em;
 }
 h1 {
@@ -115,7 +115,7 @@ h1 {
   max-width: 780px;
   margin: 24px 0 0;
   color: var(--text-secondary);
-  font-size: 18px;
+  font-size: var(--fs-xl);
   line-height: 1.8;
 }
 .grid {
@@ -176,7 +176,7 @@ h1 {
   display: block;
   color: var(--text-muted);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-sm);
 }
 .now strong {
   display: block;
@@ -197,13 +197,13 @@ h1 {
   border-bottom: 1px solid var(--line);
   color: var(--accent);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--fs-md);
   text-decoration: none;
 }
 .mono {
   color: var(--accent) !important;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--fs-md);
 }
 @keyframes about-spin {
   to {

@@ -47,7 +47,7 @@ function goHome() {
   color: var(--accent);
 
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--fs-md);
   letter-spacing: 0.16em;
 }
 
@@ -57,7 +57,7 @@ function goHome() {
   color: var(--text-muted);
 
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-xs);
   letter-spacing: 0.12em;
 }
 
@@ -87,7 +87,7 @@ button {
   color: var(--text);
 
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-sm);
   letter-spacing: 0.1em;
 
   cursor: pointer;
