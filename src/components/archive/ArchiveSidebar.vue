@@ -195,8 +195,11 @@ function navigate(path: string) {
 
 .sidebar-inner {
   flex: 1;
+  min-height: 0;
 
   padding: 32px 18px;
+
+  overflow-y: auto;
 }
 
 .nav-group {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
 import ArchiveHeader from "../components/archive/ArchiveHeader.vue";
@@ -7,6 +7,14 @@ import ArchiveSidebar from "../components/archive/ArchiveSidebar.vue";
 import ArchiveFooter from "../components/archive/ArchiveFooter.vue";
 
 const route = useRoute();
+
+const scrollContainer = ref<HTMLElement | null>(null);
+
+const resetScrollTop = () => {
+  if (scrollContainer.value) {
+    scrollContainer.value.scrollTop = 0;
+  }
+};
 
 const currentPage = computed(() => {
   const name = route.name;
@@ -48,12 +56,18 @@ const currentPage = computed(() => {
           class="archive-main__rail archive-main__rail--right"
           aria-hidden="true"
         />
-        <div class="archive-content">
-          <RouterView v-slot="{ Component, route: viewRoute }">
-            <Transition name="archive-page" mode="out-in">
-              <component :is="Component" :key="viewRoute.fullPath" />
-            </Transition>
-          </RouterView>
+        <div ref="scrollContainer" class="archive-scroll">
+          <div class="archive-content">
+            <RouterView v-slot="{ Component, route: viewRoute }">
+              <Transition
+                name="archive-page"
+                mode="out-in"
+                @before-enter="resetScrollTop"
+              >
+                <component :is="Component" :key="viewRoute.fullPath" />
+              </Transition>
+            </RouterView>
+          </div>
         </div>
       </main>
     </div>
@@ -64,7 +78,9 @@ const currentPage = computed(() => {
 
 <style scoped>
 .archive-shell {
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   background: var(--bg);
@@ -78,6 +94,7 @@ const currentPage = computed(() => {
 }
 .archive-main {
   min-width: 0;
+  min-height: 0;
   position: relative;
   overflow: hidden;
   background:
@@ -103,6 +120,13 @@ const currentPage = computed(() => {
     transparent 50.05%
   );
   pointer-events: none;
+}
+.archive-scroll {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .archive-main__rail {
   position: absolute;
@@ -151,7 +175,8 @@ const currentPage = computed(() => {
 }
 @media (max-width: 768px) {
   .archive-body {
-    display: block;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
   }
   .archive-main__rail {
     display: none;

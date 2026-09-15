@@ -38,6 +38,7 @@ const year = new Date().getFullYear();
 <style scoped>
 .archive-footer {
   position: relative;
+  flex-shrink: 0;
   min-height: 52px;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
