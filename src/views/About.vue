@@ -92,7 +92,7 @@ const links = [
   position: absolute;
   right: -18px;
   bottom: -34px;
-  color: rgba(255, 255, 255, 0.025);
+  color: rgba(var(--ink-rgb), 0.05);
   font-size: 160px;
   font-weight: 900;
   letter-spacing: -0.08em;
@@ -129,7 +129,7 @@ h1 {
   padding: 30px;
   border: 1px solid var(--line);
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.018), transparent 50%),
+    linear-gradient(135deg, rgba(var(--ink-rgb), 0.025), transparent 50%),
     var(--surface);
   overflow: hidden;
   transition:
@@ -150,7 +150,7 @@ h1 {
 .panel:hover {
   transform: translateY(-4px);
   border-color: var(--accent-line);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
+  box-shadow: var(--shadow-soft);
 }
 .panel--wide {
   grid-column: 1/-1;

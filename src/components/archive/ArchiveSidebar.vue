@@ -150,9 +150,9 @@ function navigate(path: string) {
   background:
     linear-gradient(
       180deg,
-      rgba(0, 229, 255, 0.018),
+      rgba(var(--accent-rgb), 0.018),
       transparent 35%,
-      rgba(255, 43, 214, 0.018)
+      rgba(var(--pink-rgb), 0.018)
     ),
     var(--surface);
 
@@ -183,7 +183,7 @@ function navigate(path: string) {
     );
 
   box-shadow:
-    0 0 10px rgba(0, 229, 255, 0.5);
+    0 0 10px rgba(var(--accent-rgb), 0.5);
 
   pointer-events: none;
 }
@@ -270,12 +270,12 @@ function navigate(path: string) {
 .nav-item:hover {
   color: var(--text);
 
-  background: rgba(0, 229, 255, 0.035);
+  background: rgba(var(--accent-rgb), 0.035);
 
   border-color: var(--line);
 
   box-shadow:
-    inset 2px 0 0 rgba(0, 229, 255, 0.35);
+    inset 2px 0 0 rgba(var(--accent-rgb), 0.35);
 }
 
 .nav-item.active {
@@ -284,15 +284,15 @@ function navigate(path: string) {
   background:
     linear-gradient(
       90deg,
-      rgba(0, 229, 255, 0.10),
-      rgba(0, 229, 255, 0.025)
+      rgba(var(--accent-rgb), 0.10),
+      rgba(var(--accent-rgb), 0.025)
     );
 
   border-color: var(--accent-line);
 
   box-shadow:
     inset 3px 0 0 var(--accent),
-    0 0 18px rgba(0, 229, 255, 0.035);
+    0 0 18px rgba(var(--accent-rgb), 0.035);
 }
 
 

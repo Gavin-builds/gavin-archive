@@ -70,7 +70,7 @@ const switchLocale = (locale: Locale) => {
   color: var(--accent);
 
   text-shadow:
-    0 0 10px rgba(0, 229, 255, 0.5);
+    0 0 10px rgba(var(--accent-rgb), 0.5);
 }
 
 .language-switcher span {

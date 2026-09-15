@@ -83,12 +83,12 @@ const currentPage = computed(() => {
   background:
     radial-gradient(
       circle at 82% 14%,
-      rgba(0, 229, 255, 0.035),
+      rgba(var(--accent-rgb), 0.035),
       transparent 25%
     ),
     radial-gradient(
       circle at 18% 88%,
-      rgba(255, 43, 214, 0.028),
+      rgba(var(--pink-rgb), 0.028),
       transparent 25%
     );
 }
@@ -99,7 +99,7 @@ const currentPage = computed(() => {
   background: linear-gradient(
     90deg,
     transparent 0 49.95%,
-    rgba(255, 255, 255, 0.018) 50%,
+    var(--body-grid) 50%,
     transparent 50.05%
   );
   pointer-events: none;

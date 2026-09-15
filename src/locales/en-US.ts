@@ -12,6 +12,8 @@ export default {
     chinese: '中文',
     english: 'English',
     current: 'CURRENT',
+    lightMode: 'SWITCH TO LIGHT MODE',
+    darkMode: 'SWITCH TO DARK MODE',
   },
 
   nav: {

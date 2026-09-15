@@ -324,7 +324,7 @@ const project = computed(() => {
   margin-top: 34px;
   overflow: hidden;
   border: 1px solid var(--line);
-  background: #060810;
+  background: var(--media-bg);
 }
 
 .project-cover img {

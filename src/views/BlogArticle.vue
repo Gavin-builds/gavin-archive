@@ -134,7 +134,7 @@ h1 {
   margin-top: 30px;
   overflow: hidden;
   border: 1px solid var(--line);
-  background: #060810;
+  background: var(--media-bg);
 }
 
 .article__cover img {

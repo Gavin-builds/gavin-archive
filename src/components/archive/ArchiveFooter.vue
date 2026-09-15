@@ -47,9 +47,9 @@ const year = new Date().getFullYear();
   background:
     linear-gradient(
       90deg,
-      rgba(0, 229, 255, 0.02),
+      rgba(var(--accent-rgb), 0.02),
       transparent 50%,
-      rgba(255, 43, 214, 0.02)
+      rgba(var(--pink-rgb), 0.02)
     ),
     var(--surface);
   color: var(--text-muted);
@@ -65,7 +65,7 @@ const year = new Date().getFullYear();
   width: 90px;
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  box-shadow: 0 0 10px rgba(0, 229, 255, 0.45);
+  box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.45);
   animation: footer-scan 7s linear infinite;
 }
 .footer-left,
@@ -93,7 +93,7 @@ const year = new Date().getFullYear();
 }
 .archive-footer a:hover {
   color: var(--accent);
-  text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+  text-shadow: 0 0 10px rgba(var(--accent-rgb), 0.5);
 }
 @keyframes footer-scan {
   from {

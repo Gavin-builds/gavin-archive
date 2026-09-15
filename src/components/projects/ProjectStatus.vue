@@ -60,7 +60,7 @@ const { t } = useI18n()
 }
 
 .status--released {
-  color: #70ff9b;
+  color: var(--success);
 }
 
 .status--archived {

@@ -12,6 +12,8 @@ export default {
     chinese: '中文',
     english: 'English',
     current: '当前',
+    lightMode: '切换浅色模式',
+    darkMode: '切换深色模式',
   },
 
   nav: {

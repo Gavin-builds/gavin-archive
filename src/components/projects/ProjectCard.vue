@@ -92,21 +92,21 @@ const { t } = useI18n()
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(circle at 80% 12%, rgba(0,229,255,.08), transparent 24%),
-    linear-gradient(135deg, rgba(255,255,255,.02), transparent 44%);
+    radial-gradient(circle at 80% 12%, rgba(var(--accent-rgb),.08), transparent 24%),
+    linear-gradient(135deg, rgba(var(--ink-rgb),.02), transparent 44%);
   pointer-events: none;
 }
 
 .project-card--pink::after {
   background:
-    radial-gradient(circle at 80% 12%, rgba(255,43,214,.08), transparent 24%),
-    linear-gradient(135deg, rgba(255,255,255,.02), transparent 44%);
+    radial-gradient(circle at 80% 12%, rgba(var(--pink-rgb),.08), transparent 24%),
+    linear-gradient(135deg, rgba(var(--ink-rgb),.02), transparent 44%);
 }
 
 .project-card--purple::after {
   background:
-    radial-gradient(circle at 80% 12%, rgba(139,92,246,.10), transparent 24%),
-    linear-gradient(135deg, rgba(255,255,255,.02), transparent 44%);
+    radial-gradient(circle at 80% 12%, rgba(var(--purple-rgb),.10), transparent 24%),
+    linear-gradient(135deg, rgba(var(--ink-rgb),.02), transparent 44%);
 }
 
 .project-card:hover {
@@ -121,7 +121,7 @@ const { t } = useI18n()
   height: 260px;
   overflow: hidden;
   border-bottom: 1px solid var(--line);
-  background: #050810;
+  background: var(--media-bg);
   text-decoration: none;
 }
 
@@ -144,7 +144,7 @@ const { t } = useI18n()
   inset: 0;
   background:
     linear-gradient(to bottom, rgba(4,5,10,.05), rgba(4,5,10,.25) 40%, rgba(4,5,10,.82)),
-    linear-gradient(90deg, transparent 0 65%, rgba(0,229,255,.07));
+    linear-gradient(90deg, transparent 0 65%, rgba(var(--accent-rgb),.07));
 }
 
 .project-card__media-grid {

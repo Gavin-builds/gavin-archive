@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import LanguageSwitcher from "./LanguageSwitcher.vue";
+import ThemeToggle from "./ThemeToggle.vue";
 import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const { t } = useI18n();
 
@@ -30,6 +34,10 @@ const currentDate = computed(() => {
   }).format(now.value);
 });
 
+const handleClickBrand = () => {
+  router.push("/");
+};
+
 onMounted(() => {
   timer = window.setInterval(() => {
     now.value = new Date();
@@ -46,12 +54,8 @@ onUnmounted(() => {
 <template>
   <header class="archive-header">
     <div class="header-brand">
-      <div class="brand-mark">
-        <img
-          class="brand-mark__img"
-          src="/favicon.svg"
-          alt="GA"
-        />
+      <div class="brand-mark" @click="handleClickBrand">
+        <img class="brand-mark__img" src="/favicon.svg" alt="GA" />
       </div>
 
       <div class="brand-info">
@@ -68,6 +72,8 @@ onUnmounted(() => {
 
     <div class="header-status">
       <div class="status-item">
+        <ThemeToggle />
+
         <LanguageSwitcher />
 
         <div class="status-item">
@@ -99,9 +105,9 @@ onUnmounted(() => {
   background:
     linear-gradient(
       90deg,
-      rgba(0, 229, 255, 0.025),
+      rgba(var(--accent-rgb), 0.025),
       transparent 40%,
-      rgba(255, 43, 214, 0.025)
+      rgba(var(--pink-rgb), 0.025)
     ),
     var(--surface);
 
@@ -155,6 +161,10 @@ onUnmounted(() => {
   box-shadow: var(--glow-cyan);
 
   position: relative;
+  &:hover {
+    cursor: pointer;
+    transform: translateY(-2px);
+  }
 }
 
 .brand-mark__img {
@@ -229,7 +239,7 @@ onUnmounted(() => {
 .header-page {
   color: var(--accent);
 
-  text-shadow: 0 0 12px rgba(0, 229, 255, 0.45);
+  text-shadow: 0 0 12px rgba(var(--accent-rgb), 0.45);
 }
 
 /* ========================================

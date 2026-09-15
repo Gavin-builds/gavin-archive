@@ -11,7 +11,7 @@
 
   --text: #f4f7ff;
   --text-secondary: #aeb5ca;
-  --text-muted: #666d86;
+  --text-muted: #7c849d;
 
   --line: rgba(115, 125, 170, 0.22);
   --line-strong: rgba(115, 125, 170, 0.38);
@@ -39,6 +39,54 @@
   --glow-pink:
     0 0 8px rgba(255, 43, 214, 0.65),
     0 0 24px rgba(255, 43, 214, 0.18);
+
+  /* ========================================
+   * Theming channels（供 rgba() 组合，随主题切换）
+   * ======================================== */
+
+  --accent-rgb: 0, 229, 255;
+  --pink-rgb: 255, 43, 214;
+  --purple-rgb: 139, 92, 246;
+  --ink-rgb: 255, 255, 255;
+
+  /* ========================================
+   * Semantic colors
+   * ======================================== */
+
+  --success: #70ff9b;
+  --danger: #ff6b8a;
+
+  --shadow-soft: 0 18px 50px rgba(0, 0, 0, 0.22);
+
+  /* 图片封面占位底色 */
+  --media-bg: #060810;
+
+  /* 筛选按钮 / 搜索框等控件底色 */
+  --control-bg: rgba(9, 9, 18, 0.66);
+  --control-bg-solid: rgba(9, 9, 18, 0.72);
+
+  /* body 背景微光与网格 */
+  --body-glow-cyan: rgba(0, 229, 255, 0.055);
+  --body-glow-pink: rgba(255, 43, 214, 0.045);
+  --body-grid: rgba(255, 255, 255, 0.018);
+
+  /* 扫描线 / 滚动条 / 选区文字 */
+  --scanline: rgba(255, 255, 255, 0.012);
+  --scanline-opacity: 0.35;
+
+  --scrollbar-track: #05050a;
+  --scrollbar-thumb: #25273a;
+  --scrollbar-thumb-border: #11121d;
+
+  --selection-text: #020307;
+
+  /* Home 落地页专用 */
+  --landing-bg: #03040a;
+  --landing-panel-from: rgba(10, 12, 25, 0.75);
+  --landing-panel-to: rgba(5, 6, 14, 0.35);
+  --landing-panel-border: rgba(115, 125, 170, 0.18);
+
+  --text-faint: #5c647a;
 
   /* ========================================
    * Radius
@@ -97,6 +145,87 @@
 
   --transition-fast: 140ms ease;
   --transition-normal: 220ms ease;
+}
+
+
+/* ==========================================
+ * Light theme
+ * ========================================== */
+
+html[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #e8ecf4;
+
+  --surface: #f7f9fd;
+  --surface-solid: #ffffff;
+  --surface-raised: #ffffff;
+
+  --text: #0d1526;
+  --text-secondary: #39425a;
+  --text-muted: #58627a;
+
+  --line: rgba(20, 30, 56, 0.16);
+  --line-strong: rgba(20, 30, 56, 0.32);
+
+  --accent: #007490;
+  --accent-light: #3cb7d1;
+
+  --accent-secondary: #c8129c;
+  --accent-purple: #6d28d9;
+
+  --accent-rgb: 0, 116, 144;
+  --pink-rgb: 200, 18, 156;
+  --purple-rgb: 109, 40, 217;
+  --ink-rgb: 13, 21, 38;
+
+  --accent-soft: rgba(0, 116, 144, 0.08);
+  --accent-line: rgba(0, 116, 144, 0.38);
+
+  --pink-soft: rgba(200, 18, 156, 0.07);
+  --pink-line: rgba(200, 18, 156, 0.32);
+
+  --success: #15904a;
+  --danger: #d92042;
+
+  --shadow:
+    0 0 26px rgba(0, 116, 144, 0.07),
+    0 18px 44px rgba(15, 23, 42, 0.12);
+
+  --shadow-soft: 0 14px 34px rgba(15, 23, 42, 0.12);
+
+  --glow-cyan:
+    0 0 6px rgba(0, 116, 144, 0.3),
+    0 0 20px rgba(0, 116, 144, 0.12);
+
+  --glow-pink:
+    0 0 6px rgba(200, 18, 156, 0.3),
+    0 0 20px rgba(200, 18, 156, 0.12);
+
+  --media-bg: #0b1220;
+
+  --control-bg: rgba(255, 255, 255, 0.72);
+  --control-bg-solid: rgba(255, 255, 255, 0.86);
+
+  --body-glow-cyan: rgba(0, 116, 144, 0.1);
+  --body-glow-pink: rgba(200, 18, 156, 0.08);
+  --body-grid: rgba(13, 21, 38, 0.05);
+
+  --scanline: rgba(13, 21, 38, 0.03);
+  --scanline-opacity: 0.55;
+
+  --scrollbar-track: #e8ecf4;
+  --scrollbar-thumb: #b4bdcf;
+  --scrollbar-thumb-border: #dbe0ec;
+
+  --selection-text: #ffffff;
+
+  --landing-bg: #e8ecf4;
+  --landing-panel-from: rgba(255, 255, 255, 0.82);
+  --landing-panel-to: rgba(244, 247, 252, 0.55);
+  --landing-panel-border: rgba(20, 30, 56, 0.16);
+
+  --text-faint: #737c94;
 }
 
 
@@ -166,7 +295,7 @@ img {
 
 ::selection {
   background: var(--accent);
-  color: #020307;
+  color: var(--selection-text);
 }
 
 
@@ -180,12 +309,12 @@ img {
 }
 
 ::-webkit-scrollbar-track {
-  background: #05050a;
+  background: var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #25273a;
-  border: 1px solid #11121d;
+  background: var(--scrollbar-thumb);
+  border: 1px solid var(--scrollbar-thumb-border);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -203,21 +332,21 @@ body {
   background:
     radial-gradient(
       circle at 80% 15%,
-      rgba(0, 229, 255, 0.055),
+      var(--body-glow-cyan),
       transparent 28%
     ),
     radial-gradient(
       circle at 20% 80%,
-      rgba(255, 43, 214, 0.045),
+      var(--body-glow-pink),
       transparent 30%
     ),
     linear-gradient(
-      rgba(255, 255, 255, 0.018) 1px,
+      var(--body-grid) 1px,
       transparent 1px
     ),
     linear-gradient(
       90deg,
-      rgba(255, 255, 255, 0.018) 1px,
+      var(--body-grid) 1px,
       transparent 1px
     ),
     var(--bg);
@@ -247,13 +376,13 @@ body::before {
   background:
     repeating-linear-gradient(
       0deg,
-      rgba(255, 255, 255, 0.012) 0,
-      rgba(255, 255, 255, 0.012) 1px,
+      var(--scanline) 0,
+      var(--scanline) 1px,
       transparent 1px,
       transparent 4px
     );
 
-  opacity: 0.35;
+  opacity: var(--scanline-opacity);
 }
 
 

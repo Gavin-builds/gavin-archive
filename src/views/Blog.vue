@@ -145,13 +145,13 @@ h1 {
   margin-top: 10px;
   padding: 12px 13px;
   border: 1px solid var(--line);
-  background: rgba(9,9,18,.72);
+  background: var(--control-bg-solid);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .search__field:focus-within {
   border-color: var(--accent-line);
-  box-shadow: 0 0 26px rgba(0,229,255,.05);
+  box-shadow: 0 0 26px rgba(var(--accent-rgb),.05);
 }
 
 .search__cursor { color: var(--accent); font-size: var(--fs-lg); }
@@ -188,7 +188,7 @@ h1 {
 .post__media {
   position: relative;
   overflow: hidden;
-  background: #060810;
+  background: var(--media-bg);
 }
 
 .featured-post__media { min-height: 390px; }

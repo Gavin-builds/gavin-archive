@@ -134,8 +134,8 @@ h1 {
   align-self: stretch;
   padding: 18px;
   border: 1px solid var(--line);
-  background: linear-gradient(145deg, rgba(0,229,255,.03), rgba(139,92,246,.02)), var(--surface);
-  box-shadow: inset 0 0 40px rgba(0,229,255,.025);
+  background: linear-gradient(145deg, rgba(var(--accent-rgb),.03), rgba(var(--purple-rgb),.02)), var(--surface);
+  box-shadow: inset 0 0 40px rgba(var(--accent-rgb),.025);
 }
 
 .console-line {
@@ -158,15 +158,15 @@ h1 {
   overflow: hidden;
   border: 1px solid var(--line);
   background:
-    linear-gradient(180deg, rgba(0,229,255,.05), transparent),
-    repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 6px);
+    linear-gradient(180deg, rgba(var(--accent-rgb),.05), transparent),
+    repeating-linear-gradient(0deg, rgba(var(--ink-rgb),.025) 0 1px, transparent 1px 6px);
 }
 
 .console-screen::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(120deg, transparent 20%, rgba(0,229,255,.12) 50%, transparent 80%);
+  background: linear-gradient(120deg, transparent 20%, rgba(var(--accent-rgb),.12) 50%, transparent 80%);
   transform: translateX(-100%);
   animation: scanner 4s ease-in-out infinite;
 }
@@ -177,8 +177,8 @@ h1 {
   bottom: calc(12% + (var(--i) * 7%));
   width: 2px;
   height: calc(18px + var(--i) * 8px);
-  background: linear-gradient(to top, rgba(0,229,255,.12), var(--accent));
-  box-shadow: 0 0 14px rgba(0,229,255,.18);
+  background: linear-gradient(to top, rgba(var(--accent-rgb),.12), var(--accent));
+  box-shadow: 0 0 14px rgba(var(--accent-rgb),.18);
   animation: bar 2.2s ease-in-out infinite alternate;
   animation-delay: calc(var(--i) * -120ms);
 }
@@ -196,7 +196,7 @@ h1 {
 .filters button {
   padding: 9px 12px;
   border: 1px solid var(--line);
-  background: rgba(9,9,18,.65);
+  background: var(--control-bg);
   color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
@@ -239,7 +239,7 @@ h1 {
   aspect-ratio: 16 / 10;
   overflow: hidden;
   border-bottom: 1px solid var(--line);
-  background: #060810;
+  background: var(--media-bg);
 }
 
 .lab-card__media img {
@@ -282,7 +282,7 @@ h1 {
 .status--experiment,
 .status--testing { color: var(--accent); }
 .status--promising { color: var(--accent-secondary); }
-.status--failed { color: #ff6b8a; }
+.status--failed { color: var(--danger); }
 .status--paused,
 .status--archived { color: var(--text-muted); }
 

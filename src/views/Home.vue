@@ -3,9 +3,14 @@ import { onMounted, onBeforeUnmount, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 
+import ThemeToggle from "../components/archive/ThemeToggle.vue";
+import { useTheme } from "../composables/useTheme";
+
 const { t } = useI18n();
 
 const router = useRouter();
+
+const { theme } = useTheme();
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 const scene = ref<HTMLElement | null>(null);
@@ -14,7 +19,7 @@ const mouseX = ref(0);
 const mouseY = ref(0);
 
 const enterArchive = () => {
-  router.push("/archive/projects");
+  router.push("/archive");
 };
 
 let animationFrame = 0;
@@ -30,6 +35,10 @@ onMounted(() => {
   const ctx = canvasElement.getContext("2d");
 
   if (!ctx) return;
+
+  // 粒子颜色随主题切换
+  const particleChannels = () =>
+    theme.value === "light" ? "0,116,144" : "0,229,255";
 
   const particles: Array<{
     x: number;
@@ -92,7 +101,7 @@ onMounted(() => {
 
       ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
 
-      ctx.fillStyle = `rgba(0,229,255,${particle.alpha})`;
+      ctx.fillStyle = `rgba(${particleChannels()},${particle.alpha})`;
 
       ctx.fill();
     }
@@ -117,7 +126,7 @@ onMounted(() => {
         ctx.moveTo(a.x, a.y);
         ctx.lineTo(b.x, b.y);
 
-        ctx.strokeStyle = `rgba(0,229,255,${opacity})`;
+        ctx.strokeStyle = `rgba(${particleChannels()},${opacity})`;
         ctx.lineWidth = 1;
 
         ctx.stroke();
@@ -202,6 +211,8 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="hud__status">
+        <ThemeToggle />
+
         <span class="status-dot" />
         {{ t("common.online") }}
       </div>
@@ -330,17 +341,17 @@ onBeforeUnmount(() => {
   background:
     radial-gradient(
       circle at 50% 50%,
-      rgba(0, 229, 255, 0.08),
+      rgba(var(--accent-rgb), 0.08),
       transparent 28%
     ),
     radial-gradient(
       circle at 80% 20%,
-      rgba(139, 92, 246, 0.08),
+      rgba(var(--purple-rgb), 0.08),
       transparent 25%
     ),
-    #03040a;
+    var(--landing-bg);
 
-  color: #f4f7ff;
+  color: var(--text);
 
   isolation: isolate;
 }
@@ -362,8 +373,8 @@ onBeforeUnmount(() => {
   z-index: -4;
 
   background-image:
-    linear-gradient(rgba(0, 229, 255, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 229, 255, 0.055) 1px, transparent 1px);
+    linear-gradient(rgba(var(--accent-rgb), 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--accent-rgb), 0.055) 1px, transparent 1px);
 
   background-size: 50px 50px;
 
@@ -389,7 +400,7 @@ onBeforeUnmount(() => {
     to bottom,
     transparent 0,
     transparent 3px,
-    rgba(255, 255, 255, 0.018) 4px
+    rgba(var(--ink-rgb), 0.018) 4px
   );
 
   opacity: 0.5;
@@ -416,14 +427,14 @@ onBeforeUnmount(() => {
   left: 15%;
   top: 20%;
 
-  background: rgba(0, 229, 255, 0.08);
+  background: rgba(var(--accent-rgb), 0.08);
 }
 
 .landing__glow--purple {
   right: 10%;
   bottom: 10%;
 
-  background: rgba(139, 92, 246, 0.08);
+  background: rgba(var(--purple-rgb), 0.08);
 
   animation-delay: -4s;
 }
@@ -449,7 +460,7 @@ onBeforeUnmount(() => {
 
   letter-spacing: 0.14em;
 
-  color: rgba(174, 181, 202, 0.72);
+  color: var(--text-secondary);
 
   z-index: 10;
 }
@@ -475,9 +486,9 @@ onBeforeUnmount(() => {
   width: 34px;
   height: 34px;
 
-  border: 1px solid rgba(0, 229, 255, 0.5);
+  border: 1px solid rgba(var(--accent-rgb), 0.5);
 
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
+  box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.1);
 
   overflow: hidden;
 }
@@ -490,7 +501,7 @@ onBeforeUnmount(() => {
 }
 
 .hud__title {
-  color: #f4f7ff;
+  color: var(--text);
 }
 
 .hud__sub {
@@ -498,7 +509,7 @@ onBeforeUnmount(() => {
 
   font-size: var(--fs-xs);
 
-  color: #666d86;
+  color: var(--text-muted);
 }
 
 .hud__status {
@@ -513,9 +524,9 @@ onBeforeUnmount(() => {
 
   border-radius: 50%;
 
-  background: #00e5ff;
+  background: var(--accent);
 
-  box-shadow: 0 0 12px #00e5ff;
+  box-shadow: 0 0 12px var(--accent);
 
   animation: pulse 1.5s infinite;
 }
@@ -533,12 +544,12 @@ onBeforeUnmount(() => {
 
   padding: 16px;
 
-  border: 1px solid rgba(115, 125, 170, 0.18);
+  border: 1px solid var(--landing-panel-border);
 
   background: linear-gradient(
     135deg,
-    rgba(10, 12, 25, 0.75),
-    rgba(5, 6, 14, 0.35)
+    var(--landing-panel-from),
+    var(--landing-panel-to)
   );
 
   backdrop-filter: blur(8px);
@@ -560,7 +571,7 @@ onBeforeUnmount(() => {
 }
 
 .panel__label {
-  color: #666d86;
+  color: var(--text-muted);
 
   font-size: var(--fs-xs);
 
@@ -570,7 +581,7 @@ onBeforeUnmount(() => {
 .panel__value {
   margin-top: 10px;
 
-  color: #00e5ff;
+  color: var(--accent);
 
   font-size: 20px;
 
@@ -582,7 +593,7 @@ onBeforeUnmount(() => {
 
   margin: 14px 0;
 
-  background: linear-gradient(90deg, rgba(0, 229, 255, 0.4), transparent);
+  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.4), transparent);
 }
 
 .panel__row {
@@ -598,11 +609,11 @@ onBeforeUnmount(() => {
 }
 
 .panel__row span {
-  color: #666d86;
+  color: var(--text-muted);
 }
 
 .panel__row strong {
-  color: #aeb5ca;
+  color: var(--text-secondary);
 
   font-weight: 500;
 }
@@ -618,13 +629,13 @@ onBeforeUnmount(() => {
 }
 
 .panel__metric span {
-  color: #f4f7ff;
+  color: var(--text);
 
   font-size: 22px;
 }
 
 .panel__metric small {
-  color: #666d86;
+  color: var(--text-muted);
 
   font-size: var(--fs-2xs);
 }
@@ -667,7 +678,7 @@ onBeforeUnmount(() => {
 
   margin-bottom: 22px;
 
-  color: #666d86;
+  color: var(--text-muted);
 
   font-family: var(--font-mono);
 
@@ -677,7 +688,7 @@ onBeforeUnmount(() => {
 }
 
 .hero__eyebrow span:first-child {
-  color: #00e5ff;
+  color: var(--accent);
 }
 
 .hero__title {
@@ -695,11 +706,11 @@ onBeforeUnmount(() => {
 
   letter-spacing: -0.08em;
 
-  color: #f4f7ff;
+  color: var(--text);
 
   text-shadow:
-    0 0 30px rgba(0, 229, 255, 0.1),
-    0 0 100px rgba(0, 229, 255, 0.05);
+    0 0 30px rgba(var(--accent-rgb), 0.1),
+    0 0 100px rgba(var(--accent-rgb), 0.05);
 
   animation: titleFloat 5s ease-in-out infinite;
 }
@@ -718,7 +729,7 @@ onBeforeUnmount(() => {
 }
 
 .hero__title::before {
-  color: #00e5ff;
+  color: var(--accent);
 
   transform: translate(-2px, 0);
 
@@ -728,7 +739,7 @@ onBeforeUnmount(() => {
 }
 
 .hero__title::after {
-  color: #ff2bd6;
+  color: var(--accent-secondary);
 
   transform: translate(2px, 0);
 
@@ -740,7 +751,7 @@ onBeforeUnmount(() => {
 .hero__role {
   margin-top: 32px;
 
-  color: #00e5ff;
+  color: var(--accent);
 
   font-family: var(--font-mono);
 
@@ -754,7 +765,7 @@ onBeforeUnmount(() => {
 
   margin: 22px auto 34px;
 
-  color: #aeb5ca;
+  color: var(--text-secondary);
 
   font-size: var(--fs-lg);
 
@@ -771,7 +782,7 @@ onBeforeUnmount(() => {
   left: 50%;
   top: 50%;
 
-  border: 1px solid rgba(0, 229, 255, 0.12);
+  border: 1px solid rgba(var(--accent-rgb), 0.12);
 
   border-radius: 50%;
 
@@ -789,7 +800,7 @@ onBeforeUnmount(() => {
   width: min(44vw, 520px);
   height: min(44vw, 520px);
 
-  border-color: rgba(139, 92, 246, 0.16);
+  border-color: rgba(var(--purple-rgb), 0.16);
 
   animation: orbitReverse 20s linear infinite;
 }
@@ -798,7 +809,7 @@ onBeforeUnmount(() => {
   width: min(27vw, 320px);
   height: min(27vw, 320px);
 
-  border-color: rgba(255, 43, 214, 0.12);
+  border-color: rgba(var(--pink-rgb), 0.12);
 
   animation: orbit 13s linear infinite;
 }
@@ -830,11 +841,11 @@ onBeforeUnmount(() => {
 
   border-radius: 50%;
 
-  border: 1px solid rgba(0, 229, 255, 0.4);
+  border: 1px solid rgba(var(--accent-rgb), 0.4);
 
   box-shadow:
-    0 0 30px rgba(0, 229, 255, 0.08),
-    inset 0 0 30px rgba(0, 229, 255, 0.05);
+    0 0 30px rgba(var(--accent-rgb), 0.08),
+    inset 0 0 30px rgba(var(--accent-rgb), 0.05);
 
   animation: corePulse 3s ease-in-out infinite;
 }
@@ -848,11 +859,11 @@ onBeforeUnmount(() => {
 
   border-radius: 50%;
 
-  background: rgba(0, 229, 255, 0.04);
+  background: rgba(var(--accent-rgb), 0.04);
 
-  border: 1px solid rgba(0, 229, 255, 0.5);
+  border: 1px solid rgba(var(--accent-rgb), 0.5);
 
-  box-shadow: 0 0 25px rgba(0, 229, 255, 0.2);
+  box-shadow: 0 0 25px rgba(var(--accent-rgb), 0.2);
 
   overflow: hidden;
 }
@@ -878,11 +889,11 @@ onBeforeUnmount(() => {
 
   padding: 13px 22px;
 
-  border: 1px solid rgba(0, 229, 255, 0.55);
+  border: 1px solid rgba(var(--accent-rgb), 0.55);
 
-  background: rgba(0, 229, 255, 0.035);
+  background: rgba(var(--accent-rgb), 0.035);
 
-  color: #00e5ff;
+  color: var(--accent);
 
   font-family: var(--font-mono);
 
@@ -899,9 +910,9 @@ onBeforeUnmount(() => {
 }
 
 .enter:hover {
-  background: rgba(0, 229, 255, 0.1);
+  background: rgba(var(--accent-rgb), 0.1);
 
-  box-shadow: 0 0 30px rgba(0, 229, 255, 0.16);
+  box-shadow: 0 0 30px rgba(var(--accent-rgb), 0.16);
 
   transform: translateY(-3px);
 }
@@ -911,7 +922,7 @@ onBeforeUnmount(() => {
 
   height: 1px;
 
-  background: rgba(0, 229, 255, 0.5);
+  background: rgba(var(--accent-rgb), 0.5);
 
   transition: width 0.2s ease;
 }
@@ -943,32 +954,32 @@ onBeforeUnmount(() => {
   left: 20px;
   top: 20px;
 
-  border-left: 1px solid #00e5ff;
-  border-top: 1px solid #00e5ff;
+  border-left: 1px solid var(--accent);
+  border-top: 1px solid var(--accent);
 }
 
 .corner--tr {
   right: 20px;
   top: 20px;
 
-  border-right: 1px solid #00e5ff;
-  border-top: 1px solid #00e5ff;
+  border-right: 1px solid var(--accent);
+  border-top: 1px solid var(--accent);
 }
 
 .corner--bl {
   left: 20px;
   bottom: 20px;
 
-  border-left: 1px solid #00e5ff;
-  border-bottom: 1px solid #00e5ff;
+  border-left: 1px solid var(--accent);
+  border-bottom: 1px solid var(--accent);
 }
 
 .corner--br {
   right: 20px;
   bottom: 20px;
 
-  border-right: 1px solid #00e5ff;
-  border-bottom: 1px solid #00e5ff;
+  border-right: 1px solid var(--accent);
+  border-bottom: 1px solid var(--accent);
 }
 
 .coordinates {
@@ -977,7 +988,7 @@ onBeforeUnmount(() => {
   right: 42px;
   bottom: 50px;
 
-  color: #4f566d;
+  color: var(--text-faint);
 
   font-family: var(--font-mono);
 

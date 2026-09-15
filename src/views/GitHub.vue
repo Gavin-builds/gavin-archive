@@ -140,11 +140,11 @@ h1 {
   place-items: center;
   overflow: hidden;
   border-left: 1px solid var(--line);
-  background: radial-gradient(circle, rgba(0, 229, 255, 0.08), transparent 62%);
+  background: radial-gradient(circle, rgba(var(--accent-rgb), 0.08), transparent 62%);
 }
 .github__orbit {
   position: absolute;
-  border: 1px solid rgba(0, 229, 255, 0.2);
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
   border-radius: 50%;
 }
 .github__orbit--1 {
@@ -155,7 +155,7 @@ h1 {
 .github__orbit--2 {
   width: 92px;
   height: 92px;
-  border-color: rgba(255, 43, 214, 0.24);
+  border-color: rgba(var(--pink-rgb), 0.24);
   border-style: dashed;
   animation: gh-spin 10s linear reverse infinite;
 }
@@ -164,7 +164,7 @@ h1 {
   height: 24px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 36px rgba(0, 229, 255, 0.48);
+  box-shadow: 0 0 36px rgba(var(--accent-rgb), 0.48);
   animation: gh-pulse 2.4s ease-in-out infinite;
 }
 .github__signal span,
@@ -284,7 +284,7 @@ h1 {
   font-family: var(--font-mono);
 }
 .state--error strong {
-  color: #ff6b8a;
+  color: var(--danger);
 }
 .state button {
   width: fit-content;

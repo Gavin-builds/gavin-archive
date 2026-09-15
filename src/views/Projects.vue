@@ -139,7 +139,7 @@ const filteredProjects = computed(() => {
   position: absolute;
   width: 190px;
   height: 190px;
-  border: 1px solid rgba(0,229,255,.22);
+  border: 1px solid rgba(var(--accent-rgb),.22);
   border-radius: 50%;
   animation: spin 14s linear infinite;
 }
@@ -148,7 +148,7 @@ const filteredProjects = computed(() => {
   width: 128px;
   height: 128px;
   border-style: dashed;
-  border-color: rgba(255,43,214,.25);
+  border-color: rgba(var(--pink-rgb),.25);
   animation-direction: reverse;
   animation-duration: 9s;
 }
@@ -159,7 +159,7 @@ const filteredProjects = computed(() => {
   height: 42px;
   border-radius: 50%;
   background: radial-gradient(circle, var(--accent-light), var(--accent) 38%, transparent 70%);
-  box-shadow: 0 0 40px rgba(0,229,255,.4);
+  box-shadow: 0 0 40px rgba(var(--accent-rgb),.4);
   animation: pulse 2.8s ease-in-out infinite;
 }
 
@@ -206,7 +206,7 @@ const filteredProjects = computed(() => {
   position: relative;
   padding: 9px 12px;
   border: 1px solid var(--line);
-  background: rgba(9,9,18,.65);
+  background: var(--control-bg);
   color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
@@ -224,7 +224,7 @@ const filteredProjects = computed(() => {
   color: var(--accent);
   border-color: var(--accent-line);
   background: var(--accent-soft);
-  box-shadow: 0 0 22px rgba(0,229,255,.06);
+  box-shadow: 0 0 22px rgba(var(--accent-rgb),.06);
 }
 
 .projects__grid {
