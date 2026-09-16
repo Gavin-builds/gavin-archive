@@ -1,321 +1,370 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
 
-import ProjectCard from '../components/projects/ProjectCard.vue'
-import { projects } from '../data/projects'
-import type { ProjectCategory } from '../types/project'
+import ProjectCard from "../components/projects/ProjectCard.vue";
+import { projects } from "../data/projects";
+import type { ProjectCategory } from "../types/project";
+import { localize } from "../types/content";
 
-const { t } = useI18n()
-
-type Filter = 'ALL' | ProjectCategory
-
-const filter = ref<Filter>('ALL')
-
-interface FilterOption {
-  value: Filter
-  labelKey: string
-}
-
-const filters: FilterOption[] = [
-  { value: 'ALL', labelKey: 'projects.all' },
-  { value: 'AI', labelKey: 'projects.ai' },
-  { value: 'Web', labelKey: 'projects.web' },
-  { value: 'Open Source', labelKey: 'projects.openSource' },
-  { value: 'Tools', labelKey: 'projects.tools' },
-  { value: 'Experiment', labelKey: 'projects.experiment' },
-]
-
-const filteredProjects = computed(() => {
-  if (filter.value === 'ALL') return projects
-  return projects.filter(project => project.categories.includes(filter.value as ProjectCategory))
-})
+const { t, locale } = useI18n();
+type Filter = "ALL" | ProjectCategory;
+const filter = ref<Filter>("ALL");
+const filters: Filter[] = [
+  "ALL",
+  "AI",
+  "Web",
+  "Open Source",
+  "Tools",
+  "Experiment",
+];
+const text = (value: { zh: string; en: string }) =>
+  localize(value, locale.value);
+const filteredProjects = computed(() =>
+  filter.value === "ALL"
+    ? projects
+    : projects.filter((project) =>
+        project.categories.includes(filter.value as ProjectCategory),
+      ),
+);
+const featured = computed(
+  () =>
+    filteredProjects.value.find((project) => project.featured) ??
+    filteredProjects.value[0],
+);
+const archiveEntries = computed(() =>
+  filteredProjects.value.filter(
+    (project) => project.slug !== featured.value?.slug,
+  ),
+);
 </script>
 
 <template>
   <section class="projects">
-    <div class="page-intro">
+    <header class="archive-intro">
       <div>
-        <div class="eyebrow">/ 02 PROJECT ARCHIVE</div>
-        <h1>{{ t('projects.title') }}</h1>
-        <p>{{ t('projects.description') }}</p>
+        <div class="eyebrow">/ 02 CASE FILES</div>
+        <h1>
+          {{ locale.startsWith("zh") ? "项目档案" : "PROJECT CASE FILES" }}
+        </h1>
+        <p>
+          {{
+            locale.startsWith("zh")
+              ? "我参与构建、验证和归档的系统记录。"
+              : "records of the systems I have built, tested and archived."
+          }}
+        </p>
       </div>
-
-      <div class="intro-telemetry" aria-hidden="true">
-        <span class="telemetry-orbit telemetry-orbit--1" />
-        <span class="telemetry-orbit telemetry-orbit--2" />
-        <span class="telemetry-core" />
-        <div class="telemetry-copy">
-          <span>ARCHIVE NODE</span>
-          <strong>{{ String(filteredProjects.length).padStart(2, '0') }}</strong>
-          <small>{{ t('projects.countLabel') }}</small>
-        </div>
+      <div class="archive-counter">
+        <span>INDEXED</span
+        ><strong>{{ String(filteredProjects.length).padStart(2, "0") }}</strong
+        ><small>CASE FILES</small>
       </div>
-    </div>
+    </header>
 
-    <div class="toolbar">
-      <div class="toolbar__label">FILTER / {{ filter }}</div>
-      <div class="projects__filters">
+    <div class="filter-row">
+      <span>INDEX / {{ filter }}</span>
+      <div>
         <button
           v-for="item in filters"
-          :key="item.value"
-          :class="{ active: filter === item.value }"
-          @click="filter = item.value"
+          :key="item"
+          type="button"
+          :class="{ active: filter === item }"
+          @click="filter = item"
         >
-          {{ t(item.labelKey) }}
+          {{
+            item === "ALL"
+              ? t("projects.all")
+              : item === "Open Source"
+                ? t("projects.openSource")
+                : item === "Tools"
+                  ? t("projects.tools")
+                  : item === "Experiment"
+                    ? t("projects.experiment")
+                    : item === "Web"
+                      ? t("projects.web")
+                      : t("projects.ai")
+          }}
         </button>
       </div>
     </div>
 
-    <TransitionGroup name="card-grid" tag="div" class="projects__grid">
+    <RouterLink
+      v-if="featured"
+      :to="`/archive/projects/${featured.slug}`"
+      class="featured-file"
+    >
+      <div class="featured-file__media">
+        <img
+          v-if="featured.cover"
+          :src="featured.cover"
+          :alt="text(featured.title)"
+        />
+        <div class="featured-file__scan" />
+        <span>FEATURED CASE / {{ featured.date }}</span>
+      </div>
+      <div class="featured-file__body">
+        <div class="case-id">
+          CASE FILE / 00{{ filteredProjects.indexOf(featured) + 1 }}
+        </div>
+        <div class="case-meta">
+          <span>{{ featured.status }}</span
+          ><span>{{ featured.date }}</span>
+        </div>
+        <h2>{{ text(featured.title) }}</h2>
+        <p>{{ text(featured.description) }}</p>
+        <div class="case-tags">
+          <span v-for="tag in featured.tags" :key="tag.en">{{
+            text(tag)
+          }}</span>
+        </div>
+        <span class="open"
+          >{{
+            locale.startsWith("zh") ? "打开完整案例" : "OPEN FULL CASE"
+          }}
+          →</span
+        >
+      </div>
+    </RouterLink>
+
+    <div class="case-grid">
       <ProjectCard
-        v-for="project in filteredProjects"
+        v-for="project in archiveEntries"
         :key="project.slug"
         :project="project"
       />
-    </TransitionGroup>
+    </div>
 
-    <div v-if="filteredProjects.length === 0" class="empty-state">
-      <span>NO PROJECTS / 0 RESULTS</span>
-      <strong>ARCHIVE EMPTY</strong>
+    <div v-if="!filteredProjects.length" class="empty-state">
+      <span>INDEX RETURNED / 0</span><strong>{{ t("projects.empty") }}</strong>
     </div>
   </section>
 </template>
 
 <style scoped>
-.projects {
-  position: relative;
-}
-
-.page-intro {
-  min-height: 340px;
+.archive-intro {
+  min-height: 300px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
+  grid-template-columns: minmax(0, 1fr) 180px;
   gap: 40px;
-  padding-bottom: 40px;
+  padding-bottom: 42px;
   border-bottom: 1px solid var(--line);
-  overflow: hidden;
 }
-
-.page-intro > div:first-child {
-  position: relative;
-  z-index: 2;
-}
-
 .eyebrow,
-.toolbar__label {
+.filter-row,
+.case-id,
+.case-meta {
   color: var(--accent);
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
-  letter-spacing: .16em;
+  letter-spacing: 0.14em;
 }
-
-.projects h1 {
+.archive-intro h1 {
   margin: 14px 0 0;
-  font-size: clamp(58px, 8vw, 104px);
-  line-height: .9;
-  letter-spacing: -.07em;
+  font-size: clamp(54px, 8vw, 104px);
+  line-height: 0.9;
+  letter-spacing: -0.07em;
 }
-
-.page-intro p {
-  max-width: 620px;
+.archive-intro p {
+  max-width: 680px;
   margin: 24px 0 0;
   color: var(--text-secondary);
   font-size: var(--fs-xl);
-  line-height: 1.7;
+  line-height: 1.75;
 }
-
-.intro-telemetry {
-  position: relative;
-  min-height: 250px;
-  display: grid;
-  place-items: center;
-  border-left: 1px solid var(--line);
-  overflow: hidden;
-  /* animation: telemetry-in 900ms ease both; */
-}
-
-.telemetry-orbit {
-  position: absolute;
-  width: 190px;
-  height: 190px;
-  border: 1px solid rgba(var(--accent-rgb),.22);
-  border-radius: 50%;
-  animation: spin 14s linear infinite;
-}
-
-.telemetry-orbit--2 {
-  width: 128px;
-  height: 128px;
-  border-style: dashed;
-  border-color: rgba(var(--pink-rgb),.25);
-  animation-direction: reverse;
-  animation-duration: 9s;
-}
-
-.telemetry-core {
-  position: absolute;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--accent-light), var(--accent) 38%, transparent 70%);
-  box-shadow: 0 0 40px rgba(var(--accent-rgb),.4);
-  animation: pulse 2.8s ease-in-out infinite;
-}
-
-.telemetry-copy {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.archive-counter {
+  align-self: end;
+  padding: 18px;
+  border: 1px solid var(--line);
+  background: var(--surface);
   font-family: var(--font-mono);
-  text-align: center;
 }
-
-.telemetry-copy span,
-.telemetry-copy small {
+.archive-counter span,
+.archive-counter small {
+  display: block;
   color: var(--text-muted);
-  font-size: var(--fs-2xs);
-  letter-spacing: .14em;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
 }
-
-.telemetry-copy strong {
-  margin-top: 6px;
-  color: var(--text);
-  font-size: 38px;
+.archive-counter strong {
+  display: block;
+  margin: 8px 0;
+  font-size: 48px;
   line-height: 1;
+  color: var(--text);
 }
-
-.toolbar {
+.filter-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 20px;
+  gap: 18px;
   padding: 22px 0;
 }
-
-.projects__filters {
+.filter-row > div {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 8px;
 }
-
-.projects__filters button {
-  position: relative;
-  padding: 9px 12px;
+.filter-row button {
+  padding: 8px 11px;
   border: 1px solid var(--line);
   background: var(--control-bg);
   color: var(--text-muted);
   font-family: var(--font-mono);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-xs);
   cursor: pointer;
-  transition: color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), background var(--transition-fast);
 }
-
-.projects__filters button:hover {
-  color: var(--text);
-  border-color: var(--line-strong);
-  transform: translateY(-1px);
-}
-
-.projects__filters button.active {
+.filter-row button.active,
+.filter-row button:hover {
   color: var(--accent);
   border-color: var(--accent-line);
   background: var(--accent-soft);
-  box-shadow: 0 0 22px rgba(var(--accent-rgb),.06);
 }
-
-.projects__grid {
+.featured-file {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0,1fr));
-  gap: 18px;
+  grid-template-columns: 1.15fr 0.85fr;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: inherit;
+  text-decoration: none;
+  overflow: hidden;
+  transition:
+    transform var(--transition-normal),
+    border-color var(--transition-normal),
+    box-shadow var(--transition-normal);
 }
-
-.card-grid-enter-active,
-.card-grid-leave-active,
-.card-grid-move {
-  transition: all 360ms cubic-bezier(.2,.7,.2,1);
+.featured-file:hover {
+  transform: translateY(-6px);
+  border-color: var(--accent-line);
+  box-shadow: var(--shadow);
 }
-
-.card-grid-enter-from,
-.card-grid-leave-to {
-  opacity: 0;
-  transform: translateY(24px) scale(.985);
+.featured-file__media {
+  position: relative;
+  min-height: 430px;
+  overflow: hidden;
+  background: var(--media-bg);
 }
-
-.empty-state {
-  min-height: 240px;
+.featured-file__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+.featured-file:hover img {
+  transform: scale(1.06);
+}
+.featured-file__scan {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.72)),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 5px,
+      rgba(255, 255, 255, 0.02) 6px
+    );
+}
+.featured-file__media span {
+  position: absolute;
+  left: 18px;
+  bottom: 16px;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+}
+.featured-file__body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border: 1px dashed var(--line);
-  font-family: var(--font-mono);
-  text-align: center;
+  padding: 36px;
 }
-
+.case-meta {
+  display: flex;
+  gap: 16px;
+  margin-top: 18px;
+  color: var(--text-muted);
+}
+.case-meta span:first-child {
+  color: var(--accent);
+}
+.featured-file h2 {
+  margin: 20px 0 0;
+  font-size: clamp(38px, 5vw, 64px);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+.featured-file p {
+  margin: 18px 0 0;
+  color: var(--text-secondary);
+  line-height: 1.85;
+}
+.case-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 22px;
+}
+.case-tags span {
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+.open {
+  margin-top: 26px;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+.case-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+.empty-state {
+  padding: 60px;
+  border: 1px dashed var(--line);
+  text-align: center;
+  font-family: var(--font-mono);
+}
 .empty-state span {
+  display: block;
   color: var(--text-muted);
   font-size: var(--fs-sm);
 }
-
 .empty-state strong {
+  display: block;
+  margin-top: 8px;
   color: var(--accent);
-  font-size: var(--fs-xl);
 }
-
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes pulse { 0%,100% { transform: scale(.85); opacity:.75; } 50% { transform: scale(1.1); opacity:1; } }
-@keyframes telemetry-in { from { opacity:0; transform: translateX(28px); } to { opacity:1; transform: translateX(0); } }
-
 @media (max-width: 900px) {
-  .page-intro {
+  .archive-intro {
     grid-template-columns: 1fr;
-    min-height: 0;
   }
-
-  .intro-telemetry {
-    display: none;
+  .featured-file {
+    grid-template-columns: 1fr;
   }
-
-  .toolbar {
+  .featured-file__media {
+    min-height: 300px;
+  }
+  .case-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 650px) {
+  .filter-row {
     align-items: flex-start;
     flex-direction: column;
   }
-
-  .projects__filters {
+  .filter-row > div {
     justify-content: flex-start;
   }
-
-  .projects__grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 640px) {
-  .projects h1 {
-    font-size: clamp(52px, 17vw, 78px);
-  }
-
-  .page-intro p {
-    font-size: var(--fs-body);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .telemetry-orbit,
-  .telemetry-core,
-  .intro-telemetry {
-    animation: none;
-  }
-
-  .card-grid-enter-active,
-  .card-grid-leave-active,
-  .card-grid-move {
-    transition: none;
+  .featured-file__body {
+    padding: 22px;
   }
 }
 </style>

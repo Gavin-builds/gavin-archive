@@ -1,12 +1,14 @@
+import type { LocalizedText } from './content'
+
 export interface BlogPost {
   slug: string
-  title: string
-  description: string
+  title: LocalizedText
+  description: LocalizedText
   date: string
-  tags: string[]
+  tags: LocalizedText[]
   readTime: number
   type: 'ARTICLE' | 'DEVLOG' | 'NOTE'
-  content: string[]
+  content: LocalizedText[]
   relatedProjects?: string[]
   cover?: string
 }

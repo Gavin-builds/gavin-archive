@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
+import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 
-import type { Project } from '../../types/project'
-import ProjectStatus from './ProjectStatus.vue'
+import type { Project } from "../../types/project";
+import { localize } from "../../types/content";
+import ProjectStatus from "./ProjectStatus.vue";
 
-defineProps<{
-  project: Project
-}>()
+defineProps<{ project: Project }>();
 
-const { t } = useI18n()
+const { t, locale } = useI18n();
+const text = (value: { zh: string; en: string }) =>
+  localize(value, locale.value);
 </script>
 
 <template>
@@ -19,52 +21,40 @@ const { t } = useI18n()
     <RouterLink
       :to="`/archive/projects/${project.slug}`"
       class="project-card__media"
-      :aria-label="`${t('projects.open')} ${project.title}`"
     >
       <img
         v-if="project.cover"
         :src="project.cover"
-        :alt="`${project.title} visual`"
+        :alt="`${text(project.title)} visual`"
         loading="lazy"
       />
-
       <div class="project-card__media-overlay" />
       <span class="project-card__media-grid" />
-
       <div class="project-card__media-hud">
-        <span>PROJECT // {{ project.date }}</span>
-        <span>{{ project.featured ? 'FEATURED' : 'ARCHIVE' }}</span>
+        <span>CASE FILE // {{ project.date }}</span
+        ><span>{{ project.featured ? "FEATURED" : "ARCHIVE" }}</span>
       </div>
-
       <div class="project-card__media-corner">↗</div>
     </RouterLink>
-
     <div class="project-card__top">
-      <span class="project-card__index">
-        {{ t('projects.cardLabel') }} / {{ project.slug.toUpperCase() }}
-      </span>
-
-      <ProjectStatus :status="project.status" />
+      <span class="project-card__index"
+        >CASE / {{ project.slug.toUpperCase() }}</span
+      ><ProjectStatus :status="project.status" />
     </div>
-
     <div class="project-card__body">
-      <h2>{{ project.title }}</h2>
-      <p>{{ project.description }}</p>
+      <h2>{{ text(project.title) }}</h2>
+      <p>{{ text(project.description) }}</p>
     </div>
-
     <div class="project-card__tags">
-      <span v-for="tag in project.tags" :key="tag">{{ tag }}</span>
+      <span v-for="tag in project.tags" :key="tag.en">{{ text(tag) }}</span>
     </div>
-
     <div class="project-card__bottom">
-      <span>SYS / {{ project.date }}</span>
-
-      <RouterLink
+      <span>SYS / {{ project.date }}</span
+      ><RouterLink
         :to="`/archive/projects/${project.slug}`"
         class="project-card__link"
+        >{{ t("projects.open") }}</RouterLink
       >
-        {{ t('projects.open') }} →
-      </RouterLink>
     </div>
   </article>
 </template>
@@ -72,102 +62,110 @@ const { t } = useI18n()
 <style scoped>
 .project-card {
   position: relative;
-  min-height: 590px;
+  min-height: 620px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--line);
   background: var(--surface);
   isolation: isolate;
-  animation: archive-rise 560ms cubic-bezier(.2,.75,.25,1) both;
+  animation: archive-rise 560ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
   transition:
     transform var(--transition-normal),
     border-color var(--transition-normal),
     box-shadow var(--transition-normal);
 }
-
 .project-card::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(circle at 80% 12%, rgba(var(--accent-rgb),.08), transparent 24%),
-    linear-gradient(135deg, rgba(var(--ink-rgb),.02), transparent 44%);
+    radial-gradient(
+      circle at 80% 12%,
+      rgba(var(--accent-rgb), 0.08),
+      transparent 24%
+    ),
+    linear-gradient(135deg, rgba(var(--ink-rgb), 0.02), transparent 44%);
   pointer-events: none;
 }
-
 .project-card--pink::after {
   background:
-    radial-gradient(circle at 80% 12%, rgba(var(--pink-rgb),.08), transparent 24%),
-    linear-gradient(135deg, rgba(var(--ink-rgb),.02), transparent 44%);
+    radial-gradient(
+      circle at 80% 12%,
+      rgba(var(--pink-rgb), 0.08),
+      transparent 24%
+    ),
+    linear-gradient(135deg, rgba(var(--ink-rgb), 0.02), transparent 44%);
 }
-
 .project-card--purple::after {
   background:
-    radial-gradient(circle at 80% 12%, rgba(var(--purple-rgb),.10), transparent 24%),
-    linear-gradient(135deg, rgba(var(--ink-rgb),.02), transparent 44%);
+    radial-gradient(
+      circle at 80% 12%,
+      rgba(var(--purple-rgb), 0.1),
+      transparent 24%
+    ),
+    linear-gradient(135deg, rgba(var(--ink-rgb), 0.02), transparent 44%);
 }
-
 .project-card:hover {
   transform: translateY(-7px);
   border-color: var(--accent-line);
   box-shadow: var(--shadow);
 }
-
 .project-card__media {
   position: relative;
   display: block;
-  height: 260px;
+  height: 280px;
   overflow: hidden;
   border-bottom: 1px solid var(--line);
   background: var(--media-bg);
   text-decoration: none;
 }
-
 .project-card__media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: .88;
+  opacity: 0.88;
   transform: scale(1.01);
-  transition: transform 700ms cubic-bezier(.2,.7,.2,1), opacity 400ms ease;
+  transition:
+    transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity 400ms ease;
 }
-
 .project-card:hover .project-card__media img {
   transform: scale(1.08);
   opacity: 1;
 }
-
 .project-card__media-overlay {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(to bottom, rgba(4,5,10,.05), rgba(4,5,10,.25) 40%, rgba(4,5,10,.82)),
-    linear-gradient(90deg, transparent 0 65%, rgba(var(--accent-rgb),.07));
+    linear-gradient(
+      to bottom,
+      rgba(4, 5, 10, 0.05),
+      rgba(4, 5, 10, 0.25) 40%,
+      rgba(4, 5, 10, 0.82)
+    ),
+    linear-gradient(90deg, transparent 0 65%, rgba(var(--accent-rgb), 0.07));
 }
-
 .project-card__media-grid {
   position: absolute;
   inset: 0;
-  opacity: .25;
+  opacity: 0.25;
   background-image:
-    linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   background-size: 24px 24px;
   mask-image: linear-gradient(to bottom, black, transparent 80%);
   pointer-events: none;
 }
-
 .project-card__media-hud,
 .project-card__media-corner {
   position: absolute;
   z-index: 2;
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  letter-spacing: .12em;
+  letter-spacing: 0.12em;
 }
-
 .project-card__media-hud {
   left: 16px;
   right: 16px;
@@ -175,13 +173,11 @@ const { t } = useI18n()
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  color: rgba(244,247,255,.72);
+  color: rgba(244, 247, 255, 0.72);
 }
-
 .project-card__media-hud span:first-child {
   color: var(--accent);
 }
-
 .project-card__media-corner {
   top: 14px;
   right: 14px;
@@ -189,19 +185,20 @@ const { t } = useI18n()
   height: 28px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(255,255,255,.2);
-  background: rgba(5,5,10,.34);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(5, 5, 10, 0.34);
   color: var(--text);
   backdrop-filter: blur(8px);
-  transition: transform var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
 }
-
 .project-card:hover .project-card__media-corner {
   transform: translate(2px, -2px);
   border-color: var(--accent-line);
   color: var(--accent);
 }
-
 .project-card__top,
 .project-card__body,
 .project-card__tags,
@@ -209,7 +206,6 @@ const { t } = useI18n()
   padding-left: 22px;
   padding-right: 22px;
 }
-
 .project-card__top {
   display: flex;
   justify-content: space-between;
@@ -217,29 +213,25 @@ const { t } = useI18n()
   gap: 20px;
   padding-top: 18px;
 }
-
 .project-card__index {
   color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  letter-spacing: .12em;
+  letter-spacing: 0.12em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .project-card__body {
-  margin-top: 30px;
+  margin-top: 26px;
 }
-
 .project-card h2 {
   margin: 0;
   color: var(--text);
-  font-size: clamp(26px, 3vw, 34px);
-  line-height: 1.06;
-  letter-spacing: -.04em;
+  font-size: clamp(28px, 3vw, 38px);
+  line-height: 1.03;
+  letter-spacing: -0.04em;
 }
-
 .project-card p {
   max-width: 540px;
   margin: 14px 0 0;
@@ -247,14 +239,12 @@ const { t } = useI18n()
   font-size: var(--fs-body);
   line-height: 1.75;
 }
-
 .project-card__tags {
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
   margin-top: 20px;
 }
-
 .project-card__tags span {
   padding: 5px 8px;
   border: 1px solid var(--line);
@@ -262,60 +252,43 @@ const { t } = useI18n()
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
 }
-
 .project-card__bottom {
-  margin-top: auto;
-  padding-top: 24px;
-  padding-bottom: 22px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 16px;
+  margin-top: auto;
+  padding-top: 26px;
+  padding-bottom: 20px;
+  border-top: 1px solid var(--line);
   color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
 }
-
 .project-card__link {
   color: var(--accent);
-  font-size: var(--fs-sm);
   text-decoration: none;
 }
-
 .project-card__link:hover {
   text-shadow: var(--glow-cyan);
 }
-
 @keyframes archive-rise {
-  from { opacity: 0; transform: translateY(18px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
-
-@media (max-width: 640px) {
+@media (max-width: 760px) {
   .project-card {
     min-height: 0;
   }
-
   .project-card__media {
-    height: 210px;
-  }
-
-  .project-card__top,
-  .project-card__body,
-  .project-card__tags,
-  .project-card__bottom {
-    padding-left: 18px;
-    padding-right: 18px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .project-card,
-  .project-card__media img,
-  .project-card__media-corner {
-    animation: none;
-    transition: none;
+    height: 230px;
   }
 }
 </style>

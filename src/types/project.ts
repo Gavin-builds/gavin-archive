@@ -1,3 +1,5 @@
+import type { LocalizedText } from './content'
+
 export type ProjectStatus =
   | 'IDEA'
   | 'PROTOTYPE'
@@ -15,44 +17,36 @@ export type ProjectCategory =
 
 export interface Project {
   slug: string
-
-  title: string
-
-  description: string
-
+  title: LocalizedText
+  description: LocalizedText
   status: ProjectStatus
-
   categories: ProjectCategory[]
-
-  tags: string[]
-
+  tags: LocalizedText[]
   stack: string[]
-
   featured: boolean
-
   github?: string
-
   demo?: string
-
   cover?: string
   accent?: 'cyan' | 'pink' | 'purple'
-
   date: string
-
-  problem?: string
-
-  solution?: string
-
-  features?: string[]
-
+  context?: LocalizedText
+  role?: LocalizedText
+  problem?: LocalizedText
+  solution?: LocalizedText
+  features?: LocalizedText[]
   architecture?: {
-    label: string
-    description?: string
+    label: LocalizedText
+    description?: LocalizedText
   }[]
-
   developmentLog?: {
     date: string
-    title: string
-    description: string
+    title: LocalizedText
+    description: LocalizedText
   }[]
+  engineeringChallenges?: {
+    title: LocalizedText
+    problem: LocalizedText
+    solution: LocalizedText
+  }[]
+  highlights?: LocalizedText[]
 }

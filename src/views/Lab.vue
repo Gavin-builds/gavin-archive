@@ -1,330 +1,398 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
+import ArchiveDrawer from "../components/archive/ArchiveDrawer.vue";
+import { labExperiments } from "../data/lab";
+import type { LabExperiment, LabStatus } from "../types/lab";
+import { localize } from "../types/content";
 
-import { labExperiments } from '../data/lab'
-import type { LabStatus } from '../types/lab'
-
-const { t } = useI18n()
-
-type Filter = 'ALL' | LabStatus
-const filter = ref<Filter>('ALL')
-
-const filters: Filter[] = ['ALL', 'EXPERIMENT', 'TESTING', 'PROMISING', 'PAUSED', 'FAILED', 'ARCHIVED']
-
-const filteredExperiments = computed(() => {
-  if (filter.value === 'ALL') return labExperiments
-  return labExperiments.filter(item => item.status === filter.value)
-})
+const { t, locale } = useI18n();
+type Filter = "ALL" | LabStatus;
+const filter = ref<Filter>("ALL");
+const selected = ref<LabExperiment | null>(null);
+const filters: Filter[] = [
+  "ALL",
+  "EXPERIMENT",
+  "TESTING",
+  "PROMISING",
+  "PAUSED",
+  "FAILED",
+  "ARCHIVED",
+];
+const text = (value: { zh: string; en: string }) =>
+  localize(value, locale.value);
+const filteredExperiments = computed(() =>
+  filter.value === "ALL"
+    ? labExperiments
+    : labExperiments.filter((item) => item.status === filter.value),
+);
 </script>
 
 <template>
   <section class="lab">
-    <div class="lab__hero">
-      <div class="lab__copy">
-        <div class="eyebrow">/ 03 EXPERIMENTAL LAB</div>
-        <h1>{{ t('lab.title') }}</h1>
-        <p>{{ t('lab.description') }}</p>
+    <header class="lab-hero">
+      <div>
+        <div class="eyebrow">/ 03 RESEARCH NOTEBOOK</div>
+        <h1>{{ locale.startsWith("zh") ? "实验记录" : "EXPERIMENTAL LAB" }}</h1>
+        <p>
+          {{ locale.startsWith('zh') ? "Ideas don't need to work. 这里记录正在验证、尚未成熟或最终可能失败的东西。" : "Ideas don’t need to work. This is where unfinished, uncertain and experimental ideas are recorded." }}
+        </p>
       </div>
-
-      <div class="lab__console" aria-hidden="true">
-        <div class="console-line"><span>LAB.RUNTIME</span><strong>ACTIVE</strong></div>
-        <div class="console-line"><span>CHANNELS</span><strong>03</strong></div>
-        <div class="console-line"><span>STATE</span><strong>OBSERVE → ITERATE</strong></div>
-        <div class="console-screen">
-          <span v-for="n in 9" :key="n" :style="{ '--i': n }" />
-        </div>
+      <div class="lab-runtime">
+        <span>LAB.RUNTIME</span><strong>ACTIVE</strong><i></i
+        ><small>OBSERVE → ITERATE → ARCHIVE</small>
       </div>
-    </div>
+    </header>
 
-    <div class="lab__toolbar">
-      <span>FILTER / {{ filter }}</span>
-      <div class="filters">
+    <div class="lab-index">
+      <span>NOTEBOOK / {{ filter }}</span>
+      <div>
         <button
           v-for="item in filters"
           :key="item"
           :class="{ active: filter === item }"
+          type="button"
           @click="filter = item"
         >
-          {{ item === 'ALL' ? t('lab.all') : t(`lab.status.${item}`) }}
+          {{ item === "ALL" ? t("lab.all") : t(`lab.status.${item}`) }}
         </button>
       </div>
     </div>
 
-    <TransitionGroup name="lab-list" tag="div" class="lab__grid">
+    <div class="experiment-list">
       <article
         v-for="(experiment, index) in filteredExperiments"
         :key="experiment.slug"
-        class="lab-card"
+        class="experiment"
+        @click="selected = experiment"
       >
-        <RouterLink
-          :to="experiment.relatedProject ? `/archive/projects/${experiment.relatedProject}` : '/archive/lab'"
-          class="lab-card__media"
-        >
-          <img v-if="experiment.cover" :src="experiment.cover" :alt="`${experiment.title} visual`" loading="lazy" />
-          <div class="lab-card__media-glitch" />
-          <div class="lab-card__index">0{{ index + 1 }}</div>
-          <div class="lab-card__status" :class="`status--${experiment.status.toLowerCase()}`">
-            ● {{ t(`lab.status.${experiment.status}`) }}
+        <div class="experiment__index">
+          EXP / {{ String(index + 1).padStart(2, "0") }}
+        </div>
+        <div class="experiment__main">
+          <div class="experiment__meta">
+            <span>{{ experiment.date }}</span
+            ><span>{{ t(`lab.status.${experiment.status}`) }}</span>
           </div>
-        </RouterLink>
-
-        <div class="lab-card__body">
-          <div class="lab-card__date">LAB / {{ experiment.date }}</div>
-          <h2>{{ experiment.title }}</h2>
-          <p>{{ experiment.description }}</p>
-
+          <h2>{{ text(experiment.title) }}</h2>
+          <p>{{ text(experiment.description) }}</p>
           <div class="tags">
-            <span v-for="tag in experiment.tags" :key="tag">{{ tag }}</span>
+            <span v-for="tag in experiment.tags" :key="tag.en">{{
+              text(tag)
+            }}</span>
           </div>
-
-          <RouterLink
-            v-if="experiment.relatedProject"
-            :to="`/archive/projects/${experiment.relatedProject}`"
-            class="related"
-          >
-            {{ t('lab.relatedProject') }} →
-          </RouterLink>
+        </div>
+        <div class="experiment__signal">
+          <span>STATUS</span><strong>{{ experiment.status }}</strong
+          ><b>OPEN ↗</b>
         </div>
       </article>
-    </TransitionGroup>
-
-    <div v-if="filteredExperiments.length === 0" class="empty">
-      <span>NO EXPERIMENTS / 0 RESULTS</span>
-      <strong>{{ t('lab.empty') }}</strong>
     </div>
+
+    <div v-if="!filteredExperiments.length" class="empty">
+      NO EXPERIMENTS / 0 RESULTS
+    </div>
+
+    <ArchiveDrawer
+      v-if="selected"
+      :open="!!selected"
+      eyebrow="LAB NOTE"
+      :title="text(selected.title)"
+      :meta="selected.date"
+      @close="selected = null"
+    >
+      <div class="lab-drawer-section" v-if="selected.question">
+        <span>QUESTION</span>
+        <p>{{ text(selected.question) }}</p>
+      </div>
+      <div class="lab-drawer-section" v-if="selected.hypothesis">
+        <span>HYPOTHESIS</span>
+        <p>{{ text(selected.hypothesis) }}</p>
+      </div>
+      <div class="lab-drawer-section" v-if="selected.observation">
+        <span>OBSERVATION</span>
+        <p>{{ text(selected.observation) }}</p>
+      </div>
+      <div class="lab-drawer-section" v-if="selected.conclusion">
+        <span>CONCLUSION</span>
+        <p>{{ text(selected.conclusion) }}</p>
+      </div>
+      <RouterLink
+        v-if="selected.relatedProject"
+        class="lab-link"
+        :to="`/archive/projects/${selected.relatedProject}`"
+        @click="selected = null"
+        >{{
+          locale.startsWith("zh") ? "查看关联项目" : "OPEN RELATED CASE"
+        }}
+        →</RouterLink
+      >
+    </ArchiveDrawer>
   </section>
 </template>
 
 <style scoped>
-.lab__hero {
+.lab-hero {
+  min-height: 300px;
   display: grid;
-  grid-template-columns: minmax(0,1fr) 320px;
-  gap: 50px;
-  min-height: 340px;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 48px;
   padding-bottom: 40px;
   border-bottom: 1px solid var(--line);
 }
-
 .eyebrow,
-.lab__toolbar > span,
-.lab-card__date {
-  color: var(--accent);
+.lab-index,
+.experiment__index,
+.experiment__meta,
+.experiment__signal,
+.lab-drawer-section > span {
   font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  letter-spacing: .16em;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.13em;
 }
-
-h1 {
+.eyebrow {
+  color: var(--accent);
+}
+.lab h1 {
   margin: 14px 0 0;
   font-size: clamp(58px, 8vw, 104px);
-  line-height: .9;
-  letter-spacing: -.07em;
+  line-height: 0.9;
+  letter-spacing: -0.07em;
 }
-
-.lab__copy p {
-  max-width: 640px;
+.lab-hero p {
+  max-width: 680px;
   margin: 24px 0 0;
   color: var(--text-secondary);
   font-size: var(--fs-xl);
-  line-height: 1.7;
+  line-height: 1.75;
 }
-
-.lab__console {
-  align-self: stretch;
+.lab-runtime {
+  align-self: end;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
   padding: 18px;
   border: 1px solid var(--line);
-  background: linear-gradient(145deg, rgba(var(--accent-rgb),.03), rgba(var(--purple-rgb),.02)), var(--surface);
-  box-shadow: inset 0 0 40px rgba(var(--accent-rgb),.025);
-}
-
-.console-line {
-  display: flex;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--line);
+  background: var(--surface);
   font-family: var(--font-mono);
+}
+.lab-runtime span,
+.lab-runtime small {
+  color: var(--text-muted);
   font-size: var(--fs-xs);
 }
-
-.console-line span { color: var(--text-muted); }
-.console-line strong { color: var(--accent); font-weight: 500; text-align: right; }
-
-.console-screen {
-  position: relative;
-  height: 140px;
-  margin-top: 16px;
-  overflow: hidden;
+.lab-runtime strong {
+  color: var(--accent);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+}
+.lab-runtime i {
+  grid-column: 1/-1;
+  height: 100px;
   border: 1px solid var(--line);
   background:
-    linear-gradient(180deg, rgba(var(--accent-rgb),.05), transparent),
-    repeating-linear-gradient(0deg, rgba(var(--ink-rgb),.025) 0 1px, transparent 1px 6px);
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 18px,
+      rgba(var(--accent-rgb), 0.06) 19px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 18px,
+      rgba(var(--accent-rgb), 0.06) 19px
+    );
+  position: relative;
+  overflow: hidden;
 }
-
-.console-screen::after {
-  content: '';
+.lab-runtime i::after {
+  content: "";
   position: absolute;
-  inset: 0;
-  background: linear-gradient(120deg, transparent 20%, rgba(var(--accent-rgb),.12) 50%, transparent 80%);
-  transform: translateX(-100%);
-  animation: scanner 4s ease-in-out infinite;
+  inset: -50% 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(var(--accent-rgb), 0.18),
+    transparent
+  );
+  transform: translateX(-80%) rotate(12deg);
+  animation: lab-scan 3.6s ease-in-out infinite;
 }
-
-.console-screen span {
-  position: absolute;
-  left: calc(8% + var(--i) * 9%);
-  bottom: calc(12% + (var(--i) * 7%));
-  width: 2px;
-  height: calc(18px + var(--i) * 8px);
-  background: linear-gradient(to top, rgba(var(--accent-rgb),.12), var(--accent));
-  box-shadow: 0 0 14px rgba(var(--accent-rgb),.18);
-  animation: bar 2.2s ease-in-out infinite alternate;
-  animation-delay: calc(var(--i) * -120ms);
-}
-
-.lab__toolbar {
+.lab-index {
   display: flex;
   justify-content: space-between;
-  gap: 20px;
+  gap: 16px;
   align-items: center;
   padding: 22px 0;
 }
-
-.filters { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
-
-.filters button {
-  padding: 9px 12px;
+.lab-index > span {
+  color: var(--accent);
+}
+.lab-index > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px;
+}
+.lab-index button {
+  padding: 8px 10px;
   border: 1px solid var(--line);
   background: var(--control-bg);
   color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
+  font: inherit;
   cursor: pointer;
-  transition: color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), background var(--transition-fast);
 }
-
-.filters button:hover,
-.filters button.active {
+.lab-index button.active,
+.lab-index button:hover {
   color: var(--accent);
   border-color: var(--accent-line);
   background: var(--accent-soft);
 }
-
-.filters button:hover { transform: translateY(-1px); }
-
-.lab__grid {
+.experiment-list {
+  border-top: 1px solid var(--line);
+}
+.experiment {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0,1fr));
-  gap: 16px;
-}
-
-.lab-card {
-  overflow: hidden;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  animation: archive-rise 560ms cubic-bezier(.2,.75,.25,1) both;
-  transition: transform var(--transition-normal), border-color var(--transition-normal), box-shadow var(--transition-normal);
-}
-
-.lab-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--accent-line);
-  box-shadow: var(--shadow);
-}
-
-.lab-card__media {
-  position: relative;
-  display: block;
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
+  grid-template-columns: 90px minmax(0, 1fr) 150px;
+  gap: 28px;
+  padding: 26px 0;
   border-bottom: 1px solid var(--line);
-  background: var(--media-bg);
+  cursor: pointer;
+  transition:
+    padding var(--transition-normal),
+    background var(--transition-normal);
 }
-
-.lab-card__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: .82;
-  transition: transform 600ms ease, opacity 400ms ease;
+.experiment:hover {
+  padding-left: 12px;
+  padding-right: 12px;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--accent-rgb), 0.035),
+    transparent 70%
+  );
 }
-
-.lab-card:hover .lab-card__media img {
-  transform: scale(1.06);
-  opacity: 1;
+.experiment__index {
+  color: var(--text-muted);
 }
-
-.lab-card__media-glitch {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,.6)), repeating-linear-gradient(0deg, transparent 0 5px, rgba(255,255,255,.025) 6px);
-  pointer-events: none;
+.experiment__meta {
+  display: flex;
+  gap: 16px;
+  color: var(--text-muted);
 }
-
-.lab-card__index,
-.lab-card__status {
-  position: absolute;
-  z-index: 2;
-  top: 12px;
-  padding: 6px 8px;
-  border: 1px solid rgba(255,255,255,.14);
-  background: rgba(5,5,10,.48);
-  backdrop-filter: blur(8px);
+.experiment__meta span:last-child {
+  color: var(--accent-secondary);
+}
+.experiment h2 {
+  margin: 12px 0 0;
+  font-size: clamp(25px, 3vw, 38px);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+.experiment p {
+  max-width: 760px;
+  margin: 12px 0 0;
+  color: var(--text-secondary);
+  line-height: 1.75;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 16px;
+}
+.tags span {
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  letter-spacing: .08em;
 }
-
-.lab-card__index { left: 12px; color: var(--text-muted); }
-.lab-card__status { right: 12px; }
-
-.status--experiment,
-.status--testing { color: var(--accent); }
-.status--promising { color: var(--accent-secondary); }
-.status--failed { color: var(--danger); }
-.status--paused,
-.status--archived { color: var(--text-muted); }
-
-.lab-card__body { padding: 20px; }
-.lab-card__date { color: var(--text-muted); font-size: var(--fs-xs); }
-.lab-card h2 { margin: 12px 0 0; font-size: 25px; line-height: 1.12; letter-spacing: -.03em; }
-.lab-card p { margin: 12px 0 0; color: var(--text-secondary); font-size: var(--fs-body); line-height: 1.75; }
-
-.tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 18px; }
-.tags span { padding: 5px 8px; border: 1px solid var(--line); color: var(--text-muted); font-family: var(--font-mono); font-size: var(--fs-xs); }
-.related { display: inline-block; margin-top: 22px; color: var(--accent); font-family: var(--font-mono); font-size: var(--fs-sm); text-decoration: none; }
-.related:hover { text-shadow: var(--glow-cyan); }
-
-.empty { padding: 60px 0; text-align: center; font-family: var(--font-mono); border: 1px dashed var(--line); }
-.empty span { display: block; color: var(--text-muted); font-size: var(--fs-sm); }
-.empty strong { display: block; margin-top: 8px; color: var(--accent); font-size: var(--fs-body); }
-
-.lab-list-enter-active,
-.lab-list-leave-active,
-.lab-list-move { transition: all 360ms cubic-bezier(.2,.7,.2,1); }
-.lab-list-enter-from,
-.lab-list-leave-to { opacity: 0; transform: translateY(20px) scale(.985); }
-
-@keyframes archive-rise { from { opacity: 0; transform: translateY(18px); } to { opacity:1; transform:none; } }
-@keyframes scanner { 0%,20% { transform:translateX(-100%); } 60%,100% { transform:translateX(100%); } }
-@keyframes bar { from { transform: scaleY(.55); opacity:.45; } to { transform: scaleY(1.15); opacity:1; } }
-
-@media (max-width: 1050px) { .lab__grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
-@media (max-width: 900px) {
-  .lab__hero { grid-template-columns: 1fr; }
-  .lab__console { min-height: 220px; }
-  .lab__toolbar { align-items:flex-start; flex-direction:column; }
-  .filters { justify-content:flex-start; }
+.experiment__signal {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-left: 1px solid var(--line);
+  padding-left: 18px;
+  color: var(--text-muted);
 }
-@media (max-width: 640px) { .lab__grid { grid-template-columns: 1fr; } }
-
-@media (prefers-reduced-motion: reduce) {
-  .console-screen::after,
-  .console-screen span,
-  .lab-card,
-  .lab-list-enter-active,
-  .lab-list-leave-active,
-  .lab-list-move { animation:none; transition:none; }
+.experiment__signal strong {
+  color: var(--accent);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+.experiment__signal b {
+  color: var(--accent);
+  font-weight: 500;
+}
+.empty {
+  padding: 60px;
+  border: 1px dashed var(--line);
+  text-align: center;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+.lab-drawer-section {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+.lab-drawer-section > span {
+  color: var(--accent);
+}
+.lab-drawer-section p {
+  margin: 12px 0 0;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+.lab-link {
+  display: inline-block;
+  margin-top: 22px;
+  padding: 10px 12px;
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  text-decoration: none;
+}
+@keyframes lab-scan {
+  0%,
+  20% {
+    transform: translateX(-80%) rotate(12deg);
+  }
+  65%,
+  100% {
+    transform: translateX(80%) rotate(12deg);
+  }
+}
+@media (max-width: 850px) {
+  .lab-hero {
+    grid-template-columns: 1fr;
+  }
+  .experiment {
+    grid-template-columns: 70px 1fr;
+  }
+  .experiment__signal {
+    display: none;
+  }
+}
+@media (max-width: 620px) {
+  .lab-index {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .lab-index > div {
+    justify-content: flex-start;
+  }
+  .experiment {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .experiment__index {
+    order: 0;
+  }
+  .experiment__main {
+    order: 1;
+  }
 }
 </style>

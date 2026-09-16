@@ -1,3 +1,5 @@
+import type { LocalizedText } from './content'
+
 export type LabStatus =
   | 'EXPERIMENT'
   | 'TESTING'
@@ -8,11 +10,15 @@ export type LabStatus =
 
 export interface LabExperiment {
   slug: string
-  title: string
-  description: string
+  title: LocalizedText
+  description: LocalizedText
   status: LabStatus
-  tags: string[]
+  tags: LocalizedText[]
   date: string
   cover?: string
   relatedProject?: string
+  hypothesis?: LocalizedText
+  question?: LocalizedText
+  observation?: LocalizedText
+  conclusion?: LocalizedText
 }

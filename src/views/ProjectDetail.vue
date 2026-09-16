@@ -1,619 +1,453 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { useI18n } from 'vue-i18n'
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
+import ProjectStatus from "../components/projects/ProjectStatus.vue";
+import { getProjectBySlug } from "../data/projects";
+import { localize } from "../types/content";
 
-import ProjectStatus from '../components/projects/ProjectStatus.vue'
-
-import {
-  getProjectBySlug,
-} from '../data/projects'
-
-const route = useRoute()
-
-const { t } = useI18n()
-
-const project = computed(() => {
-  const slug = route.params.slug
-
-  if (typeof slug !== 'string') {
-    return undefined
-  }
-
-  return getProjectBySlug(slug)
-})
+const route = useRoute();
+const { t, locale } = useI18n();
+const project = computed(() =>
+  typeof route.params.slug === "string"
+    ? getProjectBySlug(route.params.slug)
+    : undefined,
+);
+const text = (value: { zh: string; en: string }) =>
+  localize(value, locale.value);
 </script>
 
 <template>
-  <section
-    v-if="project"
-    class="project-detail"
-  >
-    <RouterLink
-      to="/archive/projects"
-      class="back"
-    >
-      {{ t('projects.backToList') }}
-    </RouterLink>
-
-    <header class="project-detail__hero">
-      <div class="eyebrow">
-        PROJECT / {{ project.date }}
+  <section v-if="project" class="case-detail">
+    <RouterLink to="/archive/projects" class="back">{{
+      t("projects.backToList")
+    }}</RouterLink>
+    <header class="case-hero">
+      <div class="eyebrow">CASE FILE / {{ project.date }}</div>
+      <div class="case-hero__top">
+        <h1>{{ text(project.title) }}</h1>
+        <ProjectStatus :status="project.status" />
       </div>
-
-      <div class="title-row">
-        <h1>
-          {{ project.title }}
-        </h1>
-
-        <ProjectStatus
-          :status="project.status"
-        />
+      <p>{{ text(project.description) }}</p>
+      <div class="case-cover" v-if="project.cover">
+        <img :src="project.cover" :alt="text(project.title)" />
+        <div />
+        <span>CASE VISUAL / {{ project.date }}</span>
       </div>
-
-      <p class="description">
-        {{ project.description }}
-      </p>
-
-      <div v-if="project.cover" class="project-cover">
-        <img :src="project.cover" :alt="`${project.title} visual`" />
-        <div class="project-cover__scan" />
-        <span>VISUAL NODE / {{ project.date }}</span>
-      </div>
-
-      <div class="actions">
+      <div class="case-actions">
         <a
           v-if="project.github"
           :href="project.github"
           target="_blank"
           rel="noreferrer"
-        >
-          {{ t('projects.github') }} ↗
-        </a>
-
-        <a
+          >{{ t("projects.github") }} ↗</a
+        ><a
           v-if="project.demo"
           :href="project.demo"
           target="_blank"
           rel="noreferrer"
+          >{{ t("projects.demo") }} ↗</a
         >
-          {{ t('projects.demo') }} ↗
-        </a>
       </div>
     </header>
 
-    <div class="project-detail__layout">
+    <div class="case-layout">
       <main>
         <section
-          v-if="project.problem"
-          class="content-section"
+          v-if="project.context"
+          class="record-section record-section--context"
         >
-          <div class="section-label">
-            01 / {{ t('projects.problem') }}
+          <span>00 / CONTEXT</span>
+          <p>{{ text(project.context) }}</p>
+          <div class="context-role">
+            <b>{{ locale.startsWith("zh") ? "角色" : "ROLE" }}</b
+            ><strong>{{ text(project.role ?? { zh: "", en: "" }) }}</strong>
           </div>
-
-          <p>
-            {{ project.problem }}
-          </p>
         </section>
-
-        <section
-          v-if="project.solution"
-          class="content-section"
-        >
-          <div class="section-label">
-            02 / {{ t('projects.solution') }}
-          </div>
-
-          <p>
-            {{ project.solution }}
-          </p>
+        <section v-if="project.problem" class="record-section">
+          <span>01 / {{ t("projects.problem") }}</span>
+          <p>{{ text(project.problem) }}</p>
         </section>
-
-        <section
-          v-if="project.features?.length"
-          class="content-section"
-        >
-          <div class="section-label">
-            03 / {{ t('projects.features') }}
-          </div>
-
-          <ul>
-            <li
-              v-for="feature in project.features"
-              :key="feature"
-            >
-              {{ feature }}
-            </li>
-          </ul>
+        <section v-if="project.solution" class="record-section">
+          <span>02 / {{ t("projects.solution") }}</span>
+          <p>{{ text(project.solution) }}</p>
         </section>
-
-        <section
-          v-if="project.architecture?.length"
-          class="content-section"
-        >
-          <div class="section-label">
-            04 / {{ t('projects.architecture') }}
+        <section v-if="project.features?.length" class="record-section">
+          <span>03 / {{ t("projects.features") }}</span>
+          <div class="feature-list">
+            <div v-for="(feature, index) in project.features" :key="feature.en">
+              <i>{{ String(index + 1).padStart(2, "0") }}</i
+              ><strong>{{ text(feature) }}</strong>
+            </div>
           </div>
-
+        </section>
+        <section v-if="project.architecture?.length" class="record-section">
+          <span>04 / {{ t("projects.architecture") }}</span>
           <div class="architecture">
             <template
               v-for="(node, index) in project.architecture"
-              :key="node.label"
-            >
-              <div class="architecture__node">
-                <strong>
-                  {{ node.label }}
-                </strong>
-
-                <span v-if="node.description">
-                  {{ node.description }}
-                </span>
+              :key="node.label.en"
+              ><div class="architecture__node">
+                <strong>{{ text(node.label) }}</strong
+                ><small v-if="node.description">{{
+                  text(node.description)
+                }}</small>
               </div>
-
               <div
-                v-if="
-                  index <
-                  project.architecture.length - 1
-                "
+                v-if="index < project.architecture.length - 1"
                 class="architecture__arrow"
               >
                 ↓
-              </div>
-            </template>
+              </div></template
+            >
           </div>
         </section>
-
         <section
-          v-if="project.developmentLog?.length"
-          class="content-section"
+          v-if="project.engineeringChallenges?.length"
+          class="record-section"
         >
-          <div class="section-label">
-            05 / {{ t('projects.developmentLog') }}
+          <span>05 / ENGINEERING NOTES</span>
+          <div class="challenge-grid">
+            <article
+              v-for="(item, index) in project.engineeringChallenges"
+              :key="item.title.en"
+            >
+              <small>NOTE / {{ String(index + 1).padStart(2, "0") }}</small>
+              <h3>{{ text(item.title) }}</h3>
+              <p><b>PROBLEM</b>{{ text(item.problem) }}</p>
+              <p><b>SOLUTION</b>{{ text(item.solution) }}</p>
+            </article>
           </div>
-
+        </section>
+        <section v-if="project.developmentLog?.length" class="record-section">
+          <span>06 / {{ t("projects.developmentLog") }}</span>
           <div class="timeline">
             <article
               v-for="item in project.developmentLog"
-              :key="
-                `${item.date}-${item.title}`
-              "
-              class="timeline__item"
+              :key="item.date + item.title.en"
             >
-              <span>
-                {{ item.date }}
-              </span>
-
+              <time>{{ item.date }}</time>
               <div>
-                <h3>
-                  {{ item.title }}
-                </h3>
-
-                <p>
-                  {{ item.description }}
-                </p>
+                <h3>{{ text(item.title) }}</h3>
+                <p>{{ text(item.description) }}</p>
               </div>
             </article>
           </div>
         </section>
       </main>
-
-      <aside class="project-meta">
+      <aside class="meta-panel">
         <div>
-          <span>{{ t('projects.stack') }}</span>
-
-          <div class="stack">
-            <span
-              v-for="item in project.stack"
-              :key="item"
-            >
-              {{ item }}
-            </span>
-          </div>
+          <span>{{ t("projects.stack") }}</span>
+          <p v-for="item in project.stack" :key="item">{{ item }}</p>
         </div>
-
         <div>
-          <span>{{ t('projects.tags') }}</span>
-
-          <div class="stack">
-            <span
-              v-for="tag in project.tags"
-              :key="tag"
-            >
-              {{ tag }}
-            </span>
-          </div>
+          <span>{{ t("projects.tags") }}</span>
+          <p v-for="tag in project.tags" :key="tag.en">{{ text(tag) }}</p>
+        </div>
+        <div v-if="project.highlights?.length">
+          <span>HIGHLIGHTS</span>
+          <p v-for="item in project.highlights" :key="item.en">
+            → {{ text(item) }}
+          </p>
         </div>
       </aside>
     </div>
   </section>
-
-  <section
-    v-else
-    class="not-found"
-  >
-    <div class="eyebrow">
-      {{ t('projects.notFoundError') }}
-    </div>
-
-    <h1>
-      {{ t('projects.notFound') }}
-    </h1>
-
-    <RouterLink to="/archive/projects">
-      {{ t('projects.backToList') }}
-    </RouterLink>
+  <section v-else class="not-found">
+    <div class="eyebrow">{{ t("projects.notFoundError") }}</div>
+    <h1>{{ t("projects.notFound") }}</h1>
+    <RouterLink to="/archive/projects">{{
+      t("projects.backToList")
+    }}</RouterLink>
   </section>
 </template>
 
 <style scoped>
-.back {
+.back,
+.not-found a {
   display: inline-block;
-
-  margin-bottom: 44px;
-  padding: 10px 14px;
-
+  padding: 10px 13px;
   border: 1px solid var(--accent-line);
   background: var(--accent-soft);
-
   color: var(--accent);
-
   font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-
+  font-size: var(--fs-xs);
   text-decoration: none;
   letter-spacing: 0.08em;
-
-  transition: box-shadow var(--transition-fast);
 }
-
-.back:hover {
-  box-shadow: var(--glow-cyan);
+.back {
+  margin-bottom: 42px;
 }
-
-.project-detail__hero {
-  padding-bottom: 54px;
-
-  border-bottom: 1px solid var(--line);
-}
-
 .eyebrow,
-.section-label {
+.record-section > span,
+.meta-panel > div > span {
   color: var(--accent);
-
   font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-
+  font-size: var(--fs-xs);
   letter-spacing: 0.14em;
 }
-
-.title-row {
+.case-hero {
+  padding-bottom: 54px;
+  border-bottom: 1px solid var(--line);
+}
+.case-hero__top {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-
-  gap: 24px;
-
+  gap: 22px;
   margin-top: 14px;
 }
-
-.title-row h1 {
+.case-hero h1 {
   margin: 0;
-
-  font-size: clamp(48px, 8vw, 100px);
-
-  line-height: 0.95;
-
-  letter-spacing: -0.065em;
+  font-size: clamp(52px, 8vw, 108px);
+  line-height: 0.9;
+  letter-spacing: -0.07em;
 }
-
-.description {
-  max-width: 760px;
-
-  margin: 28px 0 0;
-
+.case-hero > p {
+  max-width: 800px;
+  margin: 24px 0 0;
   color: var(--text-secondary);
-
-  font-size: var(--fs-2xl);
-  line-height: 1.7;
+  font-size: var(--fs-xl);
+  line-height: 1.75;
 }
-
-.project-cover {
+.case-cover {
   position: relative;
   height: min(460px, 42vw);
-  margin-top: 34px;
+  margin-top: 30px;
   overflow: hidden;
   border: 1px solid var(--line);
   background: var(--media-bg);
 }
-
-.project-cover img {
+.case-cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: .9;
-  animation: cover-enter 700ms ease both;
 }
-
-.project-cover__scan {
+.case-cover > div {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(to bottom, transparent 40%, rgba(0,0,0,.58)),
-    repeating-linear-gradient(0deg, transparent 0 5px, rgba(255,255,255,.018) 6px);
-  pointer-events: none;
+    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.72)),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 5px,
+      rgba(255, 255, 255, 0.02) 6px
+    );
 }
-
-.project-cover span {
+.case-cover span {
   position: absolute;
   left: 16px;
   bottom: 14px;
   color: var(--accent);
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  letter-spacing: .1em;
 }
-
-.actions {
+.case-actions {
   display: flex;
   gap: 10px;
-
-  margin-top: 28px;
+  margin-top: 24px;
 }
-
-.actions a {
-  padding: 10px 14px;
-
-  border: 1px solid var(--accent-line);
-
+.case-actions a {
+  padding: 10px 13px;
+  border: 1px solid var(--line);
   color: var(--accent);
-
   font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-
+  font-size: var(--fs-xs);
   text-decoration: none;
-
-  background: var(--accent-soft);
 }
-
-.project-detail__layout {
+.case-layout {
   display: grid;
-
-  grid-template-columns:
-    minmax(0, 1fr) 260px;
-
+  grid-template-columns: minmax(0, 1fr) 250px;
   gap: 80px;
-
-  padding-top: 56px;
+  padding-top: 54px;
 }
-
-.content-section {
-  padding-bottom: 64px;
+.record-section {
+  padding-bottom: 60px;
 }
-
-.content-section > p {
-  max-width: 780px;
-
+.record-section > p {
+  max-width: 800px;
   margin: 20px 0 0;
-
   color: var(--text-secondary);
-
   font-size: var(--fs-lg);
   line-height: 1.9;
 }
-
-.content-section ul {
-  margin: 20px 0 0;
-  padding: 0;
-
-  list-style: none;
-}
-
-.content-section li {
-  padding: 14px 0;
-
-  border-bottom: 1px solid var(--line);
-
-  color: var(--text-secondary);
-}
-
-.content-section li::before {
-  content: '→';
-
-  margin-right: 12px;
-
-  color: var(--accent);
-}
-
-.architecture {
-  margin-top: 22px;
-}
-
-.architecture__node {
-  display: flex;
-  flex-direction: column;
-
-  padding: 18px;
-
-  border: 1px solid var(--line);
-
-  background: var(--surface);
-}
-
-.architecture__node strong {
-  color: var(--text);
-}
-
-.architecture__node span {
-  margin-top: 6px;
-
-  color: var(--text-muted);
-
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-}
-
-.architecture__arrow {
-  padding: 7px;
-
-  color: var(--accent);
-
-  text-align: center;
-
-  font-family: var(--font-mono);
-}
-
-.project-meta {
-  display: flex;
-  flex-direction: column;
-
-  gap: 40px;
-}
-
-.project-meta > div > span {
-  display: block;
-
-  margin-bottom: 12px;
-
-  color: var(--text-muted);
-
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-
-  letter-spacing: 0.12em;
-}
-
-.stack {
-  display: flex;
-  flex-wrap: wrap;
-
-  gap: 7px;
-}
-
-.stack span {
-  padding: 6px 8px;
-
-  border: 1px solid var(--line);
-
-  color: var(--text-secondary);
-
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-}
-
-.timeline {
-  margin-top: 22px;
-}
-
-.timeline__item {
-  display: grid;
-
-  grid-template-columns: 90px 1fr;
-
-  gap: 20px;
-
-  padding: 20px 0;
-
-  border-bottom: 1px solid var(--line);
-}
-
-.timeline__item > span {
-  color: var(--accent);
-
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-}
-
-.timeline h3 {
-  margin: 0;
-
-  font-size: var(--fs-xl);
-}
-
-.timeline p {
-  margin: 8px 0 0;
-
-  color: var(--text-secondary);
-
-  line-height: 1.7;
-}
-
-.not-found h1 {
-  margin: 20px 0 30px;
-
-  font-size: clamp(42px, 7vw, 90px);
-
-  letter-spacing: -0.05em;
-}
-
-.not-found a {
-  display: inline-block;
-
-  padding: 10px 14px;
-
+.record-section--context {
+  padding: 22px;
   border: 1px solid var(--accent-line);
   background: var(--accent-soft);
-
-  color: var(--accent);
-
+}
+.record-section--context > p {
+  margin-top: 14px;
+}
+.context-role {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 14px;
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid var(--accent-line);
   font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-
-  text-decoration: none;
-  letter-spacing: 0.08em;
-
-  transition: box-shadow var(--transition-fast);
+  font-size: var(--fs-xs);
 }
-
-.not-found a:hover {
-  box-shadow: var(--glow-cyan);
+.context-role b {
+  color: var(--text-muted);
 }
-
-@keyframes cover-enter {
-  from { opacity: 0; transform: scale(1.035); }
-  to { opacity: .9; transform: scale(1); }
+.context-role strong {
+  color: var(--text);
 }
-
+.feature-list {
+  margin-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.feature-list div {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+.feature-list i {
+  font-style: normal;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+.feature-list strong {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.architecture {
+  margin-top: 20px;
+}
+.architecture__node {
+  padding: 18px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.architecture__node strong,
+.architecture__node small {
+  display: block;
+}
+.architecture__node small {
+  margin-top: 6px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+.architecture__arrow {
+  padding: 7px;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  text-align: center;
+}
+.challenge-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+.challenge-grid article {
+  padding: 20px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.challenge-grid small {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+.challenge-grid h3 {
+  margin: 12px 0 0;
+  font-size: 22px;
+}
+.challenge-grid p {
+  margin: 16px 0 0;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.challenge-grid p b {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+}
+.timeline article {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 20px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+.timeline time {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+.timeline h3 {
+  margin: 0;
+  font-size: 20px;
+}
+.timeline p {
+  margin: 7px 0 0;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.meta-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+}
+.meta-panel > div {
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+.meta-panel > div > span {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--text-muted);
+}
+.meta-panel p {
+  margin: 8px 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+.not-found h1 {
+  margin: 16px 0 28px;
+  font-size: clamp(44px, 7vw, 90px);
+}
 @media (max-width: 900px) {
-  .project-detail__layout {
+  .case-layout {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .meta-panel {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .challenge-grid {
     grid-template-columns: 1fr;
   }
-
-  .project-meta {
-    padding-top: 20px;
-    padding-bottom: 40px;
-
-    border-top: 1px solid var(--line);
-  }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .project-cover img {
-    animation: none;
+@media (max-width: 620px) {
+  .case-hero__top {
+    flex-direction: column;
   }
-}
-
-@media (max-width: 640px) {
-  .title-row {
-    display: block;
+  .case-cover {
+    height: 240px;
   }
-
-  .title-row .status {
-    margin-top: 18px;
-  }
-
-  .description {
-    font-size: var(--fs-lg);
-  }
-
-  .project-cover {
-    height: 260px;
-    margin-top: 24px;
-  }
-
-  .timeline__item {
+  .meta-panel {
     grid-template-columns: 1fr;
-    gap: 8px;
+  }
+  .context-role {
+    grid-template-columns: 1fr;
+  }
+  .case-actions {
+    flex-wrap: wrap;
   }
 }
 </style>
