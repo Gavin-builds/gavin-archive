@@ -60,6 +60,11 @@ export default {
     },
   },
 
+  transition: {
+    entering: 'JACKING INTO PROFILE',
+    accessGranted: 'ACCESS GRANTED',
+  },
+
   profile: {
     title: 'PROFILE',
     subtitle: 'ABOUT ME',

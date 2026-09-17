@@ -5,12 +5,15 @@ import { useI18n } from "vue-i18n";
 
 import ThemeToggle from "../components/archive/ThemeToggle.vue";
 import { useTheme } from "../composables/useTheme";
+import { useGlitchTransition } from "../composables/useGlitchTransition";
 
 const { t } = useI18n();
 
 const router = useRouter();
 
 const { theme } = useTheme();
+
+const { play: playGlitchTransition } = useGlitchTransition();
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 const scene = ref<HTMLElement | null>(null);
@@ -19,7 +22,10 @@ const mouseX = ref(0);
 const mouseY = ref(0);
 
 const enterArchive = () => {
-  router.push("/archive");
+  // 赛博朋克屏闪：黑屏完全覆盖后再跳转到个人档案页
+  playGlitchTransition(() => {
+    router.push("/archive");
+  });
 };
 
 let animationFrame = 0;

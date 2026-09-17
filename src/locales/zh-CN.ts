@@ -60,6 +60,11 @@ export default {
     },
   },
 
+  transition: {
+    entering: '正在接入个人档案',
+    accessGranted: '接入成功',
+  },
+
   profile: {
     title: '个人档案',
     subtitle: '关于我',

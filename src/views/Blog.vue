@@ -78,15 +78,11 @@ const rest = computed(() => filteredPosts.value.slice(1));
 
     <div class="note-list">
       <RouterLink
-        v-for="(post, index) in rest"
+        v-for="post in rest"
         :key="post.slug"
         :to="`/archive/blog/${post.slug}`"
         class="note-row"
       >
-        <div class="note-row__index">
-          NOTE / {{ String(index + 2).padStart(2, "0") }}
-        </div>
-
         <div class="note-row__media">
           <img
             v-if="post.cover"
@@ -126,7 +122,6 @@ const rest = computed(() => filteredPosts.value.slice(1));
 .eyebrow,
 .query,
 .meta,
-.note-row__index,
 .note-row__arrow,
 .note-row__media-label {
   font-family: var(--font-mono);
@@ -301,7 +296,7 @@ const rest = computed(() => filteredPosts.value.slice(1));
 /* === 复原后的列表行：加了 media 列 === */
 .note-row {
   display: grid;
-  grid-template-columns: 110px 260px minmax(0, 1fr) 50px;
+  grid-template-columns: 260px minmax(0, 1fr) 50px;
   gap: 24px;
   align-items: start;
   padding: 22px 0;
@@ -317,10 +312,6 @@ const rest = computed(() => filteredPosts.value.slice(1));
   padding-right: 10px;
   background: rgba(var(--accent-rgb), 0.025);
 }
-.note-row__index {
-  color: var(--text-muted);
-}
-
 /* 图片容器：16/9 + 边框 + 遮罩 + 悬浮缩放 */
 .note-row__media {
   position: relative;
@@ -391,7 +382,7 @@ const rest = computed(() => filteredPosts.value.slice(1));
 
 @media (max-width: 1180px) {
   .note-row {
-    grid-template-columns: 110px 220px minmax(0, 1fr) 50px;
+    grid-template-columns: 220px minmax(0, 1fr) 50px;
     gap: 20px;
   }
 }
@@ -399,9 +390,6 @@ const rest = computed(() => filteredPosts.value.slice(1));
 @media (max-width: 980px) {
   .note-row {
     grid-template-columns: 200px minmax(0, 1fr) 40px;
-  }
-  .note-row__index {
-    display: none;
   }
 }
 
