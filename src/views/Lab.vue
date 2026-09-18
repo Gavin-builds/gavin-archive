@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import ArchiveDrawer from "../components/archive/ArchiveDrawer.vue";
 import { labExperiments } from "../data/lab";
@@ -10,6 +10,12 @@ const { t, locale } = useI18n();
 type Filter = "ALL" | LabStatus;
 const filter = ref<Filter>("ALL");
 const selected = ref<LabExperiment | null>(null);
+// 关闭动画期间保留上一次选中的内容，动画结束后再清空
+const presented = ref<LabExperiment | null>(null);
+
+watch(selected, (value) => {
+  if (value) presented.value = value;
+});
 const filters: Filter[] = [
   "ALL",
   "EXPERIMENT",
@@ -94,39 +100,41 @@ const filteredExperiments = computed(() =>
     </div>
 
     <ArchiveDrawer
-      v-if="selected"
       :open="!!selected"
       eyebrow="LAB NOTE"
-      :title="text(selected.title)"
-      :meta="selected.date"
+      :title="presented ? text(presented.title) : ''"
+      :meta="presented?.date"
       @close="selected = null"
+      @closed="presented = null"
     >
-      <div class="lab-drawer-section" v-if="selected.question">
-        <span>QUESTION</span>
-        <p>{{ text(selected.question) }}</p>
-      </div>
-      <div class="lab-drawer-section" v-if="selected.hypothesis">
-        <span>HYPOTHESIS</span>
-        <p>{{ text(selected.hypothesis) }}</p>
-      </div>
-      <div class="lab-drawer-section" v-if="selected.observation">
-        <span>OBSERVATION</span>
-        <p>{{ text(selected.observation) }}</p>
-      </div>
-      <div class="lab-drawer-section" v-if="selected.conclusion">
-        <span>CONCLUSION</span>
-        <p>{{ text(selected.conclusion) }}</p>
-      </div>
-      <RouterLink
-        v-if="selected.relatedProject"
-        class="lab-link"
-        :to="`/archive/projects/${selected.relatedProject}`"
-        @click="selected = null"
-        >{{
-          locale.startsWith("zh") ? "查看关联项目" : "OPEN RELATED CASE"
-        }}
-        →</RouterLink
-      >
+      <template v-if="presented">
+        <div class="lab-drawer-section" v-if="presented.question">
+          <span>QUESTION</span>
+          <p>{{ text(presented.question) }}</p>
+        </div>
+        <div class="lab-drawer-section" v-if="presented.hypothesis">
+          <span>HYPOTHESIS</span>
+          <p>{{ text(presented.hypothesis) }}</p>
+        </div>
+        <div class="lab-drawer-section" v-if="presented.observation">
+          <span>OBSERVATION</span>
+          <p>{{ text(presented.observation) }}</p>
+        </div>
+        <div class="lab-drawer-section" v-if="presented.conclusion">
+          <span>CONCLUSION</span>
+          <p>{{ text(presented.conclusion) }}</p>
+        </div>
+        <RouterLink
+          v-if="presented.relatedProject"
+          class="lab-link"
+          :to="`/archive/projects/${presented.relatedProject}`"
+          @click="selected = null"
+          >{{
+            locale.startsWith("zh") ? "查看关联项目" : "OPEN RELATED CASE"
+          }}
+          →</RouterLink
+        >
+      </template>
     </ArchiveDrawer>
   </section>
 </template>

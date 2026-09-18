@@ -11,6 +11,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   close: []
+  closed: []
 }>()
 
 const { t } = useI18n()
@@ -23,7 +24,7 @@ watch(() => props.open, value => {
 
 <template>
   <Teleport to="body">
-    <Transition name="drawer-fade">
+    <Transition name="drawer-fade" @after-leave="emit('closed')">
       <div v-if="open" class="drawer-root" @click.self="emit('close')">
         <aside class="drawer" role="dialog" aria-modal="true">
           <div class="drawer__top">
@@ -119,12 +120,69 @@ watch(() => props.open, value => {
 .drawer__body { flex: 1; padding-top: 20px; }
 .drawer__footer { margin-top: 30px; color: var(--text-muted); }
 
+/* 遮罩淡入淡出 */
 .drawer-fade-enter-active,
-.drawer-fade-leave-active { transition: opacity .24s ease; }
+.drawer-fade-leave-active {
+  transition: opacity .3s ease;
+}
+
+/* 抽屉面板从右侧滑入 / 滑出 */
+.drawer-fade-enter-active .drawer,
+.drawer-fade-leave-active .drawer {
+  transition: transform .4s cubic-bezier(.22, .68, .24, 1);
+}
+
+/* 内容逐级浮现 */
+.drawer-fade-enter-active .drawer__top,
+.drawer-fade-enter-active .drawer__title,
+.drawer-fade-enter-active .drawer__body,
+.drawer-fade-enter-active .drawer__footer {
+  transition:
+    opacity .42s ease,
+    transform .42s cubic-bezier(.22, .68, .24, 1);
+}
+
+.drawer-fade-enter-active .drawer__top { transition-delay: .06s; }
+.drawer-fade-enter-active .drawer__title { transition-delay: .11s; }
+.drawer-fade-enter-active .drawer__body { transition-delay: .16s; }
+.drawer-fade-enter-active .drawer__footer { transition-delay: .2s; }
+
 .drawer-fade-enter-from,
 .drawer-fade-leave-to { opacity: 0; }
 
+.drawer-fade-enter-from .drawer,
+.drawer-fade-leave-to .drawer { transform: translateX(100%); }
+
+.drawer-fade-enter-from .drawer__top,
+.drawer-fade-enter-from .drawer__title,
+.drawer-fade-enter-from .drawer__body,
+.drawer-fade-enter-from .drawer__footer {
+  opacity: 0;
+  transform: translateX(26px);
+}
+
 @media (max-width: 620px) {
   .drawer { padding: 18px; border-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer-fade-enter-active,
+  .drawer-fade-leave-active,
+  .drawer-fade-enter-active .drawer,
+  .drawer-fade-enter-active .drawer__top,
+  .drawer-fade-enter-active .drawer__title,
+  .drawer-fade-enter-active .drawer__body,
+  .drawer-fade-enter-active .drawer__footer {
+    transition: none;
+  }
+
+  .drawer-fade-enter-from .drawer,
+  .drawer-fade-leave-to .drawer,
+  .drawer-fade-enter-from .drawer__top,
+  .drawer-fade-enter-from .drawer__title,
+  .drawer-fade-enter-from .drawer__body,
+  .drawer-fade-enter-from .drawer__footer {
+    transform: none;
+  }
 }
 </style>
