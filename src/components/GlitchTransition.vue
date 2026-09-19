@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useGlitchTransition } from '../composables/useGlitchTransition'
@@ -38,6 +38,294 @@ const titleText = computed(() =>
     ? t('transition.accessGranted')
     : t('transition.entering'),
 )
+
+/* =========================
+   Canvas 粒子系统
+========================= */
+
+type ParticleKind = 'spark' | 'ember' | 'shard'
+
+type RGB = readonly [number, number, number]
+
+interface Particle {
+  x: number
+  y: number
+  vx: number
+  vy: number
+  age: number
+  life: number
+  size: number
+  color: RGB
+  kind: ParticleKind
+  gravity: number
+  drag: number
+  twinkle: number
+}
+
+const PARTICLE_LIMIT = 320
+
+const PALETTE: RGB[] = [
+  [0, 229, 255], // 青
+  [255, 43, 214], // 品红
+  [234, 252, 255], // 白
+  [150, 110, 255], // 电紫
+]
+
+const canvasRef = ref<HTMLCanvasElement | null>(null)
+
+let ctx: CanvasRenderingContext2D | null = null
+let rafId = 0
+let particles: Particle[] = []
+let width = 0
+let height = 0
+let runStart = 0
+let lastFrame = 0
+let emberAccumulator = 0
+let shardAccumulator = 0
+
+const rand = (min: number, max: number) => min + Math.random() * (max - min)
+
+const pickColor = (): RGB =>
+  PALETTE[Math.floor(Math.random() * PALETTE.length)]
+
+// 故障条所在的纵向位置（与模板中 bands 的 top 保持同一公式）
+const bandY = () => {
+  const index = Math.floor(Math.random() * BAND_COUNT)
+  const seed = seeds.value[index] ?? Math.random()
+  return (8 + index * 12.4 + (seed - 0.5) * 9) / 100 * height
+}
+
+const spawnSpark = (x?: number, y?: number): Particle => {
+  const horizontal = Math.random() < 0.78
+
+  return {
+    x: x ?? rand(0, width),
+    y: y ?? bandY(),
+    vx: horizontal
+      ? rand(180, 900) * (Math.random() < 0.5 ? -1 : 1)
+      : rand(-90, 90),
+    vy: horizontal ? rand(-120, 120) : rand(60, 320),
+    age: 0,
+    life: rand(0.22, 0.62),
+    size: rand(1, 2.8),
+    color: Math.random() < 0.65 ? PALETTE[0] : pickColor(),
+    kind: 'spark',
+    gravity: rand(120, 320),
+    drag: rand(0.6, 1.4),
+    twinkle: rand(7, 16),
+  }
+}
+
+const spawnEmber = (): Particle => ({
+  x: rand(0, width),
+  y: rand(height * 0.35, height),
+  vx: rand(-28, 28),
+  vy: rand(-72, -22),
+  age: 0,
+  life: rand(0.9, 1.9),
+  size: rand(0.8, 2.1),
+  color: Math.random() < 0.7 ? PALETTE[0] : PALETTE[3],
+  kind: 'ember',
+  gravity: rand(-26, -8),
+  drag: rand(0.2, 0.6),
+  twinkle: rand(3, 9),
+})
+
+// 沿故障条横向飞出的细长能量碎片
+const spawnShard = (): Particle => {
+  const direction = Math.random() < 0.5 ? -1 : 1
+
+  return {
+    x: direction > 0 ? rand(-40, width * 0.3) : rand(width * 0.7, width + 40),
+    y: bandY(),
+    vx: direction * rand(420, 1100),
+    vy: rand(-40, 40),
+    age: 0,
+    life: rand(0.18, 0.4),
+    size: rand(1.2, 2.4),
+    color: Math.random() < 0.5 ? PALETTE[2] : PALETTE[1],
+    kind: 'shard',
+    gravity: 0,
+    drag: rand(1.2, 2.4),
+    twinkle: rand(10, 20),
+  }
+}
+
+const emit = (count: number, factory: () => Particle) => {
+  for (let i = 0; i < count; i += 1) {
+    if (particles.length >= PARTICLE_LIMIT) return
+    particles.push(factory())
+  }
+}
+
+const renderFrame = (now: number) => {
+  if (!ctx || !active.value) return
+
+  const dt = Math.min((now - lastFrame) / 1000, 0.05)
+  lastFrame = now
+
+  const elapsed = now - runStart
+
+  // 残影拖尾：叠半透明黑（screen 混合下黑色不遮底，仅让旧粒子衰减）
+  ctx.globalCompositeOperation = 'source-over'
+  ctx.fillStyle = 'rgba(3, 4, 10, 0.3)'
+  ctx.fillRect(0, 0, width, height)
+
+  ctx.globalCompositeOperation = 'lighter'
+
+  /* ---- 按阶段调度发射 ---- */
+  if (phase.value === 'in') {
+    // 切入瞬间沿故障条密集放电，随后快速衰减
+    if (elapsed < 160) {
+      emit(7, spawnSpark)
+    } else if (elapsed < 460) {
+      emit(Math.random() < 0.55 ? 1 : 0, spawnSpark)
+    }
+  } else if (phase.value === 'hold') {
+    // 保持期：稀疏上升余烬 + 偶发能量碎片
+    emberAccumulator += dt
+    if (emberAccumulator > 0.07) {
+      emberAccumulator = 0
+      emit(1, spawnEmber)
+    }
+
+    shardAccumulator += dt
+    if (shardAccumulator > 0.24) {
+      shardAccumulator = 0
+      emit(1, spawnShard)
+    }
+  } else {
+    // 切出初期横向崩散火花
+    if (elapsed < 1040) {
+      emit(3, spawnSpark)
+      emit(1, spawnShard)
+    }
+  }
+
+  /* ---- 更新 + 绘制 ---- */
+  const survivors: Particle[] = []
+
+  for (const p of particles) {
+    p.age += dt
+
+    if (p.age >= p.life) continue
+
+    const damping = Math.exp(-p.drag * dt)
+    p.vx *= damping
+    p.vy = p.vy * damping + p.gravity * dt
+    p.x += p.vx * dt
+    p.y += p.vy * dt
+
+    if (p.x < -60 || p.x > width + 60 || p.y > height + 60) continue
+
+    const lifeRatio = p.age / p.life
+    const fade = 1 - lifeRatio
+    const flicker = 0.62 + 0.38 * Math.sin(p.age * p.twinkle * Math.PI)
+    const alpha = Math.max(0, Math.min(1, fade * flicker))
+    const [r, g, b] = p.color
+
+    if (p.kind === 'spark' || p.kind === 'shard') {
+      // 速度方向拖尾线段，游戏技能特效感
+      const streak = p.kind === 'shard' ? 0.05 : 0.024
+
+      ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`
+      ctx.lineWidth = p.size
+      ctx.beginPath()
+      ctx.moveTo(p.x, p.y)
+      ctx.lineTo(p.x - p.vx * streak, p.y - p.vy * streak)
+      ctx.stroke()
+    }
+
+    // 发光核心（纯色方块，无 shadowBlur，控制绘制成本）
+    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`
+    ctx.fillRect(
+      p.x - p.size / 2,
+      p.y - p.size / 2,
+      p.size,
+      p.size,
+    )
+
+    // 少量高亮白芯
+    if (p.size > 1.6) {
+      ctx.fillStyle = `rgba(234, 252, 255, ${alpha * 0.7})`
+      ctx.fillRect(p.x - 0.5, p.y - 0.5, 1, 1)
+    }
+
+    survivors.push(p)
+  }
+
+  particles = survivors
+
+  rafId = requestAnimationFrame(renderFrame)
+}
+
+const setupCanvas = () => {
+  const canvas = canvasRef.value
+  if (!canvas) return
+
+  const dpr = Math.min(window.devicePixelRatio || 1, 2)
+  width = window.innerWidth
+  height = window.innerHeight
+
+  canvas.width = Math.floor(width * dpr)
+  canvas.height = Math.floor(height * dpr)
+
+  ctx = canvas.getContext('2d')
+  ctx?.setTransform(dpr, 0, 0, dpr, 0, 0)
+}
+
+const startParticles = async () => {
+  await nextTick()
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+  setupCanvas()
+  if (!ctx) return
+
+  ctx.clearRect(0, 0, width, height)
+
+  particles = []
+  runStart = performance.now()
+  lastFrame = runStart
+  emberAccumulator = 0
+  shardAccumulator = 0
+
+  // 切入即沿故障条放电
+  emit(54, spawnSpark)
+
+  cancelAnimationFrame(rafId)
+  rafId = requestAnimationFrame(renderFrame)
+}
+
+const stopParticles = () => {
+  cancelAnimationFrame(rafId)
+  particles = []
+  ctx = null
+}
+
+// 覆盖层挂载（v-if active）后启动 / 卸载时停止
+watch(active, (value) => {
+  if (value) {
+    startParticles()
+  } else {
+    stopParticles()
+  }
+})
+
+// 阶段边沿触发：进入 hold 补一波碎片、out 瞬间中心爆发
+watch(phase, (value) => {
+  if (!active.value || !ctx) return
+
+  if (value === 'hold') {
+    emit(14, spawnShard)
+  } else if (value === 'out') {
+    if (particles.length > PARTICLE_LIMIT - 130) {
+      particles.splice(0, particles.length - (PARTICLE_LIMIT - 130))
+    }
+  }
+})
+
+onBeforeUnmount(stopParticles)
 </script>
 
 <template>
@@ -62,6 +350,9 @@ const titleText = computed(() =>
         :class="{ 'glt__slice--alt': band.alt }"
         :style="band.style"
       />
+
+      <!-- 游戏特效粒子层：放电火花 / 上升余烬 / 能量碎片 / 中心爆发 -->
+      <canvas ref="canvasRef" class="glt__particles" />
 
       <!-- 扫描线 / 暗角 -->
       <div class="glt__scanlines" />
@@ -207,6 +498,21 @@ const titleText = computed(() =>
 
 .glt--out .glt__slice {
   animation: glt-slice-out 480ms steps(6, end) forwards;
+}
+
+/* =========================
+   粒子层
+========================= */
+
+.glt__particles {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  /* 加色混合：黑底透明，霓虹粒子相互叠加发光 */
+  mix-blend-mode: screen;
 }
 
 /* =========================
