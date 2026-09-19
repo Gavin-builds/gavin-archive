@@ -97,7 +97,7 @@ export default {
   },
 
   projects: {
-    title: '项目',
+    title: '项目档案',
     subtitle: '正在构建与归档的项目',
 
     sectionLabel: '/ 02 项目档案',
@@ -106,6 +106,8 @@ export default {
     countLabel: '项目',
     cardLabel: '项目',
     open: '打开 →',
+    openFullCase: '打开完整案例',
+    role: '角色',
 
     problem: '问题',
     solution: '解决方案',
@@ -193,12 +195,12 @@ export default {
   },
 
   lab: {
-    title: '实验室',
+    title: '实验记录',
     subtitle: '实验、研究与未完成想法',
     description: '记录正在验证、尚未成熟或最终失败的想法。',
     countLabel: '实验',
     all: '全部',
-    relatedProject: '关联项目',
+    relatedProject: '查看关联项目',
     empty: '暂无实验',
     status: {
       EXPERIMENT: '实验中',

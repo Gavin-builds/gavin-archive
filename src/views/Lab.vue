@@ -39,9 +39,9 @@ const filteredExperiments = computed(() =>
     <header class="lab-hero">
       <div>
         <div class="eyebrow">/ 03 RESEARCH NOTEBOOK</div>
-        <h1>{{ locale.startsWith("zh") ? "实验记录" : "EXPERIMENTAL LAB" }}</h1>
+        <h1>{{ t("lab.title") }}</h1>
         <p>
-          {{ locale.startsWith('zh') ? "Ideas don't need to work. 这里记录正在验证、尚未成熟或最终可能失败的东西。" : "Ideas don’t need to work. This is where unfinished, uncertain and experimental ideas are recorded." }}
+          {{ t("lab.description") }}
         </p>
       </div>
       <div class="lab-runtime">
@@ -129,9 +129,7 @@ const filteredExperiments = computed(() =>
           class="lab-link"
           :to="`/archive/projects/${presented.relatedProject}`"
           @click="selected = null"
-          >{{
-            locale.startsWith("zh") ? "查看关联项目" : "OPEN RELATED CASE"
-          }}
+          >{{ t("lab.relatedProject") }}
           →</RouterLink
         >
       </template>

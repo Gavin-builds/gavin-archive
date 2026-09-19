@@ -45,14 +45,10 @@ const archiveEntries = computed(() =>
       <div>
         <div class="eyebrow">/ 02 CASE FILES</div>
         <h1>
-          {{ locale.startsWith("zh") ? "项目档案" : "PROJECT CASE FILES" }}
+          {{ t("projects.title") }}
         </h1>
         <p>
-          {{
-            locale.startsWith("zh")
-              ? "我参与构建、验证和归档的系统记录。"
-              : "records of the systems I have built, tested and archived."
-          }}
+          {{ t("projects.description") }}
         </p>
       </div>
       <div class="archive-counter">
@@ -119,9 +115,7 @@ const archiveEntries = computed(() =>
           }}</span>
         </div>
         <span class="open"
-          >{{
-            locale.startsWith("zh") ? "打开完整案例" : "OPEN FULL CASE"
-          }}
+          >{{ t("projects.openFullCase") }}
           →</span
         >
       </div>

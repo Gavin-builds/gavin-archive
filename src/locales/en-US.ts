@@ -97,7 +97,7 @@ export default {
   },
 
   projects: {
-    title: 'PROJECTS',
+    title: 'PROJECT CASE FILES',
     subtitle: 'Things I am building and archiving',
 
     sectionLabel: '/ 02 PROJECT ARCHIVE',
@@ -106,6 +106,8 @@ export default {
     countLabel: 'PROJECTS',
     cardLabel: 'PROJECT',
     open: 'OPEN →',
+    openFullCase: 'OPEN FULL CASE',
+    role: 'ROLE',
 
     problem: 'PROBLEM',
     solution: 'SOLUTION',
@@ -193,12 +195,12 @@ export default {
   },
 
   lab: {
-    title: 'LAB',
+    title: 'EXPERIMENTAL LAB',
     subtitle: 'Experiments, research and unfinished ideas',
     description: 'Experiments, prototypes and ideas that are still being tested.',
     countLabel: 'EXPERIMENTS',
     all: 'ALL',
-    relatedProject: 'RELATED PROJECT',
+    relatedProject: 'OPEN RELATED CASE',
     empty: 'NO EXPERIMENTS FOUND',
     status: {
       EXPERIMENT: 'EXPERIMENT',

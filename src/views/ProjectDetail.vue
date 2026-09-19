@@ -60,7 +60,7 @@ const text = (value: { zh: string; en: string }) =>
           <span>00 / CONTEXT</span>
           <p>{{ text(project.context) }}</p>
           <div class="context-role">
-            <b>{{ locale.startsWith("zh") ? "角色" : "ROLE" }}</b
+            <b>{{ t("projects.role") }}</b
             ><strong>{{ text(project.role ?? { zh: "", en: "" }) }}</strong>
           </div>
         </section>
