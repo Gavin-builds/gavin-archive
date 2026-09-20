@@ -361,7 +361,7 @@ onBeforeUnmount(stopParticles)
       <!-- 中央终端信息 -->
       <div class="glt__hud">
         <div class="glt__code">
-          SYS::UPLINK &gt; ARCHIVE/PROFILE
+          {{ t('transition.uplink') }}
         </div>
 
         <div

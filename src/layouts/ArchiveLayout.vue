@@ -37,23 +37,23 @@ const currentPage = computed(() => {
   const name = route.name;
 
   if (typeof name !== "string") {
-    return "ARCHIVE";
+    return "archive.token";
   }
 
   const pageMap: Record<string, string> = {
-    home: "HOME",
-    profile: "PROFILE",
-    projects: "PROJECTS",
-    "project-detail": "PROJECT DETAIL",
-    lab: "LAB",
-    blog: "BLOG",
-    "blog-article": "ARTICLE",
-    github: "GITHUB",
-    about: "ABOUT",
+    home: "nav.home",
+    profile: "nav.profile",
+    projects: "nav.projects",
+    "project-detail": "nav.projectDetail",
+    lab: "nav.lab",
+    blog: "nav.blog",
+    "blog-article": "nav.article",
+    github: "nav.github",
+    about: "nav.about",
     "not-found": "404",
   };
 
-  return pageMap[name] ?? "ARCHIVE";
+  return pageMap[name] ?? "archive.token";
 });
 </script>
 

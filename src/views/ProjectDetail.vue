@@ -23,7 +23,9 @@ const text = (value: { zh: string; en: string }) =>
       t("projects.backToList")
     }}</RouterLink>
     <header class="case-hero">
-      <div class="eyebrow">CASE FILE / {{ project.date }}</div>
+      <div class="eyebrow">{{
+        t("projects.caseFileDate", { date: project.date })
+      }}</div>
       <div class="case-hero__top">
         <h1>{{ text(project.title) }}</h1>
         <ProjectStatus :status="project.status" />
@@ -32,7 +34,7 @@ const text = (value: { zh: string; en: string }) =>
       <div class="case-cover" v-if="project.cover">
         <img :src="project.cover" :alt="text(project.title)" />
         <div />
-        <span>CASE VISUAL / {{ project.date }}</span>
+        <span>{{ t("projects.caseVisual", { date: project.date }) }}</span>
       </div>
       <div class="case-actions">
         <a
@@ -57,7 +59,7 @@ const text = (value: { zh: string; en: string }) =>
           v-if="project.context"
           class="record-section record-section--context"
         >
-          <span>00 / CONTEXT</span>
+          <span>00 / {{ t("projects.context") }}</span>
           <p>{{ text(project.context) }}</p>
           <div class="context-role">
             <b>{{ t("projects.role") }}</b
@@ -106,16 +108,20 @@ const text = (value: { zh: string; en: string }) =>
           v-if="project.engineeringChallenges?.length"
           class="record-section"
         >
-          <span>05 / ENGINEERING NOTES</span>
+          <span>05 / {{ t("projects.engineeringNotes") }}</span>
           <div class="challenge-grid">
             <article
               v-for="(item, index) in project.engineeringChallenges"
               :key="item.title.en"
             >
-              <small>NOTE / {{ String(index + 1).padStart(2, "0") }}</small>
+              <small>{{
+                t("projects.noteToken", {
+                  n: String(index + 1).padStart(2, "0"),
+                })
+              }}</small>
               <h3>{{ text(item.title) }}</h3>
-              <p><b>PROBLEM</b>{{ text(item.problem) }}</p>
-              <p><b>SOLUTION</b>{{ text(item.solution) }}</p>
+              <p><b>{{ t("projects.problem") }}</b>{{ text(item.problem) }}</p>
+              <p><b>{{ t("projects.solution") }}</b>{{ text(item.solution) }}</p>
             </article>
           </div>
         </section>
@@ -145,7 +151,7 @@ const text = (value: { zh: string; en: string }) =>
           <p v-for="tag in project.tags" :key="tag.en">{{ text(tag) }}</p>
         </div>
         <div v-if="project.highlights?.length">
-          <span>HIGHLIGHTS</span>
+          <span>{{ t("projects.highlights") }}</span>
           <p v-for="item in project.highlights" :key="item.en">
             → {{ text(item) }}
           </p>

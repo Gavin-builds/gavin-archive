@@ -18,7 +18,7 @@ const formatDate = (value: string) =>
   <section class="github">
     <header class="header">
       <div>
-        <div class="eyebrow">/ 05 NETWORK</div>
+        <div class="eyebrow">{{ t("github.sectionLabel") }}</div>
         <h1>{{ t("github.title") }}</h1>
         <p>{{ t("github.subtitle") }}</p>
       </div>
@@ -27,8 +27,8 @@ const formatDate = (value: string) =>
         <div class="github__pulse"></div>
         <div class="github__orbit github__orbit--1"></div>
         <div class="github__orbit github__orbit--2"></div>
-        <span>SOURCE NODE</span>
-        <strong>ONLINE</strong>
+        <span>{{ t("github.sourceNode") }}</span>
+        <strong>{{ t("github.online") }}</strong>
       </div>
 
       <a
@@ -52,13 +52,16 @@ const formatDate = (value: string) =>
     <template v-else-if="profile">
       <section class="stats">
         <div>
-          <span>REPOSITORIES</span><strong>{{ profile.public_repos }}</strong>
+          <span>{{ t("github.statsRepos") }}</span
+          ><strong>{{ profile.public_repos }}</strong>
         </div>
         <div>
-          <span>FOLLOWERS</span><strong>{{ profile.followers }}</strong>
+          <span>{{ t("github.statsFollowers") }}</span
+          ><strong>{{ profile.followers }}</strong>
         </div>
         <div>
-          <span>FOLLOWING</span><strong>{{ profile.following }}</strong>
+          <span>{{ t("github.statsFollowing") }}</span
+          ><strong>{{ profile.following }}</strong>
         </div>
       </section>
 
@@ -76,7 +79,9 @@ const formatDate = (value: string) =>
             <span>★ {{ repo.stargazers_count }}</span>
             <span>⑂ {{ repo.forks_count }}</span>
             <span>{{ formatDate(repo.updated_at) }}</span>
-            <a :href="repo.html_url" target="_blank" rel="noreferrer">OPEN ↗</a>
+            <a :href="repo.html_url" target="_blank" rel="noreferrer">{{
+              t("github.open")
+            }}</a>
           </div>
         </article>
       </section>

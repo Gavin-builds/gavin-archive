@@ -27,6 +27,8 @@ const filters: Filter[] = [
 ];
 const text = (value: { zh: string; en: string }) =>
   localize(value, locale.value);
+const filterLabel = (item: Filter) =>
+  item === "ALL" ? t("lab.all") : t(`lab.status.${item}`);
 const filteredExperiments = computed(() =>
   filter.value === "ALL"
     ? labExperiments
@@ -38,20 +40,24 @@ const filteredExperiments = computed(() =>
   <section class="lab">
     <header class="lab-hero">
       <div>
-        <div class="eyebrow">/ 03 RESEARCH NOTEBOOK</div>
+        <div class="eyebrow">{{ t("lab.eyebrow") }}</div>
         <h1>{{ t("lab.title") }}</h1>
         <p>
           {{ t("lab.description") }}
         </p>
       </div>
       <div class="lab-runtime">
-        <span>LAB.RUNTIME</span><strong>ACTIVE</strong><i></i
-        ><small>OBSERVE → ITERATE → ARCHIVE</small>
+        <span>{{ t("lab.runtime") }}</span
+        ><strong>{{ t("lab.active") }}</strong
+        ><i></i
+        ><small>{{ t("lab.cycle") }}</small>
       </div>
     </header>
 
     <div class="lab-index">
-      <span>NOTEBOOK / {{ filter }}</span>
+      <span>{{
+        t("lab.notebookPrefix", { filter: filterLabel(filter) })
+      }}</span>
       <div>
         <button
           v-for="item in filters"
@@ -73,7 +79,7 @@ const filteredExperiments = computed(() =>
         @click="selected = experiment"
       >
         <div class="experiment__index">
-          EXP / {{ String(index + 1).padStart(2, "0") }}
+          {{ t("lab.expToken", { n: String(index + 1).padStart(2, "0") }) }}
         </div>
         <div class="experiment__main">
           <div class="experiment__meta">
@@ -89,19 +95,20 @@ const filteredExperiments = computed(() =>
           </div>
         </div>
         <div class="experiment__signal">
-          <span>STATUS</span><strong>{{ experiment.status }}</strong
-          ><b>OPEN ↗</b>
+          <span>{{ t("lab.statusLabel") }}</span
+          ><strong>{{ t(`lab.status.${experiment.status}`) }}</strong
+          ><b>{{ t("lab.open") }}</b>
         </div>
       </article>
     </div>
 
     <div v-if="!filteredExperiments.length" class="empty">
-      NO EXPERIMENTS / 0 RESULTS
+      {{ t("lab.emptyResults") }}
     </div>
 
     <ArchiveDrawer
       :open="!!selected"
-      eyebrow="LAB NOTE"
+      :eyebrow="t('lab.drawerEyebrow')"
       :title="presented ? text(presented.title) : ''"
       :meta="presented?.date"
       @close="selected = null"
@@ -109,19 +116,19 @@ const filteredExperiments = computed(() =>
     >
       <template v-if="presented">
         <div class="lab-drawer-section" v-if="presented.question">
-          <span>QUESTION</span>
+          <span>{{ t("lab.fields.question") }}</span>
           <p>{{ text(presented.question) }}</p>
         </div>
         <div class="lab-drawer-section" v-if="presented.hypothesis">
-          <span>HYPOTHESIS</span>
+          <span>{{ t("lab.fields.hypothesis") }}</span>
           <p>{{ text(presented.hypothesis) }}</p>
         </div>
         <div class="lab-drawer-section" v-if="presented.observation">
-          <span>OBSERVATION</span>
+          <span>{{ t("lab.fields.observation") }}</span>
           <p>{{ text(presented.observation) }}</p>
         </div>
         <div class="lab-drawer-section" v-if="presented.conclusion">
-          <span>CONCLUSION</span>
+          <span>{{ t("lab.fields.conclusion") }}</span>
           <p>{{ text(presented.conclusion) }}</p>
         </div>
         <RouterLink

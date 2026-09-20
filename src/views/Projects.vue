@@ -20,6 +20,15 @@ const filters: Filter[] = [
 ];
 const text = (value: { zh: string; en: string }) =>
   localize(value, locale.value);
+const categoryKeyMap: Record<ProjectCategory, string> = {
+  AI: "projects.ai",
+  Web: "projects.web",
+  "Open Source": "projects.openSource",
+  Tools: "projects.tools",
+  Experiment: "projects.experiment",
+};
+const filterLabel = (item: Filter) =>
+  item === "ALL" ? t("projects.all") : t(categoryKeyMap[item]);
 const filteredProjects = computed(() =>
   filter.value === "ALL"
     ? projects
@@ -43,7 +52,7 @@ const archiveEntries = computed(() =>
   <section class="projects">
     <header class="archive-intro">
       <div>
-        <div class="eyebrow">/ 02 CASE FILES</div>
+        <div class="eyebrow">{{ t("projects.eyebrow") }}</div>
         <h1>
           {{ t("projects.title") }}
         </h1>
@@ -52,14 +61,16 @@ const archiveEntries = computed(() =>
         </p>
       </div>
       <div class="archive-counter">
-        <span>INDEXED</span
+        <span>{{ t("projects.indexed") }}</span
         ><strong>{{ String(filteredProjects.length).padStart(2, "0") }}</strong
-        ><small>CASE FILES</small>
+        ><small>{{ t("projects.caseFiles") }}</small>
       </div>
     </header>
 
     <div class="filter-row">
-      <span>INDEX / {{ filter }}</span>
+      <span>{{
+        t("projects.indexPrefix", { filter: filterLabel(filter) })
+      }}</span>
       <div>
         <button
           v-for="item in filters"
@@ -68,19 +79,7 @@ const archiveEntries = computed(() =>
           :class="{ active: filter === item }"
           @click="filter = item"
         >
-          {{
-            item === "ALL"
-              ? t("projects.all")
-              : item === "Open Source"
-                ? t("projects.openSource")
-                : item === "Tools"
-                  ? t("projects.tools")
-                  : item === "Experiment"
-                    ? t("projects.experiment")
-                    : item === "Web"
-                      ? t("projects.web")
-                      : t("projects.ai")
-          }}
+          {{ filterLabel(item) }}
         </button>
       </div>
     </div>
@@ -97,14 +96,20 @@ const archiveEntries = computed(() =>
           :alt="text(featured.title)"
         />
         <div class="featured-file__scan" />
-        <span>FEATURED CASE / {{ featured.date }}</span>
+        <span>{{
+          t("projects.featuredCase", { date: featured.date })
+        }}</span>
       </div>
       <div class="featured-file__body">
         <div class="case-id">
-          CASE FILE / 00{{ filteredProjects.indexOf(featured) + 1 }}
+          {{
+            t("projects.caseFile", {
+              n: String(filteredProjects.indexOf(featured) + 1).padStart(3, "0"),
+            })
+          }}
         </div>
         <div class="case-meta">
-          <span>{{ featured.status }}</span
+          <span>{{ t(`projects.status.${featured.status}`) }}</span
           ><span>{{ featured.date }}</span>
         </div>
         <h2>{{ text(featured.title) }}</h2>
@@ -130,7 +135,8 @@ const archiveEntries = computed(() =>
     </div>
 
     <div v-if="!filteredProjects.length" class="empty-state">
-      <span>INDEX RETURNED / 0</span><strong>{{ t("projects.empty") }}</strong>
+      <span>{{ t("projects.indexReturned") }}</span
+      ><strong>{{ t("projects.empty") }}</strong>
     </div>
   </section>
 </template>

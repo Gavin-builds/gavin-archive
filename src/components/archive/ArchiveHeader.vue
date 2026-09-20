@@ -67,7 +67,9 @@ onUnmounted(() => {
 
     <div class="header-center">
       <span class="header-label">{{ t("common.current") }}</span>
-      <span class="header-page">{{ currentPage }}</span>
+      <span class="header-page">{{
+        currentPage === "404" ? "404" : t(currentPage)
+      }}</span>
     </div>
 
     <div class="header-status">

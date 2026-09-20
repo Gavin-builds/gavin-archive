@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 const router = useRouter()
+const { t } = useI18n()
 
 function goHome() {
   router.push('/')
@@ -15,19 +17,19 @@ function goHome() {
     </div>
 
     <div class="eyebrow">
-      SYSTEM / ROUTE NOT FOUND
+      {{ t('notFound.eyebrow') }}
     </div>
 
     <h1>
-      Nothing here.
+      {{ t('notFound.title') }}
     </h1>
 
     <p>
-      The requested archive module does not exist.
+      {{ t('notFound.description') }}
     </p>
 
     <button type="button" @click="goHome">
-      ← RETURN TO INDEX
+      {{ t('notFound.returnToIndex') }}
     </button>
   </div>
 </template>

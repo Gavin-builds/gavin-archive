@@ -5,11 +5,11 @@ const { t } = useI18n();
 
 const links = [
   {
-    label: "GitHub",
+    labelKey: "nav.github",
     href: "https://github.com/Gavin-builds",
   },
   {
-    label: "Email",
+    labelKey: "about.emailLink",
     href: "mailto:lejob@qq.com",
   },
 ];
@@ -18,7 +18,7 @@ const links = [
 <template>
   <section class="about">
     <header class="header">
-      <div class="eyebrow">/ 06 SYSTEM INFO</div>
+      <div class="eyebrow">{{ t("about.eyebrow") }}</div>
       <h1>{{ t("about.title") }}</h1>
       <p>{{ t("about.description") }}</p>
     </header>
@@ -53,16 +53,16 @@ const links = [
       </section>
 
       <section class="panel">
-        <div class="label">CONTACT</div>
+        <div class="label">{{ t("about.contact") }}</div>
         <div class="links">
           <a
             v-for="link in links"
-            :key="link.label"
+            :key="link.href"
             :href="link.href"
             target="_blank"
             rel="noreferrer"
           >
-            {{ link.label }} ↗
+            {{ t(link.labelKey) }} ↗
           </a>
         </div>
       </section>

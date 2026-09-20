@@ -40,7 +40,7 @@ watch(() => props.open, value => {
           <div class="drawer__body">
             <slot />
           </div>
-          <div class="drawer__footer">ARCHIVE // {{ t('common.online') }}</div>
+          <div class="drawer__footer">{{ t('archive.token') }} // {{ t('common.online') }}</div>
         </aside>
       </div>
     </Transition>

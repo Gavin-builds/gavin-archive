@@ -22,12 +22,17 @@ const text = (value: { zh: string; en: string }) =>
       t("blog.backToList")
     }}</RouterLink>
     <header class="article-hero">
-      <div class="eyebrow">FIELD NOTE / {{ post.type }} / {{ post.date }}</div>
+      <div class="eyebrow">{{
+        t("blog.fieldNote", {
+          type: t(`blog.type.${post.type}`),
+          date: post.date,
+        })
+      }}</div>
       <h1>{{ text(post.title) }}</h1>
       <p>{{ text(post.description) }}</p>
       <div v-if="post.cover" class="article-cover">
         <img :src="post.cover" :alt="text(post.title)" /><span
-          >FIELD NOTE VISUAL / {{ post.date }}</span
+          >{{ t("blog.fieldNoteVisual", { date: post.date }) }}</span
         >
       </div>
       <div class="meta">
@@ -37,8 +42,8 @@ const text = (value: { zh: string; en: string }) =>
     </header>
     <div class="article-grid">
       <aside>
-        <span>NOTE / {{ post.date }}</span
-        ><strong>{{ post.type }}</strong
+        <span>{{ t("blog.noteToken", { date: post.date }) }}</span
+        ><strong>{{ t(`blog.type.${post.type}`) }}</strong
         ><small>{{ post.readTime }} {{ t("blog.minRead") }}</small>
       </aside>
       <main>
@@ -58,7 +63,7 @@ const text = (value: { zh: string; en: string }) =>
     </section>
   </section>
   <section v-else class="not-found">
-    <div class="eyebrow">BLOG ERROR</div>
+    <div class="eyebrow">{{ t("blog.error") }}</div>
     <h1>{{ t("blog.notFound") }}</h1>
     <RouterLink to="/archive/blog">{{ t("blog.backToList") }}</RouterLink>
   </section>

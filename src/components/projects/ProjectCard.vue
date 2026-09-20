@@ -24,20 +24,27 @@ const text = (value: { zh: string; en: string }) =>
       <img
         v-if="project.cover"
         :src="project.cover"
-        :alt="`${text(project.title)} visual`"
+        :alt="t('projects.cardVisual', { title: text(project.title) })"
         loading="lazy"
       />
       <div class="project-card__media-overlay" />
       <span class="project-card__media-grid" />
       <div class="project-card__media-hud">
-        <span>CASE FILE // {{ project.date }}</span
-        ><span>{{ project.featured ? "FEATURED" : "ARCHIVE" }}</span>
+        <span>{{
+          t("projects.caseFileHud", { date: project.date })
+        }}</span
+        ><span>{{
+          project.featured
+            ? t("projects.badgeFeatured")
+            : t("projects.badgeArchive")
+        }}</span>
       </div>
       <div class="project-card__media-corner">↗</div>
     </RouterLink>
     <div class="project-card__top">
-      <span class="project-card__index"
-        >CASE / {{ project.slug.toUpperCase() }}</span
+      <span class="project-card__index">{{
+        t("projects.caseToken", { slug: project.slug.toUpperCase() })
+      }}</span
       ><ProjectStatus :status="project.status" />
     </div>
     <div class="project-card__body">
@@ -48,7 +55,7 @@ const text = (value: { zh: string; en: string }) =>
       <span v-for="tag in project.tags" :key="tag.en">{{ text(tag) }}</span>
     </div>
     <div class="project-card__bottom">
-      <span>SYS / {{ project.date }}</span
+      <span>{{ t("projects.sysToken", { date: project.date }) }}</span
       ><RouterLink
         :to="`/archive/projects/${project.slug}`"
         class="project-card__link"

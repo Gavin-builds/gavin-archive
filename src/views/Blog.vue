@@ -27,12 +27,12 @@ const rest = computed(() => filteredPosts.value.slice(1));
   <section class="blog">
     <header class="blog-hero">
       <div>
-        <div class="eyebrow">/ 04 DEVELOPMENT LOG</div>
+        <div class="eyebrow">{{ t('blog.eyebrow') }}</div>
         <h1>{{ t('blog.title') }}</h1>
         <p>{{ t('blog.description') }}</p>
       </div>
       <label class="query"
-        ><span>QUERY / SEARCH</span>
+        ><span>{{ t('blog.querySearch') }}</span>
         <div>
           <b>›</b
           ><input
@@ -40,10 +40,11 @@ const rest = computed(() => filteredPosts.value.slice(1));
             :placeholder="t('blog.searchPlaceholder')"
           /><kbd>⌘ K</kbd>
         </div>
-        <small
-          >{{ String(filteredPosts.length).padStart(2, "0") }} ENTRIES
-          INDEXED</small
-        ></label
+        <small>{{
+          t('blog.entriesIndexed', {
+            n: String(filteredPosts.length).padStart(2, '0'),
+          })
+        }}</small></label
       >
     </header>
 
@@ -57,11 +58,11 @@ const rest = computed(() => filteredPosts.value.slice(1));
           v-if="featured.cover"
           :src="featured.cover"
           :alt="text(featured.title)"
-        /><span>LATEST NOTE / {{ featured.date }}</span>
+        /><span>{{ t('blog.latestNote', { date: featured.date }) }}</span>
       </div>
       <div class="featured-note__body">
         <div class="meta">
-          <span>{{ featured.type }}</span
+          <span>{{ t(`blog.type.${featured.type}`) }}</span
           ><span>{{ featured.date }}</span
           ><span>{{ featured.readTime }} {{ t("blog.minRead") }}</span>
         </div>
@@ -95,7 +96,7 @@ const rest = computed(() => filteredPosts.value.slice(1));
 
         <div class="note-row__main">
           <div class="meta">
-            <span>{{ post.type }}</span
+            <span>{{ t(`blog.type.${post.type}`) }}</span
             ><span>{{ post.date }}</span
             ><span>{{ post.readTime }} {{ t("blog.minRead") }}</span>
           </div>
@@ -106,7 +107,9 @@ const rest = computed(() => filteredPosts.value.slice(1));
       </RouterLink>
     </div>
 
-    <div v-if="!filteredPosts.length" class="empty">QUERY RETURNED / 0</div>
+    <div v-if="!filteredPosts.length" class="empty">{{
+      t('blog.queryReturned')
+    }}</div>
   </section>
 </template>
 
