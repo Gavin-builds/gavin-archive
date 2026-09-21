@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from "vue";
+import { onMounted, onBeforeUnmount, computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 
 import ThemeToggle from "../components/archive/ThemeToggle.vue";
 import { useTheme } from "../composables/useTheme";
 import { useGlitchTransition } from "../composables/useGlitchTransition";
+import { projects } from "../data/projects";
+import { labExperiments } from "../data/lab";
+import { blogPosts } from "../data/blog";
 
 const { t } = useI18n();
 
@@ -14,6 +17,25 @@ const router = useRouter();
 const { theme } = useTheme();
 
 const { play: playGlitchTransition } = useGlitchTransition();
+
+// 右侧档案指标：年份取所有数据中的最新记录年份，
+// 实验数取实验室条目数，活跃核心取处于 BUILDING 状态的项目数
+const pad2 = (value: number) => String(value).padStart(2, "0");
+
+const latestYear = computed(() => {
+  const dates = [
+    ...projects.map((project) => project.date),
+    ...labExperiments.map((experiment) => experiment.date),
+    ...blogPosts.map((post) => post.date),
+  ];
+  return dates.length ? dates.sort().pop()!.slice(0, 4) : "";
+});
+
+const experimentCount = computed(() => pad2(labExperiments.length));
+
+const activeCoreCount = computed(
+  () => pad2(projects.filter((project) => project.status === "BUILDING").length),
+);
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 const scene = ref<HTMLElement | null>(null);
@@ -257,17 +279,17 @@ onBeforeUnmount(() => {
       <div class="panel__label">{{ t("home.archiveLabel") }}</div>
 
       <div class="panel__metric">
-        <span>2026</span>
+        <span>{{ latestYear }}</span>
         <small>{{ t("home.year") }}</small>
       </div>
 
       <div class="panel__metric">
-        <span>∞</span>
+        <span>{{ experimentCount }}</span>
         <small>{{ t("home.experiments") }}</small>
       </div>
 
       <div class="panel__metric">
-        <span>01</span>
+        <span>{{ activeCoreCount }}</span>
         <small>{{ t("home.activeCore") }}</small>
       </div>
     </aside>
