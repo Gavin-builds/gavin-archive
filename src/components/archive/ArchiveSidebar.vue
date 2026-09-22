@@ -94,7 +94,7 @@ function navigate(path: string) {
       >
         <div class="group-title">
           <span class="group-line"></span>
-          <span>{{ t(group.titleKey) }}</span>
+          <span class="group-name">{{ t(group.titleKey) }}</span>
         </div>
 
         <nav class="nav-list">
@@ -110,7 +110,7 @@ function navigate(path: string) {
               {{ item.number }}
             </span>
 
-            <span class="nav-label">
+            <span class="nav-label" :data-text="t(item.labelKey)">
               {{ t(item.labelKey) }}
             </span>
 
@@ -242,6 +242,8 @@ function navigate(path: string) {
 }
 
 .nav-item {
+  position: relative;
+
   width: 100%;
   height: 46px;
 
@@ -262,6 +264,8 @@ function navigate(path: string) {
   cursor: pointer;
 
   text-align: left;
+
+  overflow: hidden;
 
   transition:
     color var(--transition-fast),
@@ -296,6 +300,283 @@ function navigate(path: string) {
   box-shadow:
     inset 3px 0 0 var(--accent),
     0 0 18px rgba(var(--accent-rgb), 0.035);
+}
+
+
+/* ========================================
+ * Cyber interactions: scan sweep / energy line
+ * ======================================== */
+
+.nav-item::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(var(--accent-rgb), 0.16) 50%,
+    transparent 100%
+  );
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+.nav-item:not(.active):hover::before {
+  animation: nav-sweep 0.65s ease;
+}
+
+.nav-item.active::before {
+  opacity: 1;
+
+  animation: nav-sweep-active 2.8s linear infinite;
+}
+
+.nav-item::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  width: 0;
+  height: 1px;
+
+  background: linear-gradient(90deg, var(--accent), transparent);
+
+  box-shadow: 0 0 6px rgba(var(--accent-rgb), 0.7);
+
+  transition: width var(--transition-normal);
+}
+
+.nav-item:not(.active):hover::after {
+  width: 62%;
+}
+
+.nav-item.active::after {
+  width: 100%;
+}
+
+
+/* ========================================
+ * Number flicker / active glow
+ * ======================================== */
+
+.nav-item:not(.active):hover .nav-number {
+  color: var(--accent);
+
+  animation: nav-number-flicker 0.5s ease;
+}
+
+.nav-item.active .nav-number {
+  animation: nav-number-glow 2.4s ease-in-out infinite;
+}
+
+
+/* ========================================
+ * Label RGB glitch split
+ * ======================================== */
+
+.nav-label {
+  position: relative;
+}
+
+.nav-label::before,
+.nav-label::after {
+  content: attr(data-text);
+
+  position: absolute;
+  inset: 0;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+.nav-item:hover .nav-label::before {
+  opacity: 0.85;
+
+  color: var(--accent);
+
+  animation: nav-glitch-a 0.4s steps(2, end) infinite;
+}
+
+.nav-item:hover .nav-label::after {
+  opacity: 0.85;
+
+  color: var(--accent-secondary);
+
+  animation: nav-glitch-b 0.34s steps(2, end) infinite;
+}
+
+
+/* ========================================
+ * Group title terminal cursor
+ * ======================================== */
+
+.group-name::after {
+  content: "_";
+
+  margin-left: 6px;
+
+  color: var(--accent);
+
+  animation: nav-cursor-blink 1.1s steps(1, end) infinite;
+}
+
+
+/* ========================================
+ * Bottom indicator breathing
+ * ======================================== */
+
+.sidebar-decoration span:first-child {
+  animation: nav-dot-breathe 2.2s ease-in-out infinite;
+}
+
+
+@keyframes nav-sweep {
+  from {
+    transform: translateX(-130%) skewX(-14deg);
+
+    opacity: 0;
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  to {
+    transform: translateX(240%) skewX(-14deg);
+
+    opacity: 0;
+  }
+}
+
+@keyframes nav-sweep-active {
+  0% {
+    transform: translateX(-140%) skewX(-14deg);
+  }
+
+  45%,
+  100% {
+    transform: translateX(240%) skewX(-14deg);
+  }
+}
+
+@keyframes nav-number-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  25% {
+    opacity: 0.35;
+
+    text-shadow: 0 0 8px rgba(var(--accent-rgb), 0.9);
+  }
+
+  55% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes nav-number-glow {
+  0%,
+  100% {
+    text-shadow: none;
+  }
+
+  50% {
+    text-shadow: 0 0 10px rgba(var(--pink-rgb), 0.8);
+  }
+}
+
+@keyframes nav-glitch-a {
+  0% {
+    clip-path: inset(0 0 78% 0);
+
+    transform: translate(-2px, -1px);
+  }
+
+  25% {
+    clip-path: inset(58% 0 12% 0);
+
+    transform: translate(2px, 1px);
+  }
+
+  50% {
+    clip-path: inset(18% 0 56% 0);
+
+    transform: translate(-1px, 0);
+  }
+
+  75% {
+    clip-path: inset(80% 0 0 0);
+
+    transform: translate(2px, -1px);
+  }
+
+  100% {
+    clip-path: inset(0 0 55% 0);
+
+    transform: translate(-2px, 1px);
+  }
+}
+
+@keyframes nav-glitch-b {
+  0% {
+    clip-path: inset(62% 0 8% 0);
+
+    transform: translate(2px, 1px);
+  }
+
+  30% {
+    clip-path: inset(8% 0 72% 0);
+
+    transform: translate(-2px, 0);
+  }
+
+  60% {
+    clip-path: inset(78% 0 4% 0);
+
+    transform: translate(1px, -1px);
+  }
+
+  100% {
+    clip-path: inset(30% 0 42% 0);
+
+    transform: translate(-1px, 1px);
+  }
+}
+
+@keyframes nav-cursor-blink {
+  0%,
+  55% {
+    opacity: 1;
+  }
+
+  56%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes nav-dot-breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 4px var(--accent);
+  }
+
+  50% {
+    box-shadow: 0 0 12px var(--accent);
+  }
 }
 
 
@@ -455,6 +736,27 @@ function navigate(path: string) {
 
   .nav-arrow {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-item::before,
+  .nav-item::after,
+  .nav-label::before,
+  .nav-label::after,
+  .nav-number,
+  .group-name::after,
+  .sidebar-decoration span:first-child {
+    animation: none !important;
+  }
+
+  .nav-label::before,
+  .nav-label::after {
+    display: none;
+  }
+
+  .nav-item::after {
+    transition: none;
   }
 }
 </style>

@@ -59,7 +59,7 @@ onUnmounted(() => {
       </div>
 
       <div class="brand-info">
-        <div class="brand-name">GAVIN ARCHIVE</div>
+        <div class="brand-name" data-text="GAVIN ARCHIVE">GAVIN ARCHIVE</div>
 
         <div class="brand-subtitle">{{ t("archive.headerSubtitle") }}</div>
       </div>
@@ -67,7 +67,11 @@ onUnmounted(() => {
 
     <div class="header-center">
       <span class="header-label">{{ t("common.current") }}</span>
-      <span class="header-page">{{
+      <span
+        class="header-page"
+        :key="currentPage"
+        :data-text="currentPage === '404' ? '404' : t(currentPage)"
+      >{{
         currentPage === "404" ? "404" : t(currentPage)
       }}</span>
     </div>
@@ -117,7 +121,7 @@ onUnmounted(() => {
   z-index: 20;
 }
 
-/* HUD top line */
+/* HUD top line: traveling energy beam */
 
 .archive-header::before {
   content: "";
@@ -125,13 +129,22 @@ onUnmounted(() => {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
 
+  width: 200px;
   height: 1px;
 
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent),
+    transparent
+  );
 
-  opacity: 0.7;
+  box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.6);
+
+  opacity: 0.75;
+
+  animation: header-beam 5.5s linear infinite;
 }
 
 /* ========================================
@@ -190,6 +203,38 @@ onUnmounted(() => {
   background: var(--accent-secondary);
 }
 
+/* conic scan ring on hover */
+.brand-mark::before {
+  content: "";
+
+  position: absolute;
+  inset: -5px;
+
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 250deg,
+    rgba(var(--accent-rgb), 0.9) 310deg,
+    transparent 360deg
+  );
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+.brand-mark:hover::before {
+  opacity: 1;
+
+  animation: header-scan-ring 0.85s linear infinite;
+}
+
+.brand-mark:hover {
+  box-shadow:
+    var(--glow-cyan),
+    0 0 18px rgba(var(--pink-rgb), 0.35);
+}
+
 /* ========================================
  * Brand text
  * ======================================== */
@@ -201,6 +246,8 @@ onUnmounted(() => {
 }
 
 .brand-name {
+  position: relative;
+
   color: var(--text);
 
   font-family: var(--font-mono);
@@ -208,6 +255,36 @@ onUnmounted(() => {
   font-weight: 800;
 
   letter-spacing: 0.14em;
+
+  animation: header-flicker 7s linear infinite;
+}
+
+.brand-name::before,
+.brand-name::after {
+  content: attr(data-text);
+
+  position: absolute;
+  inset: 0;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+.header-brand:hover .brand-name::before {
+  opacity: 0.85;
+
+  color: var(--accent);
+
+  animation: header-brand-glitch-a 0.4s steps(2, end) infinite;
+}
+
+.header-brand:hover .brand-name::after {
+  opacity: 0.85;
+
+  color: var(--accent-secondary);
+
+  animation: header-brand-glitch-b 0.34s steps(2, end) infinite;
 }
 
 .brand-subtitle {
@@ -239,9 +316,26 @@ onUnmounted(() => {
 }
 
 .header-page {
+  position: relative;
+
   color: var(--accent);
 
   text-shadow: 0 0 12px rgba(var(--accent-rgb), 0.45);
+
+  animation: header-page-boot 0.55s steps(6, end) both;
+}
+
+.header-page::before {
+  content: attr(data-text);
+
+  position: absolute;
+  inset: 0;
+
+  color: var(--accent-secondary);
+
+  pointer-events: none;
+
+  animation: header-page-chromatic 0.55s ease both;
 }
 
 /* ========================================
@@ -270,6 +364,8 @@ onUnmounted(() => {
 }
 
 .status-dot {
+  position: relative;
+
   width: 7px;
   height: 7px;
 
@@ -278,6 +374,20 @@ onUnmounted(() => {
   background: var(--accent);
 
   box-shadow: var(--glow-cyan);
+
+  animation: header-dot-pulse 1.6s ease-in-out infinite;
+}
+
+.status-dot::after {
+  content: "";
+
+  position: absolute;
+  inset: -3px;
+
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+
+  animation: header-radar-ping 2.4s ease-out infinite;
 }
 
 .header-time {
@@ -285,6 +395,201 @@ onUnmounted(() => {
   gap: 12px;
 
   color: var(--text-muted);
+
+  animation: header-time-flicker 6s linear infinite;
+}
+
+/* ========================================
+ * Cyber interaction keyframes
+ * ======================================== */
+
+@keyframes header-beam {
+  from {
+    transform: translateX(-220px);
+  }
+
+  to {
+    transform: translateX(calc(100vw + 220px));
+  }
+}
+
+@keyframes header-scan-ring {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes header-flicker {
+  0%,
+  92%,
+  100% {
+    opacity: 1;
+  }
+
+  93% {
+    opacity: 0.55;
+  }
+
+  94% {
+    opacity: 1;
+  }
+
+  96% {
+    opacity: 0.75;
+  }
+}
+
+@keyframes header-brand-glitch-a {
+  0% {
+    clip-path: inset(0 0 70% 0);
+
+    transform: translate(-2px, -1px);
+  }
+
+  25% {
+    clip-path: inset(55% 0 15% 0);
+
+    transform: translate(2px, 1px);
+  }
+
+  50% {
+    clip-path: inset(20% 0 50% 0);
+
+    transform: translate(-1px, 0);
+  }
+
+  75% {
+    clip-path: inset(75% 0 0 0);
+
+    transform: translate(2px, -1px);
+  }
+
+  100% {
+    clip-path: inset(0 0 60% 0);
+
+    transform: translate(-2px, 1px);
+  }
+}
+
+@keyframes header-brand-glitch-b {
+  0% {
+    clip-path: inset(60% 0 10% 0);
+
+    transform: translate(2px, 1px);
+  }
+
+  30% {
+    clip-path: inset(10% 0 70% 0);
+
+    transform: translate(-2px, 0);
+  }
+
+  60% {
+    clip-path: inset(75% 0 5% 0);
+
+    transform: translate(1px, -1px);
+  }
+
+  100% {
+    clip-path: inset(30% 0 40% 0);
+
+    transform: translate(-1px, 1px);
+  }
+}
+
+@keyframes header-page-boot {
+  0% {
+    opacity: 0;
+
+    transform: translateX(10px);
+
+    filter: blur(2px);
+  }
+
+  55% {
+    opacity: 1;
+
+    transform: translateX(-3px);
+  }
+
+  100% {
+    opacity: 1;
+
+    transform: translateX(0);
+
+    filter: blur(0);
+  }
+}
+
+@keyframes header-page-chromatic {
+  0% {
+    opacity: 0.9;
+
+    transform: translateX(-3px);
+
+    clip-path: inset(0 0 65% 0);
+  }
+
+  45% {
+    opacity: 0.7;
+
+    transform: translateX(3px);
+
+    clip-path: inset(60% 0 5% 0);
+  }
+
+  100% {
+    opacity: 0;
+
+    transform: translateX(0);
+
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+@keyframes header-dot-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes header-radar-ping {
+  from {
+    transform: scale(0.6);
+
+    opacity: 0.9;
+  }
+
+  to {
+    transform: scale(2.8);
+
+    opacity: 0;
+  }
+}
+
+@keyframes header-time-flicker {
+  0%,
+  96%,
+  100% {
+    opacity: 1;
+  }
+
+  97% {
+    opacity: 0.45;
+  }
+
+  98% {
+    opacity: 1;
+  }
+
+  99% {
+    opacity: 0.7;
+  }
 }
 
 /* ========================================
@@ -327,6 +632,28 @@ onUnmounted(() => {
     gap: 1px;
 
     text-align: right;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .archive-header::before,
+  .brand-mark::before,
+  .brand-name,
+  .brand-name::before,
+  .brand-name::after,
+  .header-page,
+  .header-page::before,
+  .status-dot,
+  .status-dot::after,
+  .header-time {
+    animation: none !important;
+  }
+
+  .brand-name::before,
+  .brand-name::after,
+  .header-page::before,
+  .status-dot::after {
+    display: none;
   }
 }
 </style>
