@@ -66,6 +66,7 @@ export const blogPosts: BlogPost[] = [
     readTime: 8,
     type: 'ARTICLE',
     relatedProjects: ['ai-control-console'],
+    cover: '/images/blog/ai-system-log.svg',
     content: [
       { zh: '调用一次 AI 模型并不复杂，但围绕多个模型、多个能力和多个任务构建系统，则是另一类问题。', en: 'Calling an AI model is simple enough, but building a system around multiple models, capabilities and tasks is a different engineering problem.' },
       { zh: '不同提供商的 API、能力和返回格式不同，业务逻辑不应该直接依赖某一家模型。', en: 'Provider APIs, capabilities and response formats differ, so business logic should not depend directly on any single provider.' },
@@ -88,6 +89,7 @@ export const blogPosts: BlogPost[] = [
     ],
     readTime: 6,
     type: 'NOTE',
+    cover: '/images/blog/dev-tool-log.svg',
     content: [
       { zh: '开发者工具真正有用的时候，通常不是因为它提供了更多功能，而是因为它消除了一个重复发生的摩擦点。', en: 'A developer tool becomes useful when it removes friction from a workflow that happens repeatedly.' },
       { zh: '真正有价值的部分往往不是 UI，而是它替开发者省下了多少认知和机械工作。', en: 'The valuable part is often not the UI, but how much cognitive and mechanical work the tool removes.' },

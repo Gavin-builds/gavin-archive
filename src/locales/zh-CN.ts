@@ -225,6 +225,10 @@ export default {
     open: '打开 ↗',
     repositories: '公开仓库',
     unavailable: 'GitHub 暂时不可用',
+    errors: {
+      unavailable: 'GitHub 服务暂时不可用，请稍后重试。',
+      network: '网络请求失败，请检查网络连接后重试。',
+    },
     retry: '重试',
     noDescription: '暂无描述',
   },

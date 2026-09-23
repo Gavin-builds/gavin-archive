@@ -24,11 +24,13 @@ export interface GitHubProfile {
 
 const USERNAME = 'Gavin-builds'
 
+export type GitHubErrorCode = 'unavailable' | 'network'
+
 export function useGitHub() {
   const profile = ref<GitHubProfile | null>(null)
   const repositories = ref<GitHubRepository[]>([])
   const loading = ref(true)
-  const error = ref<string | null>(null)
+  const error = ref<GitHubErrorCode | null>(null)
 
   const fetchGitHub = async () => {
     loading.value = true
@@ -41,14 +43,17 @@ export function useGitHub() {
       ])
 
       if (!profileResponse.ok || !repositoriesResponse.ok) {
-        throw new Error('GitHub API unavailable')
+        throw new Error('unavailable')
       }
 
       profile.value = await profileResponse.json() as GitHubProfile
       const allRepositories = await repositoriesResponse.json() as GitHubRepository[]
       repositories.value = allRepositories.filter(repository => !repository.fork)
     } catch (cause) {
-      error.value = cause instanceof Error ? cause.message : 'Unknown error'
+      // HTTP 状态异常与网络中断分别给视图一个可翻译的错误码
+      error.value = cause instanceof Error && cause.message === 'unavailable'
+        ? 'unavailable'
+        : 'network'
     } finally {
       loading.value = false
     }

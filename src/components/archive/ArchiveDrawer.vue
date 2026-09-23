@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch } from 'vue'
+import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
@@ -16,9 +16,32 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
+const closeButton = ref<HTMLButtonElement | null>(null)
+
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape') {
+    emit('close')
+  }
+}
+
 watch(() => props.open, value => {
   if (typeof document === 'undefined') return
   document.body.style.overflow = value ? 'hidden' : ''
+
+  if (value) {
+    window.addEventListener('keydown', handleKeydown)
+    // 打开后把焦点移入抽屉，便于 Esc / Tab 在弹窗内操作
+    nextTick(() => closeButton.value?.focus())
+  } else {
+    window.removeEventListener('keydown', handleKeydown)
+  }
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown)
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = ''
+  }
 })
 </script>
 
@@ -32,7 +55,7 @@ watch(() => props.open, value => {
               <span class="drawer__eyebrow">{{ eyebrow }}</span>
               <span v-if="meta" class="drawer__meta">{{ meta }}</span>
             </div>
-            <button class="drawer__close" type="button" :aria-label="t('common.close')" @click="emit('close')">
+            <button ref="closeButton" class="drawer__close" type="button" :aria-label="t('common.close')" @click="emit('close')">
               ×
             </button>
           </div>

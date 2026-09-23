@@ -45,7 +45,7 @@ const formatDate = (value: string) =>
 
     <div v-else-if="error" class="state state--error">
       <strong>{{ t("github.unavailable") }}</strong>
-      <span>{{ error }}</span>
+      <span>{{ t(`github.errors.${error}`) }}</span>
       <button @click="refresh">{{ t("github.retry") }}</button>
     </div>
 

@@ -4,15 +4,43 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gavin-archive</title>
+    <title>GAVIN ARCHIVE</title>
+    <meta
+      name="description"
+      content="Gavin Archive — a developer archive for projects, lab experiments, engineering notes and open-source work, with bilingual Chinese and English content."
+    />
+    <meta name="theme-color" content="#05050a" />
+
+    <!-- Open Graph / 社交分享卡片 -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="GAVIN ARCHIVE" />
+    <meta property="og:title" content="GAVIN ARCHIVE" />
+    <meta
+      property="og:description"
+      content="A developer archive for projects, lab experiments, engineering notes and open-source work."
+    />
+    <meta property="og:image" content="/favicon.svg" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="GAVIN ARCHIVE" />
+    <meta
+      name="twitter:description"
+      content="A developer archive for projects, lab experiments, engineering notes and open-source work."
+    />
     <script>
-      // 在首屏渲染前恢复主题，避免刷新时闪白/闪黑
+      // 在首屏渲染前恢复主题与语言，避免刷新时闪白/闪黑和 lang 错误
       (function () {
         var saved = localStorage.getItem('gavin-theme');
         document.documentElement.setAttribute(
           'data-theme',
           saved === 'light' ? 'light' : 'dark',
         );
+
+        var savedLocale = localStorage.getItem('gavin-locale');
+        var isZh =
+          savedLocale === 'zh' ||
+          (savedLocale !== 'en' &&
+            navigator.language.toLowerCase().indexOf('zh') === 0);
+        document.documentElement.lang = isZh ? 'zh-CN' : 'en';
       })();
     </script>
   </head>

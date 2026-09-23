@@ -85,7 +85,7 @@ export const projects: Project[] = [
       'WebSocket', 'Ant Design 5', 'Zustand', 'Vite',
     ],
     featured: true,
-    cover: '/images/projects/ai-context-manager.svg',
+    cover: '/images/projects/ai-control-console.svg',
     accent: 'purple',
     date: '2026',
     context: {

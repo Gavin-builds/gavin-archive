@@ -1,11 +1,34 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { blogPosts } from "../data/blog";
 import { localize } from "../types/content";
 
 const { t, locale } = useI18n();
 const query = ref("");
+const searchInput = ref<HTMLInputElement | null>(null);
+
+// ⌘K / Ctrl+K 聚焦搜索，Esc 失焦
+const handleShortcut = (event: KeyboardEvent) => {
+  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+    event.preventDefault();
+    searchInput.value?.focus();
+    searchInput.value?.select();
+  }
+
+  if (event.key === "Escape" && document.activeElement === searchInput.value) {
+    searchInput.value?.blur();
+  }
+};
+
+onMounted(() => {
+  window.addEventListener("keydown", handleShortcut);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("keydown", handleShortcut);
+});
+
 const text = (value: { zh: string; en: string }) =>
   localize(value, locale.value);
 const filteredPosts = computed(() => {
@@ -36,6 +59,7 @@ const rest = computed(() => filteredPosts.value.slice(1));
         <div>
           <b>›</b
           ><input
+            ref="searchInput"
             v-model="query"
             :placeholder="t('blog.searchPlaceholder')"
           /><kbd>⌘ K</kbd>

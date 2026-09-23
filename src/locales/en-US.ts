@@ -225,6 +225,10 @@ export default {
     open: 'OPEN ↗',
     repositories: 'PUBLIC REPOSITORIES',
     unavailable: 'GITHUB UNAVAILABLE',
+    errors: {
+      unavailable: 'GitHub service is temporarily unavailable, please try again later.',
+      network: 'Network request failed, check your connection and try again.',
+    },
     retry: 'RETRY',
     noDescription: 'No description',
   },

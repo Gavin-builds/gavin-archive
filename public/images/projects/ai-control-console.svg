@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#070b14"/><stop offset="1" stop-color="#0d0815"/></linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#00e5ff" stroke-opacity=".07"/></pattern>
+  </defs>
+  <rect width="1200" height="760" fill="url(#bg)"/>
+  <rect width="1200" height="760" fill="url(#grid)"/>
+  <g stroke="#00e5ff" stroke-width="2" fill="#08131a">
+    <rect x="110" y="120" width="980" height="470"/>
+    <rect x="110" y="120" width="980" height="52" stroke-opacity=".55"/>
+    <rect x="280" y="210" width="360" height="150"/>
+    <rect x="690" y="210" width="360" height="150"/>
+    <rect x="280" y="400" width="360" height="150"/>
+    <rect x="690" y="400" width="360" height="150"/>
+  </g>
+  <g fill="#ff2bd6">
+    <circle cx="138" cy="146" r="5"/><circle cx="158" cy="146" r="5" fill="#e6b800" fill-opacity=".8"/><circle cx="178" cy="146" r="5" fill="#2ee59d" fill-opacity=".8"/>
+  </g>
+  <g stroke="#00e5ff" stroke-opacity=".35" stroke-width="3">
+    <path d="M320 320h270" fill="none"/>
+    <path d="M730 320h270" fill="none"/>
+  </g>
+  <g stroke="#ff2bd6" stroke-opacity=".5" fill="none">
+    <rect x="320" y="440" width="120" height="72"/>
+    <rect x="470" y="470" width="120" height="42"/>
+  </g>
+  <g font-family="monospace">
+    <text x="210" y="152" fill="#6af2ff" font-size="14" letter-spacing="2">AI CONTROL CONSOLE</text>
+    <text x="310" y="250" fill="#00e5ff" font-size="14">VISUAL ANALYSIS</text>
+    <text x="310" y="280" fill="#68738d" font-size="11">CV / WEBSOCKET STREAM</text>
+    <text x="720" y="250" fill="#00e5ff" font-size="14">NLP ENGINE</text>
+    <text x="720" y="280" fill="#68738d" font-size="11">INTENT / ENTITY / SENTIMENT</text>
+    <text x="310" y="430" fill="#ff2bd6" font-size="13">TASK QUEUE</text>
+    <text x="720" y="430" fill="#00e5ff" font-size="14">SMART SEARCH</text>
+    <text x="720" y="462" fill="#68738d" font-size="11">INDEX / RANK / RETRIEVE</text>
+    <text x="720" y="492" fill="#68738d" font-size="11">REAL-TIME DASHBOARD</text>
+  </g>
+  <text x="110" y="670" fill="#00e5ff" font-family="monospace" font-size="13" letter-spacing="3">AI CONTROL CONSOLE / FULL-STACK AI PLATFORM</text>
+</svg>
