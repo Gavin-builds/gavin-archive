@@ -8,8 +8,6 @@ import ArchiveFooter from "../components/archive/ArchiveFooter.vue";
 
 const route = useRoute();
 
-const scrollContainer = ref<HTMLElement | null>(null);
-
 // 路由切换时的赛博扫描光束，每次 fullPath 变化重播
 const sweepKey = ref(0);
 
@@ -27,10 +25,9 @@ const onSweepEnd = (event: AnimationEvent) => {
   }
 };
 
+// 页面采用自然文档流，路由切换时把窗口滚动复位到顶部
 const resetScrollTop = () => {
-  if (scrollContainer.value) {
-    scrollContainer.value.scrollTop = 0;
-  }
+  window.scrollTo(0, 0);
 };
 
 const currentPage = computed(() => {
@@ -73,7 +70,7 @@ const currentPage = computed(() => {
           class="archive-main__rail archive-main__rail--right"
           aria-hidden="true"
         />
-        <div ref="scrollContainer" class="archive-scroll">
+        <div class="archive-scroll">
           <div class="archive-content">
             <RouterView v-slot="{ Component, route: viewRoute }">
               <Transition
@@ -104,9 +101,8 @@ const currentPage = computed(() => {
 
 <style scoped>
 .archive-shell {
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   background: var(--bg);
@@ -116,13 +112,11 @@ const currentPage = computed(() => {
   flex: 1;
   display: grid;
   grid-template-columns: 240px minmax(0, 1fr);
-  min-height: 0;
 }
 .archive-main {
   min-width: 0;
-  min-height: 0;
   position: relative;
-  overflow: hidden;
+  overflow-x: clip;
   background:
     radial-gradient(
       circle at 82% 14%,
@@ -150,9 +144,6 @@ const currentPage = computed(() => {
 .archive-scroll {
   position: relative;
   z-index: 2;
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
 }
 .archive-main__rail {
   position: absolute;
@@ -173,7 +164,6 @@ const currentPage = computed(() => {
   position: relative;
   z-index: 2;
   width: min(100%, 1480px);
-  min-height: 100%;
   margin: 0 auto;
   padding: 52px 64px 80px;
 }

@@ -342,22 +342,26 @@ function navigate(path: string) {
   left: 0;
   bottom: 0;
 
-  width: 0;
+  width: 100%;
   height: 1px;
 
   background: linear-gradient(90deg, var(--accent), transparent);
 
   box-shadow: 0 0 6px rgba(var(--accent-rgb), 0.7);
 
-  transition: width var(--transition-normal);
+  /* 用 scaleX 代替 width，避免每帧触发布局；宽度比例交给 transform 值表达 */
+  transform: scaleX(0);
+  transform-origin: left center;
+
+  transition: transform var(--transition-normal);
 }
 
 .nav-item:not(.active):hover::after {
-  width: 62%;
+  transform: scaleX(0.62);
 }
 
 .nav-item.active::after {
-  width: 100%;
+  transform: scaleX(1);
 }
 
 

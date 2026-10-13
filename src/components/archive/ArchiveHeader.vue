@@ -82,10 +82,10 @@ onUnmounted(() => {
 
         <LanguageSwitcher />
 
-        <div class="status-item">
+        <!-- <div class="status-item">
           <span class="status-dot" />
           {{ t("common.online") }}
-        </div>
+        </div> -->
       </div>
 
       <div class="header-time">
@@ -119,32 +119,6 @@ onUnmounted(() => {
 
   position: relative;
   z-index: 20;
-}
-
-/* HUD top line: traveling energy beam */
-
-.archive-header::before {
-  content: "";
-
-  position: absolute;
-  top: 0;
-  left: 0;
-
-  width: 200px;
-  height: 1px;
-
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--accent),
-    transparent
-  );
-
-  box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.6);
-
-  opacity: 0.75;
-
-  animation: header-beam 5.5s linear infinite;
 }
 
 /* ========================================
@@ -209,14 +183,6 @@ onUnmounted(() => {
 
   position: absolute;
   inset: -5px;
-
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    transparent 250deg,
-    rgba(var(--accent-rgb), 0.9) 310deg,
-    transparent 360deg
-  );
 
   opacity: 0;
 
@@ -403,16 +369,6 @@ onUnmounted(() => {
  * Cyber interaction keyframes
  * ======================================== */
 
-@keyframes header-beam {
-  from {
-    transform: translateX(-220px);
-  }
-
-  to {
-    transform: translateX(calc(100vw + 220px));
-  }
-}
-
 @keyframes header-scan-ring {
   to {
     transform: rotate(360deg);
@@ -502,8 +458,6 @@ onUnmounted(() => {
     opacity: 0;
 
     transform: translateX(10px);
-
-    filter: blur(2px);
   }
 
   55% {
@@ -516,8 +470,6 @@ onUnmounted(() => {
     opacity: 1;
 
     transform: translateX(0);
-
-    filter: blur(0);
   }
 }
 
@@ -636,7 +588,6 @@ onUnmounted(() => {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .archive-header::before,
   .brand-mark::before,
   .brand-name,
   .brand-name::before,

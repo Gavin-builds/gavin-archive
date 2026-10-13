@@ -54,6 +54,11 @@ let animationFrame = 0;
 let resizeHandler: (() => void) | null = null;
 let mouseHandler: ((event: MouseEvent) => void) | null = null;
 
+// 减弱动态效果：不启动粒子循环与鼠标视差
+const prefersReducedMotion =
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 onMounted(() => {
   const element = scene.value;
   const canvasElement = canvas.value;
@@ -98,7 +103,10 @@ onMounted(() => {
   const createParticles = () => {
     particles.length = 0;
 
-    const count = Math.min(130, Math.floor((width * height) / 11000));
+    // 降低粒子上限并提高面积分母，减少绘制与连线配对开销
+    const count = prefersReducedMotion
+      ? 0
+      : Math.min(80, Math.floor((width * height) / 16000));
 
     for (let index = 0; index < count; index += 1) {
       particles.push({
@@ -112,8 +120,12 @@ onMounted(() => {
     }
   };
 
-  const drawParticles = () => {
+  const LINK_DISTANCE = 120;
+
+  const renderFrame = () => {
     ctx.clearRect(0, 0, width, height);
+
+    const channels = particleChannels();
 
     for (const particle of particles) {
       particle.x += particle.vx;
@@ -129,37 +141,52 @@ onMounted(() => {
 
       ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
 
-      ctx.fillStyle = `rgba(${particleChannels()},${particle.alpha})`;
+      ctx.fillStyle = `rgba(${channels},${particle.alpha})`;
 
       ctx.fill();
     }
 
     // connect nearby particles
     for (let i = 0; i < particles.length; i += 1) {
+      const a = particles[i];
+
       for (let j = i + 1; j < particles.length; j += 1) {
-        const a = particles[i];
         const b = particles[j];
 
         const dx = a.x - b.x;
         const dy = a.y - b.y;
 
+        // 先用绝对值剪枝，跳过绝大多数配对后再算 sqrt
+        if (
+          dx > LINK_DISTANCE ||
+          dx < -LINK_DISTANCE ||
+          dy > LINK_DISTANCE ||
+          dy < -LINK_DISTANCE
+        ) {
+          continue;
+        }
+
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance > 120) continue;
+        if (distance > LINK_DISTANCE) continue;
 
-        const opacity = (1 - distance / 120) * 0.08;
+        const opacity = (1 - distance / LINK_DISTANCE) * 0.08;
 
         ctx.beginPath();
 
         ctx.moveTo(a.x, a.y);
         ctx.lineTo(b.x, b.y);
 
-        ctx.strokeStyle = `rgba(${particleChannels()},${opacity})`;
+        ctx.strokeStyle = `rgba(${channels},${opacity})`;
         ctx.lineWidth = 1;
 
         ctx.stroke();
       }
     }
+  };
+
+  const drawParticles = () => {
+    renderFrame();
 
     animationFrame = requestAnimationFrame(drawParticles);
   };
@@ -169,14 +196,30 @@ onMounted(() => {
     createParticles();
   };
 
+  // 用 rAF 合并一帧内的多次 mousemove，避免高频写 CSS 变量
+  let pointerFrame = 0;
+  let pointerX = 0;
+  let pointerY = 0;
+
+  const applyPointer = () => {
+    pointerFrame = 0;
+
+    element.style.setProperty("--mouse-x", `${pointerX}`);
+
+    element.style.setProperty("--mouse-y", `${pointerY}`);
+  };
+
   mouseHandler = (event: MouseEvent) => {
-    mouseX.value = (event.clientX / window.innerWidth - 0.5) * 2;
+    pointerX = (event.clientX / window.innerWidth - 0.5) * 2;
 
-    mouseY.value = (event.clientY / window.innerHeight - 0.5) * 2;
+    pointerY = (event.clientY / window.innerHeight - 0.5) * 2;
 
-    element.style.setProperty("--mouse-x", `${mouseX.value}`);
+    mouseX.value = pointerX;
+    mouseY.value = pointerY;
 
-    element.style.setProperty("--mouse-y", `${mouseY.value}`);
+    if (pointerFrame === 0) {
+      pointerFrame = requestAnimationFrame(applyPointer);
+    }
   };
 
   resize();
@@ -185,9 +228,14 @@ onMounted(() => {
 
   window.addEventListener("resize", resizeHandler);
 
-  window.addEventListener("mousemove", mouseHandler);
+  if (prefersReducedMotion) {
+    // 静态绘制一帧即可
+    renderFrame();
+  } else {
+    window.addEventListener("mousemove", mouseHandler);
 
-  drawParticles();
+    drawParticles();
+  }
 });
 
 onBeforeUnmount(() => {
@@ -411,8 +459,6 @@ onBeforeUnmount(() => {
     calc(var(--mouse-y, 0) * -8px)
   );
 
-  transition: transform 0.15s linear;
-
   mask-image: radial-gradient(circle at center, black, transparent 75%);
 }
 
@@ -448,6 +494,8 @@ onBeforeUnmount(() => {
 
   z-index: -3;
 
+  /* 只动 opacity：blur(100px) 的光栅层可被缓存，
+     若动画 scale 会每帧重新光栅整个模糊表面 */
   animation: glow 8s ease-in-out infinite alternate;
 }
 
@@ -586,8 +634,6 @@ onBeforeUnmount(() => {
 
   transform: translateY(-50%)
     translate(calc(var(--mouse-x, 0) * 4px), calc(var(--mouse-y, 0) * 4px));
-
-  transition: transform 0.15s linear;
 }
 
 .panel--left {
@@ -685,8 +731,6 @@ onBeforeUnmount(() => {
     calc(var(--mouse-x, 0) * 7px),
     calc(var(--mouse-y, 0) * 7px)
   );
-
-  transition: transform 0.15s linear;
 }
 
 .hero__content {
@@ -858,8 +902,6 @@ onBeforeUnmount(() => {
     calc(var(--mouse-x, 0) * -12px),
     calc(var(--mouse-y, 0) * -12px)
   );
-
-  transition: transform 0.15s linear;
 }
 
 .hero__core-ring {
@@ -1041,13 +1083,11 @@ onBeforeUnmount(() => {
 }
 
 @keyframes glow {
-  from {
-    transform: scale(0.9);
+  0% {
     opacity: 0.4;
   }
 
-  to {
-    transform: scale(1.1);
+  100% {
     opacity: 0.8;
   }
 }
@@ -1191,6 +1231,17 @@ onBeforeUnmount(() => {
 
   .coordinates {
     display: none;
+  }
+}
+
+/* 桌面端鼠标视差：持续提升合成层，避免逐帧 transform 导致的层创建/销毁抖动；
+   触屏设备无 mousemove，不分配这些层，节省显存 */
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .landing__grid,
+  .panel,
+  .hero,
+  .hero__core {
+    will-change: transform;
   }
 }
 
