@@ -8,6 +8,7 @@ export default {
     view: 'VIEW',
     open: 'OPEN',
     close: 'CLOSE',
+    menu: 'MENU',
     language: 'LANGUAGE',
     chinese: '中文',
     english: 'English',

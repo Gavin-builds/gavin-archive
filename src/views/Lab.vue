@@ -146,11 +146,10 @@ const filteredExperiments = computed(() =>
 
 <style scoped>
 .lab-hero {
-  min-height: 300px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 300px;
   gap: 48px;
-  padding-bottom: 40px;
+  padding-bottom: 48px;
   border-bottom: 1px solid var(--line);
 }
 .eyebrow,
@@ -184,9 +183,7 @@ const filteredExperiments = computed(() =>
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 12px;
-  padding: 18px;
-  border: 1px solid var(--line);
-  background: var(--surface);
+  padding: 0 0 4px;
   font-family: var(--font-mono);
 }
 .lab-runtime span,

@@ -143,11 +143,10 @@ const archiveEntries = computed(() =>
 
 <style scoped>
 .archive-intro {
-  min-height: 300px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 180px;
   gap: 40px;
-  padding-bottom: 42px;
+  padding-bottom: 48px;
   border-bottom: 1px solid var(--line);
 }
 .eyebrow,
@@ -174,9 +173,7 @@ const archiveEntries = computed(() =>
 }
 .archive-counter {
   align-self: end;
-  padding: 18px;
-  border: 1px solid var(--line);
-  background: var(--surface);
+  padding: 0 0 4px;
   font-family: var(--font-mono);
 }
 .archive-counter span,
@@ -189,7 +186,8 @@ const archiveEntries = computed(() =>
 .archive-counter strong {
   display: block;
   margin: 8px 0;
-  font-size: 48px;
+  font-size: 40px;
+  font-weight: 600;
   line-height: 1;
   color: var(--text);
 }

@@ -95,11 +95,10 @@ const formatDate = (value: string) =>
 }
 .header {
   position: relative;
-  min-height: 300px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 280px auto;
+  grid-template-columns: minmax(0, 1fr) 240px auto;
   gap: 28px;
-  padding-bottom: 44px;
+  padding-bottom: 48px;
   border-bottom: 1px solid var(--line);
   overflow: hidden;
 }
@@ -131,20 +130,18 @@ h1 {
   font-size: var(--fs-sm);
   text-decoration: none;
   letter-spacing: 0.1em;
-  padding: 10px 12px;
-  border: 1px solid var(--accent-line);
-  background: var(--accent-soft);
+  padding: 6px 2px;
+  border-bottom: 1px solid var(--accent-line);
 }
 .profile-link:hover {
-  box-shadow: var(--glow-cyan);
+  color: var(--accent-light);
 }
 .github__signal {
   position: relative;
-  height: 190px;
+  height: 150px;
   display: grid;
   place-items: center;
   overflow: hidden;
-  border-left: 1px solid var(--line);
   background: radial-gradient(circle, rgba(var(--accent-rgb), 0.08), transparent 62%);
 }
 .github__orbit {

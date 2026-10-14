@@ -8,6 +8,7 @@ export default {
     view: '查看',
     open: '打开',
     close: '关闭',
+    menu: '菜单',
     language: '语言',
     chinese: '中文',
     english: 'English',

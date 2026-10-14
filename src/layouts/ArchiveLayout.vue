@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
 import ArchiveHeader from "../components/archive/ArchiveHeader.vue";
-import ArchiveSidebar from "../components/archive/ArchiveSidebar.vue";
 import ArchiveFooter from "../components/archive/ArchiveFooter.vue";
 
 const route = useRoute();
@@ -29,71 +28,44 @@ const onSweepEnd = (event: AnimationEvent) => {
 const resetScrollTop = () => {
   window.scrollTo(0, 0);
 };
-
-const currentPage = computed(() => {
-  const name = route.name;
-
-  if (typeof name !== "string") {
-    return "archive.token";
-  }
-
-  const pageMap: Record<string, string> = {
-    home: "nav.home",
-    profile: "nav.profile",
-    projects: "nav.projects",
-    "project-detail": "nav.projectDetail",
-    lab: "nav.lab",
-    blog: "nav.blog",
-    "blog-article": "nav.article",
-    github: "nav.github",
-    about: "nav.about",
-    "not-found": "404",
-  };
-
-  return pageMap[name] ?? "archive.token";
-});
 </script>
 
 <template>
   <div class="archive-shell">
-    <ArchiveHeader :current-page="currentPage" />
+    <!-- 视口四角 HUD 框 -->
+    <span class="hud-corner hud-corner--tl" aria-hidden="true" />
+    <span class="hud-corner hud-corner--tr" aria-hidden="true" />
+    <span class="hud-corner hud-corner--bl" aria-hidden="true" />
+    <span class="hud-corner hud-corner--br" aria-hidden="true" />
 
-    <div class="archive-body">
-      <ArchiveSidebar />
+    <!-- 两侧竖排终端坐标（宽屏装饰） -->
+    <span class="hud-coord hud-coord--left" aria-hidden="true">GAVIN//ARCHIVE/SYS</span>
+    <span class="hud-coord hud-coord--right" aria-hidden="true">SIGNAL://STABLE</span>
 
-      <main class="archive-main">
-        <div
-          class="archive-main__rail archive-main__rail--left"
-          aria-hidden="true"
-        />
-        <div
-          class="archive-main__rail archive-main__rail--right"
-          aria-hidden="true"
-        />
-        <div class="archive-scroll">
-          <div class="archive-content">
-            <RouterView v-slot="{ Component, route: viewRoute }">
-              <Transition
-                name="archive-page"
-                mode="out-in"
-                @before-enter="resetScrollTop"
-              >
-                <component :is="Component" :key="viewRoute.fullPath" />
-              </Transition>
-            </RouterView>
-          </div>
-        </div>
+    <ArchiveHeader />
 
-        <!-- 路由切换赛博扫描光束 -->
-        <div
-          v-if="sweepKey"
-          :key="sweepKey"
-          class="page-sweep"
-          aria-hidden="true"
-          @animationend="onSweepEnd"
-        />
-      </main>
-    </div>
+    <main class="archive-main">
+      <div class="archive-content">
+        <RouterView v-slot="{ Component, route: viewRoute }">
+          <Transition
+            name="archive-page"
+            mode="out-in"
+            @before-enter="resetScrollTop"
+          >
+            <component :is="Component" :key="viewRoute.fullPath" />
+          </Transition>
+        </RouterView>
+      </div>
+
+      <!-- 路由切换赛博扫描光束 -->
+      <div
+        v-if="sweepKey"
+        :key="sweepKey"
+        class="page-sweep"
+        aria-hidden="true"
+        @animationend="onSweepEnd"
+      />
+    </main>
 
     <ArchiveFooter />
   </div>
@@ -101,105 +73,199 @@ const currentPage = computed(() => {
 
 <style scoped>
 .archive-shell {
-  min-height: 100vh;
-  min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  background: var(--bg);
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  /* 透明底：让 body 的全局网格 / 双色光晕 / CRT 扫描线透出来 */
   color: var(--text);
 }
-.archive-body {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
-}
+
 .archive-main {
-  min-width: 0;
   position: relative;
+
+  flex: 1;
+
   overflow-x: clip;
+
+  /* 静态双层栅格 + 双色光晕（一次性光栅，零持续开销）：
+     56px 细栅格为基线，每 224px 一条加粗主线 */
   background:
-    radial-gradient(
-      circle at 82% 14%,
-      rgba(var(--accent-rgb), 0.035),
-      transparent 25%
+    repeating-linear-gradient(
+      90deg,
+      rgba(var(--accent-rgb), 0.14) 0 1px,
+      transparent 1px 224px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(var(--accent-rgb), 0.14) 0 1px,
+      transparent 1px 224px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(var(--accent-rgb), 0.065) 0 1px,
+      transparent 1px 56px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(var(--accent-rgb), 0.065) 0 1px,
+      transparent 1px 56px
     ),
     radial-gradient(
-      circle at 18% 88%,
-      rgba(var(--pink-rgb), 0.028),
-      transparent 25%
+      circle at 85% -5%,
+      rgba(var(--accent-rgb), 0.07),
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 8% 105%,
+      rgba(var(--pink-rgb), 0.06),
+      transparent 36%
     );
 }
+
+/* 栅格向上下淡出 + 主线交点节点，避免底纹压过正文 */
 .archive-main::before {
   content: "";
+
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    90deg,
-    transparent 0 49.95%,
-    var(--body-grid) 50%,
-    transparent 50.05%
-  );
+  z-index: 0;
+
   pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 0 0,
+      rgba(var(--accent-rgb), 0.55) 0,
+      rgba(var(--accent-rgb), 0.55) 1.4px,
+      transparent 2px
+    ) 0 0 / 224px 224px,
+    linear-gradient(
+      to bottom,
+      var(--bg) 0%,
+      transparent 10%,
+      transparent 90%,
+      var(--bg) 100%
+    );
 }
-.archive-scroll {
-  position: relative;
-  z-index: 2;
-}
-.archive-main__rail {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: linear-gradient(transparent, var(--line), transparent);
-  opacity: 0.55;
+
+/* =========================
+   HUD 四角框（固定在视口）
+========================= */
+
+.hud-corner {
+  position: fixed;
+
+  width: 14px;
+  height: 14px;
+
   pointer-events: none;
+  z-index: 40;
 }
-.archive-main__rail--left {
-  left: 18px;
+
+.hud-corner--tl {
+  top: 8px;
+  left: 8px;
+
+  border-top: 1px solid var(--accent-line);
+  border-left: 1px solid var(--accent-line);
 }
-.archive-main__rail--right {
-  right: 18px;
+
+.hud-corner--tr {
+  top: 8px;
+  right: 8px;
+
+  border-top: 1px solid var(--pink-line);
+  border-right: 1px solid var(--pink-line);
 }
+
+.hud-corner--bl {
+  bottom: 8px;
+  left: 8px;
+
+  border-bottom: 1px solid var(--pink-line);
+  border-left: 1px solid var(--pink-line);
+}
+
+.hud-corner--br {
+  right: 8px;
+  bottom: 8px;
+
+  border-right: 1px solid var(--accent-line);
+  border-bottom: 1px solid var(--accent-line);
+}
+
+/* 两侧竖排坐标 */
+.hud-coord {
+  position: fixed;
+  top: 50%;
+
+  color: var(--text-faint);
+
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.32em;
+
+  writing-mode: vertical-rl;
+
+  pointer-events: none;
+  z-index: 40;
+
+  opacity: 0.7;
+}
+
+.hud-coord--left {
+  left: 14px;
+
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.hud-coord--right {
+  right: 14px;
+
+  transform: translateY(-50%);
+}
+
 .archive-content {
   position: relative;
   z-index: 2;
-  width: min(100%, 1480px);
+
+  width: 100%;
+  max-width: 1080px;
   margin: 0 auto;
-  padding: 52px 64px 80px;
+  padding: 72px 48px 110px;
 }
+
 /* =========================
-   赛博页面转场
+   页面转场：故障位移 + 切片裁切
 ========================= */
 
 .archive-page-enter-active {
   transition:
-    opacity 260ms steps(5, end),
-    transform 300ms cubic-bezier(0.22, 0.68, 0.24, 1),
-    clip-path 320ms cubic-bezier(0.7, 0, 0.3, 1),
-    filter 260ms ease;
+    opacity 280ms steps(5, end),
+    transform 340ms cubic-bezier(0.22, 0.68, 0.24, 1),
+    clip-path 340ms cubic-bezier(0.7, 0, 0.3, 1);
 }
 
 .archive-page-leave-active {
   transition:
-    opacity 140ms steps(2, end),
+    opacity 150ms steps(2, end),
     transform 180ms cubic-bezier(0.55, 0, 0.45, 1);
 }
 
-/* 离场：向左故障滑出 + 数字闪烁 */
 .archive-page-leave-to {
   opacity: 0;
-  transform: translateX(-16px);
+  transform: translateX(-12px);
 }
 
-/* 入场：右侧切入 + 顶部百叶窗式裁切揭开 */
 .archive-page-enter-from {
   opacity: 0;
-  transform: translateX(26px);
+  transform: translateX(16px);
   clip-path: inset(0 0 100% 0);
-  filter: saturate(1.8);
 }
 
-/* 路由扫描光束覆盖层 */
+/* 路由扫描光束覆盖层（仅切换瞬间出现） */
 .page-sweep {
   position: absolute;
   inset: 0;
@@ -211,7 +277,7 @@ const currentPage = computed(() => {
 
   background: linear-gradient(
     to bottom,
-    rgba(var(--accent-rgb), 0.07),
+    rgba(var(--accent-rgb), 0.06),
     transparent 42%
   );
 
@@ -220,7 +286,6 @@ const currentPage = computed(() => {
   animation: sweep-flash 520ms steps(6, end) forwards;
 }
 
-/* 主光束：青-白-品红横向能量束，自上而下扫过 */
 .page-sweep::before {
   content: "";
 
@@ -248,7 +313,6 @@ const currentPage = computed(() => {
   animation: sweep-beam 460ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
 
-/* 水平切片纹理：扫描时的栅格错位感 */
 .page-sweep::after {
   content: "";
 
@@ -299,40 +363,33 @@ const currentPage = computed(() => {
     transform: translateY(0);
   }
 }
-@media (max-width: 1024px) {
-  .archive-body {
-    grid-template-columns: 220px minmax(0, 1fr);
-  }
-  .archive-content {
-    padding: 40px;
-  }
-}
-@media (max-width: 768px) {
-  .archive-body {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr);
-  }
-  .archive-main__rail {
+
+@media (max-width: 1180px) {
+  .hud-coord {
     display: none;
   }
+}
+
+@media (max-width: 768px) {
   .archive-content {
-    padding: 32px 20px 64px;
+    padding: 48px 22px 80px;
+  }
+
+  .hud-corner {
+    display: none;
   }
 }
+
 @media (prefers-reduced-motion: reduce) {
   .archive-page-enter-active,
   .archive-page-leave-active {
     transition: none;
   }
 
-  .archive-page-enter-from {
-    clip-path: none;
-    filter: none;
-    transform: none;
-  }
-
+  .archive-page-enter-from,
   .archive-page-leave-to {
     transform: none;
+    clip-path: none;
   }
 
   .page-sweep {

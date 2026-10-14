@@ -139,11 +139,10 @@ const rest = computed(() => filteredPosts.value.slice(1));
 
 <style scoped>
 .blog-hero {
-  min-height: 300px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
+  grid-template-columns: minmax(0, 1fr) 300px;
   gap: 54px;
-  padding-bottom: 40px;
+  padding-bottom: 48px;
   border-bottom: 1px solid var(--line);
 }
 .eyebrow,
@@ -183,9 +182,9 @@ const rest = computed(() => filteredPosts.value.slice(1));
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px;
-  border: 1px solid var(--line);
-  background: var(--control-bg-solid);
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--line-strong);
+  background: transparent;
 }
 .query b {
   color: var(--accent);

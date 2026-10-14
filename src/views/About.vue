@@ -82,8 +82,7 @@ const links = [
 }
 .header {
   position: relative;
-  min-height: 330px;
-  padding-bottom: 54px;
+  padding-bottom: 56px;
   border-bottom: 1px solid var(--line);
   overflow: hidden;
 }
