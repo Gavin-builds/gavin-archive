@@ -1,30 +1,18 @@
 export default {
   common: {
     online: 'SYSTEM ONLINE',
-    offline: 'SYSTEM OFFLINE',
     loading: 'LOADING',
-    back: 'BACK',
-    enter: 'ENTER',
-    view: 'VIEW',
-    open: 'OPEN',
     close: 'CLOSE',
     menu: 'MENU',
-    language: 'LANGUAGE',
-    chinese: '中文',
-    english: 'English',
-    current: 'CURRENT',
     lightMode: 'SWITCH TO LIGHT MODE',
     darkMode: 'SWITCH TO DARK MODE',
   },
 
   nav: {
-    home: 'HOME',
     profile: 'PROFILE',
     projects: 'PROJECTS',
-    projectDetail: 'PROJECT DETAIL',
     lab: 'LAB',
     blog: 'BLOG',
-    article: 'ARTICLE',
     github: 'GITHUB',
     about: 'ABOUT',
   },
@@ -126,8 +114,6 @@ export default {
     highlights: 'HIGHLIGHTS',
     description:
       'Tools, products and experiments built with code and AI.',
-    countLabel: 'PROJECTS',
-    cardLabel: 'PROJECT',
     open: 'OPEN →',
     openFullCase: 'OPEN FULL CASE',
     role: 'ROLE',
@@ -152,7 +138,6 @@ export default {
 
     empty: 'NO MATCHING PROJECTS',
 
-    viewProject: 'VIEW PROJECT',
     github: 'GITHUB',
     demo: 'LIVE DEMO',
 
@@ -167,20 +152,7 @@ export default {
   },
 
   archive: {
-    title: 'DEVELOPER ARCHIVE',
-    system: 'DEVELOPER ARCHIVE',
-    status: 'SYSTEM ONLINE',
-    headerSubtitle: 'DEVELOPER OS / PERSONAL ARCHIVE',
     token: 'ARCHIVE',
-  },
-
-  sidebar: {
-    system: 'SYSTEM',
-    work: 'WORK',
-    log: 'LOG',
-    network: 'NETWORK',
-    archiveIndex: 'ARCHIVE INDEX',
-    modules: 'MODULES',
   },
 
   footer: {
@@ -238,7 +210,6 @@ export default {
     title: 'EXPERIMENTAL LAB',
     subtitle: 'Experiments, research and unfinished ideas',
     description: 'Experiments, prototypes and ideas that are still being tested.',
-    countLabel: 'EXPERIMENTS',
     all: 'ALL',
     relatedProject: 'OPEN RELATED CASE',
     empty: 'NO EXPERIMENTS FOUND',
@@ -282,6 +253,7 @@ export default {
     noteToken: 'NOTE / {date}',
     error: 'BLOG ERROR',
     search: 'SEARCH',
+    clear: 'CLEAR',
     searchPlaceholder: 'Search articles, tags…',
     minRead: 'MIN READ',
     read: 'READ ARTICLE',

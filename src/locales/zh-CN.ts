@@ -1,30 +1,18 @@
 export default {
   common: {
     online: '系统在线',
-    offline: '系统离线',
     loading: '加载中',
-    back: '返回',
-    enter: '进入',
-    view: '查看',
-    open: '打开',
     close: '关闭',
     menu: '菜单',
-    language: '语言',
-    chinese: '中文',
-    english: 'English',
-    current: '当前',
     lightMode: '切换浅色模式',
     darkMode: '切换深色模式',
   },
 
   nav: {
-    home: '首页',
     profile: '个人档案',
     projects: '项目',
-    projectDetail: '项目详情',
     lab: '实验室',
     blog: '博客',
-    article: '文章',
     github: 'GitHub',
     about: '关于',
   },
@@ -126,8 +114,6 @@ export default {
     highlights: '亮点',
     description:
       '使用代码与 AI 构建的工具、产品与实验。',
-    countLabel: '项目',
-    cardLabel: '项目',
     open: '打开 →',
     openFullCase: '打开完整案例',
     role: '角色',
@@ -152,7 +138,6 @@ export default {
 
     empty: '暂无匹配项目',
 
-    viewProject: '查看项目',
     github: 'GitHub',
     demo: '在线演示',
 
@@ -167,20 +152,7 @@ export default {
   },
 
   archive: {
-    title: '开发者档案',
-    system: 'DEVELOPER ARCHIVE',
-    status: 'SYSTEM ONLINE',
-    headerSubtitle: '开发者操作系统 / 个人档案',
     token: '档案',
-  },
-
-  sidebar: {
-    system: '系统',
-    work: '工作',
-    log: '日志',
-    network: '网络',
-    archiveIndex: '档案索引',
-    modules: '模块',
   },
 
   footer: {
@@ -238,7 +210,6 @@ export default {
     title: '实验记录',
     subtitle: '实验、研究与未完成想法',
     description: '记录正在验证、尚未成熟或最终失败的想法。',
-    countLabel: '实验',
     all: '全部',
     relatedProject: '查看关联项目',
     empty: '暂无实验',
@@ -282,6 +253,7 @@ export default {
     noteToken: '笔记 / {date}',
     error: '博客错误',
     search: '搜索',
+    clear: '清除',
     searchPlaceholder: '搜索文章、标签…',
     minRead: '分钟阅读',
     read: '阅读文章',

@@ -288,9 +288,6 @@ onBeforeUnmount(() => {
 
       <div class="hud__status">
         <ThemeToggle />
-
-        <span class="status-dot" />
-        {{ t("common.online") }}
       </div>
     </header>
 
@@ -592,19 +589,6 @@ onBeforeUnmount(() => {
   display: flex;
   gap: 8px;
   align-items: center;
-}
-
-.status-dot {
-  width: 6px;
-  height: 6px;
-
-  border-radius: 50%;
-
-  background: var(--accent);
-
-  box-shadow: 0 0 12px var(--accent);
-
-  animation: pulse 1.5s infinite;
 }
 
 /* =========================
@@ -1070,17 +1054,6 @@ onBeforeUnmount(() => {
 /* =========================
    animations
 ========================= */
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.35;
-  }
-
-  50% {
-    opacity: 1;
-  }
-}
 
 @keyframes glow {
   0% {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 
@@ -23,6 +23,14 @@ const navLinks: NavLink[] = [
 const route = useRoute();
 
 const { t } = useI18n();
+
+// 给每个导航项注入本地化 label —— 让 CSS 伪元素能用 attr(data-text) 镜像文字
+const navItems = computed(() =>
+  navLinks.map((link) => ({
+    ...link,
+    label: t(link.labelKey),
+  })),
+);
 
 const menuOpen = ref(false);
 
@@ -53,13 +61,15 @@ watch(
 
       <nav class="site-nav" aria-label="Primary">
         <RouterLink
-          v-for="link in navLinks"
+          v-for="link in navItems"
           :key="link.path"
           :to="link.path"
           class="site-nav__link"
           :class="{ 'is-active': isActive(link.path) }"
         >
-          {{ t(link.labelKey) }}
+          <span class="site-nav__label" :data-text="link.label"
+            >{{ link.label }}</span
+          >
         </RouterLink>
       </nav>
 
@@ -147,10 +157,10 @@ watch(
   justify-content: space-between;
 
   width: 100%;
-  max-width: 1180px;
-  height: 62px;
+  max-width: 1200px;
+  height: 76px;
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 0 36px;
 }
 
 /* Brand */
@@ -172,17 +182,19 @@ watch(
   display: grid;
   place-items: center;
 
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
 
   border: 1px solid var(--accent);
 
-  transition: box-shadow var(--transition-fast);
+  box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.25);
+
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
 }
 
 .site-brand__mark img {
-  width: 17px;
-  height: 17px;
+  width: 20px;
+  height: 20px;
 }
 
 /* 右下角标 */
@@ -193,49 +205,16 @@ watch(
   right: -3px;
   bottom: -3px;
 
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 
   background: var(--accent-secondary);
 }
 
-/* hover 旋转扫描环（conic 渐变，仅在小元素上） */
-.site-brand__mark::before {
-  content: "";
-
-  position: absolute;
-  inset: -4px;
-
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    var(--accent) 70deg,
-    transparent 130deg
-  );
-
-  opacity: 0;
-
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-
-  padding: 1px;
-
-  pointer-events: none;
-}
-
 .site-brand:hover .site-brand__mark {
   box-shadow:
-    0 0 8px rgba(var(--accent-rgb), 0.55),
-    0 0 16px rgba(var(--accent-rgb), 0.2);
-}
-
-.site-brand:hover .site-brand__mark::before {
-  opacity: 1;
-
-  animation: header-scan-ring 0.9s linear infinite;
+    0 0 10px rgba(var(--accent-rgb), 0.6),
+    0 0 22px rgba(var(--accent-rgb), 0.25);
 }
 
 .site-brand__name {
@@ -246,14 +225,12 @@ watch(
   font-weight: 700;
   letter-spacing: 0.18em;
 
-  transition: color var(--transition-fast);
+  transition: color var(--transition-fast), text-shadow var(--transition-fast);
 }
 
-.site-brand:hover .site-brand__name {
-  color: var(--accent);
-}
-
-/* RGB 故障残影（仅 hover，小文字） */
+/* RGB 故障残影（hover 瞬间短 burst 闪动）——
+   只动画 opacity，clip-path 在每步起点就固定好，
+   全程走合成器，零重绘 */
 .site-brand__name::before,
 .site-brand__name::after {
   content: attr(data-text);
@@ -261,21 +238,34 @@ watch(
   position: absolute;
   inset: 0;
 
-  opacity: 0;
-
   pointer-events: none;
+  opacity: 0;
 }
 
 .site-brand:hover .site-brand__name::before {
   color: var(--accent);
 
-  animation: header-glitch-a 0.4s steps(2, end) infinite;
+  clip-path: inset(0 0 65% 0);
+
+  transform: translate(-2px, 0);
+
+  animation: brand-glitch-cyan 320ms steps(3, end) forwards;
 }
 
 .site-brand:hover .site-brand__name::after {
   color: var(--accent-secondary);
 
-  animation: header-glitch-b 0.34s steps(2, end) infinite;
+  clip-path: inset(60% 0 0 0);
+
+  transform: translate(2px, 0);
+
+  animation: brand-glitch-pink 280ms steps(3, end) forwards;
+}
+
+.site-brand:hover .site-brand__name {
+  color: var(--accent);
+
+  text-shadow: 0 0 14px rgba(var(--accent-rgb), 0.5);
 }
 
 /* 闪烁的终端光标 */
@@ -300,17 +290,66 @@ watch(
 .site-nav__link {
   position: relative;
 
-  padding: 8px 12px;
+  padding: 10px 14px;
 
   color: var(--text-muted);
 
   font-size: var(--fs-base);
   text-decoration: none;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
 
   transition:
     color var(--transition-fast),
     text-shadow var(--transition-fast);
+}
+
+/* 文字层：作为残影定位基准 */
+.site-nav__label {
+  position: relative;
+}
+
+/* RGB 残影（hover 短 burst，与品牌名完全同款）——
+   clip-path 固定起点值，keyframe 只 anim opacity，
+   全程合成器完成，零重绘 */
+.site-nav__label::before,
+.site-nav__label::after {
+  content: attr(data-text);
+
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+  opacity: 0;
+}
+
+.site-nav__label::before {
+  color: var(--accent);
+
+  clip-path: inset(0 0 65% 0);
+
+  transform: translate(-2px, 0);
+}
+
+.site-nav__label::after {
+  color: var(--accent-secondary);
+
+  clip-path: inset(60% 0 0 0);
+
+  transform: translate(2px, 0);
+}
+
+.site-nav__link:hover .site-nav__label::before {
+  animation: brand-glitch-cyan 320ms steps(3, end) forwards;
+}
+
+.site-nav__link:hover .site-nav__label::after {
+  animation: brand-glitch-pink 280ms steps(3, end) forwards;
+}
+
+.site-nav__link:hover {
+  color: var(--accent);
+
+  text-shadow: 0 0 14px rgba(var(--accent-rgb), 0.5);
 }
 
 /* 终端风格下划线 */
@@ -332,10 +371,6 @@ watch(
   transform-origin: left center;
 
   transition: transform var(--transition-normal);
-}
-
-.site-nav__link:hover {
-  color: var(--text);
 }
 
 .site-nav__link.is-active {
@@ -437,58 +472,31 @@ watch(
   color: var(--accent);
 }
 
-@keyframes header-scan-ring {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes header-glitch-a {
+@keyframes brand-glitch-cyan {
   0% {
-    clip-path: inset(0 0 70% 0);
-    transform: translate(-2px, -1px);
+    opacity: 0.9;
   }
 
-  25% {
-    clip-path: inset(55% 0 15% 0);
-    transform: translate(2px, 1px);
-  }
-
-  50% {
-    clip-path: inset(20% 0 50% 0);
-    transform: translate(-1px, 0);
-  }
-
-  75% {
-    clip-path: inset(75% 0 0 0);
-    transform: translate(2px, -1px);
+  40% {
+    opacity: 0.2;
   }
 
   100% {
-    clip-path: inset(0 0 60% 0);
-    transform: translate(-2px, 1px);
+    opacity: 0;
   }
 }
 
-@keyframes header-glitch-b {
+@keyframes brand-glitch-pink {
   0% {
-    clip-path: inset(60% 0 10% 0);
-    transform: translate(2px, 1px);
+    opacity: 0.85;
   }
 
-  30% {
-    clip-path: inset(10% 0 70% 0);
-    transform: translate(-2px, 0);
-  }
-
-  60% {
-    clip-path: inset(75% 0 5% 0);
-    transform: translate(1px, -1px);
+  35% {
+    opacity: 0.15;
   }
 
   100% {
-    clip-path: inset(30% 0 40% 0);
-    transform: translate(-1px, 1px);
+    opacity: 0;
   }
 }
 
@@ -531,21 +539,24 @@ watch(
 
 @media (prefers-reduced-motion: reduce) {
   .site-brand__mark,
-  .site-brand__mark::before,
   .site-brand__name,
   .site-brand__name::before,
   .site-brand__name::after,
   .site-brand__cursor,
   .site-nav__link,
   .site-nav__link::after,
+  .site-nav__label::before,
+  .site-nav__label::after,
   .site-menu-btn span {
     animation: none !important;
     transition: none;
   }
 
-  .site-brand__cursor,
   .site-brand__name::before,
-  .site-brand__name::after {
+  .site-brand__name::after,
+  .site-brand__cursor,
+  .site-nav__label::before,
+  .site-nav__label::after {
     display: none;
   }
 }

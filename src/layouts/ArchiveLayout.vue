@@ -4,6 +4,7 @@ import { useRoute } from "vue-router";
 
 import ArchiveHeader from "../components/archive/ArchiveHeader.vue";
 import ArchiveFooter from "../components/archive/ArchiveFooter.vue";
+import CyberParticles from "../components/archive/CyberParticles.vue";
 
 const route = useRoute();
 
@@ -45,6 +46,9 @@ const resetScrollTop = () => {
     <ArchiveHeader />
 
     <main class="archive-main">
+      <!-- 赛博朋克粒子网络层：固定视口，z-index 1 叠在栅格底纹之上、内容之下 -->
+      <CyberParticles />
+
       <div class="archive-content">
         <RouterView v-slot="{ Component, route: viewRoute }">
           <Transition

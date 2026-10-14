@@ -5,10 +5,19 @@ import { blogPosts } from "../data/blog";
 import { localize } from "../types/content";
 
 const { t, locale } = useI18n();
-const query = ref("");
+// 临时输入 vs 已提交查询：只有回车 / 点击按钮才触发过滤
 const searchInput = ref<HTMLInputElement | null>(null);
+const draftQuery = ref("");
+const query = ref("");
+const submitQuery = () => {
+  query.value = draftQuery.value.trim();
+};
+const resetQuery = () => {
+  draftQuery.value = "";
+  query.value = "";
+};
 
-// ⌘K / Ctrl+K 聚焦搜索，Esc 失焦
+// ⌘K / Ctrl+K 聚焦搜索，Esc 清空并失焦
 const handleShortcut = (event: KeyboardEvent) => {
   if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
     event.preventDefault();
@@ -17,6 +26,7 @@ const handleShortcut = (event: KeyboardEvent) => {
   }
 
   if (event.key === "Escape" && document.activeElement === searchInput.value) {
+    resetQuery();
     searchInput.value?.blur();
   }
 };
@@ -56,13 +66,18 @@ const rest = computed(() => filteredPosts.value.slice(1));
       </div>
       <label class="query"
         ><span>{{ t('blog.querySearch') }}</span>
-        <div>
+        <div class="query__inner">
           <b>›</b
           ><input
             ref="searchInput"
-            v-model="query"
+            v-model="draftQuery"
             :placeholder="t('blog.searchPlaceholder')"
-          /><kbd>⌘ K</kbd>
+            @keydown.enter.prevent="submitQuery"
+          />
+          <kbd @click="submitQuery">{{ t('blog.search') }}</kbd>
+          <kbd class="clear" @click="resetQuery"
+            >{{ t('blog.clear') }}</kbd
+          >
         </div>
         <small>{{
           t('blog.entriesIndexed', {
@@ -140,7 +155,7 @@ const rest = computed(() => filteredPosts.value.slice(1));
 <style scoped>
 .blog-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
+  grid-template-columns: minmax(0, 1fr) 420px;
   gap: 54px;
   padding-bottom: 48px;
   border-bottom: 1px solid var(--line);
@@ -171,40 +186,122 @@ const rest = computed(() => filteredPosts.value.slice(1));
   line-height: 1.75;
 }
 .query {
+  position: relative;
   align-self: end;
+  padding: 18px 20px 16px;
   color: var(--text-muted);
+  border: 1px solid var(--line);
+  background: linear-gradient(
+      135deg,
+      var(--control-bg),
+      var(--surface-solid)
+    );
 }
+
+/* 终端端点：青 / 品红 */
+.query::before,
+.query::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+}
+.query::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid var(--accent);
+  border-left: 2px solid var(--accent);
+}
+.query::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid var(--accent-secondary);
+  border-right: 2px solid var(--accent-secondary);
+}
+
 .query > span {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  color: var(--accent);
 }
-.query > div {
+
+.query__inner {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 2px;
-  border-bottom: 1px solid var(--line-strong);
-  background: transparent;
+  padding: 10px 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
 }
+
+.query__inner:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 16px rgba(var(--accent-rgb), 0.22);
+}
+
 .query b {
   color: var(--accent);
   font-size: var(--fs-lg);
 }
+
 .query input {
   min-width: 0;
-  width: 100%;
+  flex: 1;
   border: 0;
   outline: 0;
-  background: none;
+  background: transparent;
   color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
 }
+
+.query input::placeholder {
+  color: var(--text-faint);
+}
+
 .query kbd {
-  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  padding: 6px 12px;
+  border: 1px solid var(--accent);
+  background: rgba(var(--accent-rgb), 0.12);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.query kbd:hover {
+  background: rgba(var(--accent-rgb), 0.25);
+  box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.4);
+}
+
+/* 重置按钮：次级样式，跟 SEARCH 同宽但用品红边界 */
+.query kbd.clear {
+  border-color: var(--line-strong);
+  background: transparent;
   color: var(--text-muted);
 }
+
+.query kbd.clear:hover {
+  border-color: var(--accent-secondary);
+  background: rgba(var(--pink-rgb), 0.12);
+  color: var(--accent-secondary);
+  box-shadow: 0 0 10px rgba(var(--pink-rgb), 0.3);
+}
+
 .query small {
   display: block;
-  margin-top: 8px;
+  margin-top: 10px;
+  color: var(--text-faint);
   font-size: var(--fs-2xs);
 }
 .featured-note {
