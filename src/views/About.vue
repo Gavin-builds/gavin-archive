@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 
+import CyberCard from "../components/archive/CyberCard.vue";
+
 const { t } = useI18n();
 
 const links = [
@@ -24,18 +26,19 @@ const links = [
     </header>
 
     <div class="grid">
-      <section class="panel">
-        <div class="label">{{ t("about.whatIBuild") }}</div>
+      <CyberCard :label="t('about.whatIBuild')">
         <p>{{ t("about.whatIBuildText") }}</p>
-      </section>
+      </CyberCard>
 
-      <section class="panel">
-        <div class="label">{{ t("about.howIWork") }}</div>
+      <CyberCard :label="t('about.howIWork')">
         <p>{{ t("about.howIWorkText") }}</p>
-      </section>
+      </CyberCard>
 
-      <section class="panel panel--wide">
-        <div class="label">{{ t("about.now") }}</div>
+      <CyberCard
+        class="panel--wide"
+        :label="t('about.now')"
+        :hoverable="false"
+      >
         <div class="now">
           <div>
             <span>{{ t("about.currentlyBuilding") }}</span>
@@ -50,10 +53,9 @@ const links = [
             <strong>{{ t("about.exploringValue") }}</strong>
           </div>
         </div>
-      </section>
+      </CyberCard>
 
-      <section class="panel">
-        <div class="label">{{ t("about.contact") }}</div>
+      <CyberCard :label="t('about.contact')">
         <div class="links">
           <a
             v-for="link in links"
@@ -65,13 +67,12 @@ const links = [
             {{ t(link.labelKey) }} ↗
           </a>
         </div>
-      </section>
+      </CyberCard>
 
-      <section class="panel">
-        <div class="label">{{ t("about.archive") }}</div>
+      <CyberCard :label="t('about.archive')" :hoverable="false">
         <p class="mono">GAVIN ARCHIVE / {{ t("home.footer.version") }}</p>
         <p>{{ t("about.archiveText") }}</p>
-      </section>
+      </CyberCard>
     </div>
   </section>
 </template>
@@ -97,8 +98,7 @@ const links = [
   letter-spacing: -0.08em;
   pointer-events: none;
 }
-.eyebrow,
-.label {
+.eyebrow {
   color: var(--accent);
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
@@ -120,41 +120,13 @@ h1 {
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  margin-top: 16px;
-}
-.panel {
-  position: relative;
-  padding: 30px;
-  border: 1px solid var(--line);
-  background:
-    linear-gradient(135deg, rgba(var(--ink-rgb), 0.025), transparent 50%),
-    var(--surface);
-  overflow: hidden;
-  transition:
-    transform var(--transition-normal),
-    border-color var(--transition-normal),
-    box-shadow var(--transition-normal);
-}
-.panel::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 72px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent));
-  opacity: 0.55;
-}
-.panel:hover {
-  transform: translateY(-4px);
-  border-color: var(--accent-line);
-  box-shadow: var(--shadow-soft);
+  gap: 18px;
+  margin-top: 48px;
 }
 .panel--wide {
-  grid-column: 1/-1;
+  grid-column: 1 / -1;
 }
-.panel p {
+.grid p {
   margin: 18px 0 0;
   color: var(--text-secondary);
   line-height: 1.85;
@@ -164,6 +136,7 @@ h1 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   margin-top: 20px;
+  border: 1px solid var(--line);
   background: var(--line);
 }
 .now > div {
@@ -187,7 +160,7 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 20px;
+  margin-top: 18px;
 }
 .links a {
   display: flex;
@@ -198,16 +171,17 @@ h1 {
   font-family: var(--font-mono);
   font-size: var(--fs-md);
   text-decoration: none;
+  transition:
+    color var(--transition-fast),
+    text-shadow var(--transition-fast);
+}
+.links a:hover {
+  text-shadow: 0 0 10px rgba(var(--accent-rgb), 0.5);
 }
 .mono {
   color: var(--accent) !important;
   font-family: var(--font-mono);
   font-size: var(--fs-md);
-}
-@keyframes about-spin {
-  to {
-    transform: rotate(360deg);
-  }
 }
 @media (max-width: 760px) {
   .grid,
@@ -217,19 +191,12 @@ h1 {
   .panel--wide {
     grid-column: auto;
   }
-  .header {
-    min-height: 0;
-  }
   .header::after {
     font-size: 88px;
     bottom: -16px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .matrix__orb {
-    animation: none;
-  }
-  .panel,
   .links a {
     transition: none;
   }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { useGitHub } from "../composables/useGitHub";
+import CyberCard from "../components/archive/CyberCard.vue";
 
 const { t } = useI18n();
 const { profile, repositories, loading, error, username, refresh } =
@@ -51,18 +52,18 @@ const formatDate = (value: string) =>
 
     <template v-else-if="profile">
       <section class="stats">
-        <div>
-          <span>{{ t("github.statsRepos") }}</span
-          ><strong>{{ profile.public_repos }}</strong>
-        </div>
-        <div>
-          <span>{{ t("github.statsFollowers") }}</span
-          ><strong>{{ profile.followers }}</strong>
-        </div>
-        <div>
-          <span>{{ t("github.statsFollowing") }}</span
-          ><strong>{{ profile.following }}</strong>
-        </div>
+        <CyberCard
+          v-for="stat in [
+            { label: t('github.statsRepos'), value: profile.public_repos },
+            { label: t('github.statsFollowers'), value: profile.followers },
+            { label: t('github.statsFollowing'), value: profile.following },
+          ]"
+          :key="stat.label"
+          :label="stat.label"
+          :hoverable="false"
+        >
+          <strong>{{ stat.value }}</strong>
+        </CyberCard>
       </section>
 
       <section class="repos">
@@ -191,37 +192,12 @@ h1 {
 .stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  margin: 16px 0 56px;
-  background: var(--line);
-}
-.stats div {
-  position: relative;
-  padding: 26px;
-  min-height: 130px;
-  background: var(--surface);
-  overflow: hidden;
-}
-.stats div::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--accent), transparent 70%);
-  opacity: 0.6;
-}
-.stats span {
-  display: block;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  letter-spacing: 0.12em;
+  gap: 18px;
+  margin: 48px 0 56px;
 }
 .stats strong {
   display: block;
-  margin-top: 14px;
+  margin-top: 16px;
   color: var(--accent);
   font-size: 42px;
   line-height: 1;
@@ -233,6 +209,7 @@ h1 {
   padding: 18px 0;
 }
 .repo {
+  position: relative;
   display: flex;
   justify-content: space-between;
   gap: 30px;
@@ -242,9 +219,24 @@ h1 {
     transform var(--transition-normal),
     padding-left var(--transition-normal);
 }
+.repo::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: linear-gradient(var(--accent), var(--accent-secondary));
+  box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.5);
+  transform: scaleY(0);
+  transition: transform var(--transition-normal);
+}
 .repo:hover {
   transform: translateX(6px);
   padding-left: 6px;
+}
+.repo:hover::before {
+  transform: scaleY(1);
 }
 .repo h2 {
   margin: 0;
@@ -344,9 +336,14 @@ h1 {
 @media (prefers-reduced-motion: reduce) {
   .github__orbit,
   .github__pulse,
-  .repo {
+  .repo,
+  .repo::before {
     animation: none;
     transition: none;
+  }
+
+  .repo:hover::before {
+    transform: none;
   }
 }
 </style>

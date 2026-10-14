@@ -321,6 +321,7 @@ const rest = computed(() => filteredPosts.value.slice(1));
 
 /* === 复原后的列表行：加了 media 列 === */
 .note-row {
+  position: relative;
   display: grid;
   grid-template-columns: 260px minmax(0, 1fr) 50px;
   gap: 24px;
@@ -333,10 +334,25 @@ const rest = computed(() => filteredPosts.value.slice(1));
     padding var(--transition-fast),
     background var(--transition-fast);
 }
+.note-row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: linear-gradient(var(--accent), var(--accent-secondary));
+  box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.5);
+  transform: scaleY(0);
+  transition: transform var(--transition-fast);
+}
 .note-row:hover {
   padding-left: 10px;
   padding-right: 10px;
   background: rgba(var(--accent-rgb), 0.025);
+}
+.note-row:hover::before {
+  transform: scaleY(1);
 }
 /* 图片容器：16/9 + 边框 + 遮罩 + 悬浮缩放 */
 .note-row__media {
@@ -444,6 +460,14 @@ const rest = computed(() => filteredPosts.value.slice(1));
   }
   .featured-note__body {
     padding: 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .note-row,
+  .note-row::before,
+  .note-row__media img {
+    transition: none;
   }
 }
 </style>

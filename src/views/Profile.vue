@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 
+import CyberCard from '../components/archive/CyberCard.vue'
+
 const { t } = useI18n()
 
 const focusKeys = [
@@ -8,6 +10,13 @@ const focusKeys = [
   'profile.focusItems.tools',
   'profile.focusItems.openSource',
   'profile.focusItems.products',
+] as const
+
+const skillGroups = [
+  { titleKey: 'profile.frontend', items: 'Vue · React · TypeScript · Vite' },
+  { titleKey: 'profile.backend', items: 'Node.js · Midway · REST API' },
+  { titleKey: 'profile.ai', items: 'LLM · AI Application · AI Agents' },
+  { titleKey: 'profile.engineering', items: 'Git · Docker · API · PWA' },
 ] as const
 </script>
 
@@ -32,11 +41,7 @@ const focusKeys = [
     </header>
 
     <div class="profile__grid">
-      <section class="panel">
-        <div class="label">
-          {{ t('profile.subtitle') }}
-        </div>
-
+      <CyberCard :label="t('profile.subtitle')">
         <p>
           {{ t('profile.aboutIntro') }}
         </p>
@@ -44,14 +49,10 @@ const focusKeys = [
         <p>
           {{ t('profile.aboutArchive') }}
         </p>
-      </section>
+      </CyberCard>
 
-      <section class="panel">
-        <div class="label">
-          {{ t('profile.focus') }}
-        </div>
-
-        <ul>
+      <CyberCard :label="t('profile.focus')">
+        <ul class="focus-list">
           <li
             v-for="key in focusKeys"
             :key="key"
@@ -59,7 +60,7 @@ const focusKeys = [
             {{ t(key) }}
           </li>
         </ul>
-      </section>
+      </CyberCard>
     </div>
 
     <section class="skills">
@@ -68,37 +69,14 @@ const focusKeys = [
       </div>
 
       <div class="skills__grid">
-        <div>
-          <h2>{{ t('profile.frontend') }}</h2>
-
-          <p>
-            Vue · React · TypeScript · Vite
-          </p>
-        </div>
-
-        <div>
-          <h2>{{ t('profile.backend') }}</h2>
-
-          <p>
-            Node.js · Midway · REST API
-          </p>
-        </div>
-
-        <div>
-          <h2>{{ t('profile.ai') }}</h2>
-
-          <p>
-            LLM · AI Application · AI Agents
-          </p>
-        </div>
-
-        <div>
-          <h2>{{ t('profile.engineering') }}</h2>
-
-          <p>
-            Git · Docker · API · PWA
-          </p>
-        </div>
+        <CyberCard
+          v-for="group in skillGroups"
+          :key="group.titleKey"
+          :label="t(group.titleKey)"
+          :hoverable="false"
+        >
+          <p>{{ group.items }}</p>
+        </CyberCard>
       </div>
     </section>
   </section>
@@ -156,36 +134,29 @@ const focusKeys = [
 .profile__grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 
-  gap: 16px;
+  gap: 18px;
 
-  margin-top: 16px;
+  margin-top: 48px;
 }
 
-.panel {
-  padding: 28px;
+.profile__grid p {
+  margin: 18px 0 0;
 
-  border: 1px solid var(--line);
-
-  background: var(--surface);
-}
-
-.panel p {
   color: var(--text-secondary);
 
   line-height: 1.8;
 }
 
-.panel ul {
-  margin: 24px 0 0;
+.focus-list {
+  margin: 22px 0 0;
   padding: 0;
 
   list-style: none;
 }
 
-.panel li {
+.focus-list li {
   padding: 12px 0;
 
   border-bottom: 1px solid var(--line);
@@ -193,7 +164,11 @@ const focusKeys = [
   color: var(--text-secondary);
 }
 
-.panel li::before {
+.focus-list li:last-child {
+  border-bottom: none;
+}
+
+.focus-list li::before {
   content: '→';
 
   margin-right: 10px;
@@ -208,37 +183,15 @@ const focusKeys = [
 .skills__grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 
-  gap: 1px;
+  gap: 18px;
 
   margin-top: 18px;
-
-  background: var(--line);
 }
 
-.skills__grid > div {
-  min-height: 150px;
-
-  padding: 26px;
-
-  background: var(--surface);
-}
-
-.skills h2 {
-  margin: 0;
-
-  color: var(--text);
-
-  font-family: var(--font-mono);
-  font-size: var(--fs-md);
-
-  letter-spacing: 0.1em;
-}
-
-.skills p {
-  margin: 20px 0 0;
+.skills__grid p {
+  margin: 16px 0 0;
 
   color: var(--text-secondary);
 

@@ -265,11 +265,14 @@ const resetScrollTop = () => {
   clip-path: inset(0 0 100% 0);
 }
 
-/* 路由扫描光束覆盖层（仅切换瞬间出现） */
+/* 路由扫描光束覆盖层（仅切换瞬间出现）
+   fixed 到视口：光栅面积恒定为一屏，不随页面高度增长；
+   z-index 高于 sticky 页头，从页头"上方"掠过，
+   避免页头 backdrop-filter 逐帧重算模糊 */
 .page-sweep {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  z-index: 6;
+  z-index: 60;
 
   overflow: hidden;
 
@@ -286,29 +289,36 @@ const resetScrollTop = () => {
   animation: sweep-flash 520ms steps(6, end) forwards;
 }
 
+/* 光束：满高伪元素 + 顶部渐变绘制（2px 主体 + 光晕带）。
+   渐变只光栅化一次，动画走 transform 由合成器位移，
+   全程零布局 / 零重绘（原先动画 top + 大模糊 box-shadow
+   每帧都触发整条光束的布局与重绘，是卡顿主因） */
 .page-sweep::before {
   content: "";
 
   position: absolute;
-  left: 0;
-  right: 0;
-  top: -2%;
+  inset: 0;
 
-  height: 2px;
+  background:
+    /* 光束主体 */
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(var(--accent-rgb), 0.9) 30%,
+      rgba(var(--ink-rgb), 0.95) 50%,
+      rgba(var(--pink-rgb), 0.8) 70%,
+      transparent
+    ) 0 0 / 100% 2px no-repeat,
+    /* 光晕带：替代原 16/44/22px 三层大模糊 box-shadow */
+    linear-gradient(
+      to bottom,
+      transparent,
+      rgba(var(--accent-rgb), 0.3) 40%,
+      rgba(var(--pink-rgb), 0.22) 60%,
+      transparent
+    ) 0 -16px / 100% 34px no-repeat;
 
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(var(--accent-rgb), 0.9) 30%,
-    rgba(var(--ink-rgb), 0.95) 50%,
-    rgba(var(--pink-rgb), 0.8) 70%,
-    transparent
-  );
-
-  box-shadow:
-    0 0 16px 2px rgba(var(--accent-rgb), 0.4),
-    0 0 44px 6px rgba(var(--accent-rgb), 0.16),
-    0 0 22px rgba(var(--pink-rgb), 0.3);
+  will-change: transform;
 
   animation: sweep-beam 460ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
@@ -342,13 +352,15 @@ const resetScrollTop = () => {
   }
 }
 
+/* translateY(100%) 相对自身高度（= 视口高）：
+   光束从视口顶部外侧扫到底部外侧，位移全在合成器完成 */
 @keyframes sweep-beam {
   from {
-    top: -2%;
+    transform: translateY(-40px);
   }
 
   to {
-    top: 102%;
+    transform: translateY(100%);
   }
 }
 

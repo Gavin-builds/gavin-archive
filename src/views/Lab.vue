@@ -261,6 +261,7 @@ const filteredExperiments = computed(() =>
   border-top: 1px solid var(--line);
 }
 .experiment {
+  position: relative;
   display: grid;
   grid-template-columns: 90px minmax(0, 1fr) 150px;
   gap: 28px;
@@ -271,6 +272,18 @@ const filteredExperiments = computed(() =>
     padding var(--transition-normal),
     background var(--transition-normal);
 }
+.experiment::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: linear-gradient(var(--accent), var(--accent-secondary));
+  box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.5);
+  transform: scaleY(0);
+  transition: transform var(--transition-normal);
+}
 .experiment:hover {
   padding-left: 12px;
   padding-right: 12px;
@@ -279,6 +292,9 @@ const filteredExperiments = computed(() =>
     rgba(var(--accent-rgb), 0.035),
     transparent 70%
   );
+}
+.experiment:hover::before {
+  transform: scaleY(1);
 }
 .experiment__index {
   color: var(--text-muted);
@@ -403,6 +419,14 @@ const filteredExperiments = computed(() =>
   }
   .experiment__main {
     order: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lab-runtime i::after,
+  .experiment,
+  .experiment::before {
+    animation: none;
+    transition: none;
   }
 }
 </style>
