@@ -46,7 +46,7 @@ const resetScrollTop = () => {
     <ArchiveHeader />
 
     <main class="archive-main">
-      <!-- 赛博朋克粒子网络层：固定视口，z-index 1 叠在栅格底纹之上、内容之下 -->
+      <!-- 赛博朋克粒子网络层 -->
       <CyberParticles />
 
       <div class="archive-content">

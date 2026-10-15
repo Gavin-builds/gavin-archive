@@ -6,6 +6,12 @@ const canvasEl = ref<HTMLCanvasElement | null>(null);
 // 鼠标斥力场：记录一次坐标，RAF 循环内读取
 const mouse = { x: -9999, y: -9999, active: false };
 
+// 拖尾：环形缓冲，每帧左移一格，最新点在末尾
+const TRAIL_LEN = 18;
+const trail: { x: number; y: number }[] = new Array(TRAIL_LEN)
+  .fill(0)
+  .map(() => ({ x: -9999, y: -9999 }));
+
 interface Particle {
   x: number;
   y: number;
@@ -23,10 +29,10 @@ let width = 0;
 let height = 0;
 let reducedMotion = false;
 
-const PARTICLE_COUNT = 62;
+const PARTICLE_COUNT = 120;
 const MOUSE_RADIUS = 140;
-const LINK_RADIUS = 110;
-const MAX_LINKS = 150;
+const LINK_RADIUS = 96;
+const MAX_LINKS = 180;
 const REPULSION_STRENGTH = 0.9;
 
 // 从 CSS 变量取颜色，主题切换自动同步
@@ -154,6 +160,80 @@ const step = () => {
   }
   ctx.shadowBlur = 0;
 
+  // ========== 鼠标拖尾（赛博朋克双色渐变） ==========
+  // 缓冲左移一格，最新点推入末尾；静止时拖尾自动淡出
+  for (let i = 0; i < TRAIL_LEN - 1; i++) {
+    trail[i] = trail[i + 1];
+  }
+  // 只有鼠标/手指活跃时才推入真实坐标，否则推入哨兵值让
+  // hasTrail 检测失效，静止/抬手后光标圆点立刻消失
+  trail[TRAIL_LEN - 1] = mouse.active
+    ? { x: mouse.x, y: mouse.y }
+    : { x: -9999, y: -9999 };
+
+  const rgbAccent = getRGB("--accent-rgb");
+  const rgbPink = getRGB("--pink-rgb");
+  const hasTrail =
+    mouse.active &&
+    trail[0].x > -9998 &&
+    trail[TRAIL_LEN - 1].x > -9998;
+
+  if (hasTrail && ctx) {
+    // 拖尾线段：最新段青 → 中段白 → 旧段品红，alpha 递减
+    for (let i = 0; i < TRAIL_LEN - 1; i++) {
+      const a = trail[i];
+      const b = trail[i + 1];
+      // 跳过还没被实际使用的段（静止时前几格都是 -9999）
+      if (a.x < -9998 || b.x < -9998) continue;
+
+      const t = i / (TRAIL_LEN - 1); // 0 = 最旧，接近 1 = 最新
+      const alpha = t * 0.9; // 旧段最淡，最新段最亮
+
+      // 双色渐变：越新越偏青，越旧越偏品红
+      const mix = t; // 0→pink, 1→accent
+      const r1 = Math.round(
+        parseInt(rgbAccent.split(" ")[0]) * mix +
+          parseInt(rgbPink.split(" ")[0]) * (1 - mix),
+      );
+      const g1 = Math.round(
+        parseInt(rgbAccent.split(" ")[1]) * mix +
+          parseInt(rgbPink.split(" ")[1]) * (1 - mix),
+      );
+      const b1 = Math.round(
+        parseInt(rgbAccent.split(" ")[2]) * mix +
+          parseInt(rgbPink.split(" ")[2]) * (1 - mix),
+      );
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.strokeStyle = `rgba(${r1} ${g1} ${b1} / ${alpha})`;
+      ctx.lineWidth = 1 + t * 2; // 旧段 1px，最新段 3px
+      ctx.lineCap = "round";
+      ctx.shadowColor = `rgb(${r1} ${g1} ${b1})`;
+      ctx.shadowBlur = 1 + t * 8; // 最新段发光最强
+      ctx.stroke();
+    }
+    ctx.shadowBlur = 0;
+
+    // 光标本体：青色发光点 + 圆环
+    const head = trail[TRAIL_LEN - 1];
+    ctx.fillStyle = `rgba(${rgbAccent} / 0.95)`;
+    ctx.shadowColor = `rgb(${rgbAccent})`;
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.arc(head.x, head.y, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 外光环（细圈）
+    ctx.strokeStyle = `rgba(${rgbAccent} / 0.6)`;
+    ctx.lineWidth = 1;
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.arc(head.x, head.y, 9, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+
   rafId = requestAnimationFrame(step);
 };
 
@@ -165,10 +245,24 @@ const getRGB = (varName: string) => {
   return v || (varName === "--accent-rgb" ? "0 240 255" : "255 0 150");
 };
 
+const resetTrail = () => {
+  for (let i = 0; i < TRAIL_LEN; i++) {
+    trail[i] = { x: -9999, y: -9999 };
+  }
+};
+
 const onMouseMove = (e: MouseEvent) => {
   mouse.x = e.clientX;
   mouse.y = e.clientY;
   mouse.active = true;
+};
+const onTouchStart = (e: TouchEvent) => {
+  resetTrail();
+  if (e.touches.length) {
+    mouse.x = e.touches[0].clientX;
+    mouse.y = e.touches[0].clientY;
+    mouse.active = true;
+  }
 };
 const onTouchMove = (e: TouchEvent) => {
   if (e.touches.length) {
@@ -177,7 +271,12 @@ const onTouchMove = (e: TouchEvent) => {
     mouse.active = true;
   }
 };
+const onTouchEnd = () => {
+  resetTrail();
+  mouse.active = false;
+};
 const onMouseLeave = () => {
+  resetTrail();
   mouse.active = false;
 };
 
@@ -196,7 +295,10 @@ onMounted(() => {
   colors = readThemeColors();
 
   window.addEventListener("mousemove", onMouseMove);
+  window.addEventListener("touchstart", onTouchStart, { passive: true });
   window.addEventListener("touchmove", onTouchMove, { passive: true });
+  window.addEventListener("touchend", onTouchEnd);
+  window.addEventListener("touchcancel", onTouchEnd);
   window.addEventListener("mouseleave", onMouseLeave);
 
   resizeObserver = new ResizeObserver(resize);
@@ -208,7 +310,10 @@ onMounted(() => {
 onBeforeUnmount(() => {
   cancelAnimationFrame(rafId);
   window.removeEventListener("mousemove", onMouseMove);
+  window.removeEventListener("touchstart", onTouchStart);
   window.removeEventListener("touchmove", onTouchMove);
+  window.removeEventListener("touchend", onTouchEnd);
+  window.removeEventListener("touchcancel", onTouchEnd);
   window.removeEventListener("mouseleave", onMouseLeave);
   resizeObserver?.disconnect();
 });
@@ -222,7 +327,7 @@ onBeforeUnmount(() => {
 .cyber-particles {
   position: fixed;
   inset: 0;
-  z-index: 1;
+  z-index: 100;
 
   pointer-events: none;
 
