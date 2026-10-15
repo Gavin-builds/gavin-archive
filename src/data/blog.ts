@@ -18,6 +18,7 @@ export const blogPosts: BlogPost[] = [
     type: 'ARTICLE',
     relatedProjects: ['gavin-archive'],
     cover: '/images/blog/archive-log.svg',
+    pinned: true,
     content: [
       { zh: '大多数开发者作品集只回答一个问题：你做过什么？', en: 'Most developer portfolios answer one question: what have you built?' },
       { zh: '我希望它还能回答：我现在正在做什么、为什么这么做、什么失败过，以及代码在哪里。', en: 'I wanted it to also answer what I am building now, why I am building it, what failed, and where the code lives.' },

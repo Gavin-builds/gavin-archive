@@ -11,4 +11,6 @@ export interface BlogPost {
   content: LocalizedText[]
   relatedProjects?: string[]
   cover?: string
+  /** 置顶：列表中排在最前并显示置顶标识 */
+  pinned?: boolean
 }

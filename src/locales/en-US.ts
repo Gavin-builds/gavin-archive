@@ -254,6 +254,7 @@ export default {
     error: 'BLOG ERROR',
     search: 'SEARCH',
     clear: 'CLEAR',
+    pinned: 'PINNED',
     searchPlaceholder: 'Search articles, tags…',
     minRead: 'MIN READ',
     read: 'READ ARTICLE',

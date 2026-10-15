@@ -43,17 +43,18 @@ const text = (value: { zh: string; en: string }) =>
   localize(value, locale.value);
 const filteredPosts = computed(() => {
   const keyword = query.value.trim().toLowerCase();
-  if (!keyword) return blogPosts;
-  return blogPosts.filter((post) =>
-    [
-      text(post.title),
-      text(post.description),
-      ...post.tags.map((tag) => text(tag)),
-    ].some((value) => value.toLowerCase().includes(keyword)),
-  );
+  const list = keyword
+    ? blogPosts.filter((post) =>
+        [
+          text(post.title),
+          text(post.description),
+          ...post.tags.map((tag) => text(tag)),
+        ].some((value) => value.toLowerCase().includes(keyword)),
+      )
+    : blogPosts;
+  // 置顶文章排最前，其余保持数据原有日期序
+  return [...list].sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)));
 });
-const featured = computed(() => filteredPosts.value[0]);
-const rest = computed(() => filteredPosts.value.slice(1));
 </script>
 
 <template>
@@ -87,38 +88,9 @@ const rest = computed(() => filteredPosts.value.slice(1));
       >
     </header>
 
-    <RouterLink
-      v-if="featured"
-      :to="`/archive/blog/${featured.slug}`"
-      class="featured-note"
-    >
-      <div class="featured-note__media">
-        <img
-          v-if="featured.cover"
-          :src="featured.cover"
-          :alt="text(featured.title)"
-        /><span>{{ t('blog.latestNote', { date: featured.date }) }}</span>
-      </div>
-      <div class="featured-note__body">
-        <div class="meta">
-          <span>{{ t(`blog.type.${featured.type}`) }}</span
-          ><span>{{ featured.date }}</span
-          ><span>{{ featured.readTime }} {{ t("blog.minRead") }}</span>
-        </div>
-        <h2>{{ text(featured.title) }}</h2>
-        <p>{{ text(featured.description) }}</p>
-        <div class="tags">
-          <span v-for="tag in featured.tags" :key="tag.en">{{
-            text(tag)
-          }}</span>
-        </div>
-        <strong class="read">{{ t("blog.read") }} →</strong>
-      </div>
-    </RouterLink>
-
     <div class="note-list">
       <RouterLink
-        v-for="post in rest"
+        v-for="post in filteredPosts"
         :key="post.slug"
         :to="`/archive/blog/${post.slug}`"
         class="note-row"
@@ -130,7 +102,13 @@ const rest = computed(() => filteredPosts.value.slice(1));
             :alt="text(post.title)"
             loading="lazy"
           />
-          <span class="note-row__media-label">{{ post.date }}</span>
+          <span class="note-row__media-label">
+            {{ post.date }}
+            <span
+              v-if="post.pinned"
+              class="note-row__featured"
+            >· {{ t('blog.pinned') }}</span>
+          </span>
         </div>
 
         <div class="note-row__main">
@@ -304,119 +282,12 @@ const rest = computed(() => filteredPosts.value.slice(1));
   color: var(--text-faint);
   font-size: var(--fs-2xs);
 }
-.featured-note {
-  display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  margin-top: 18px;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: inherit;
-  text-decoration: none;
-  overflow: hidden;
-  transition:
-    transform var(--transition-normal),
-    border-color var(--transition-normal),
-    box-shadow var(--transition-normal);
-}
-.featured-note:hover {
-  transform: translateY(-5px);
-  border-color: var(--accent-line);
-  box-shadow: var(--shadow);
-}
-.featured-note__media {
-  position: relative;
-  min-height: 390px;
-  background: var(--media-bg);
-  overflow: hidden;
-}
-.featured-note__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.7s ease;
-}
-.featured-note:hover img {
-  transform: scale(1.06);
-}
-.featured-note__media::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(to bottom, transparent 30%, rgba(0, 0, 0, 0.75)),
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 5px,
-      rgba(255, 255, 255, 0.018) 6px
-    );
-}
-.featured-note__media span {
-  position: absolute;
-  left: 16px;
-  bottom: 14px;
-  z-index: 2;
-  color: var(--accent);
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-}
-.featured-note__body {
-  padding: 34px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  color: var(--text-muted);
-}
-.meta span:first-child {
-  color: var(--accent);
-}
-.note-mark {
-  margin-top: 26px;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-}
-.featured-note h2 {
-  margin: 12px 0 0;
-  font-size: clamp(36px, 5vw, 64px);
-  line-height: 1;
-  letter-spacing: -0.055em;
-}
-.featured-note p {
-  margin: 18px 0 0;
-  color: var(--text-secondary);
-  line-height: 1.8;
-}
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-top: 20px;
-}
-.tags span {
-  padding: 5px 8px;
-  border: 1px solid var(--line);
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-}
-.read {
-  margin-top: 26px;
-  color: var(--accent);
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  font-weight: 500;
-}
 .note-list {
   margin-top: 18px;
   border-top: 1px solid var(--line);
 }
 
-/* === 复原后的列表行：加了 media 列 === */
+/* === 列表行 === */
 .note-row {
   position: relative;
   display: grid;
@@ -488,6 +359,10 @@ const rest = computed(() => filteredPosts.value.slice(1));
   bottom: 10px;
   color: var(--accent);
 }
+.note-row__featured {
+  color: var(--accent-secondary);
+  letter-spacing: 0.1em;
+}
 
 .note-row h2 {
   margin: 12px 0 0;
@@ -536,12 +411,6 @@ const rest = computed(() => filteredPosts.value.slice(1));
   .blog-hero {
     grid-template-columns: 1fr;
   }
-  .featured-note {
-    grid-template-columns: 1fr;
-  }
-  .featured-note__media {
-    min-height: 300px;
-  }
 }
 
 @media (max-width: 650px) {
@@ -554,9 +423,6 @@ const rest = computed(() => filteredPosts.value.slice(1));
   }
   .note-row__arrow {
     display: none;
-  }
-  .featured-note__body {
-    padding: 22px;
   }
 }
 

@@ -254,6 +254,7 @@ export default {
     error: '博客错误',
     search: '搜索',
     clear: '清除',
+    pinned: '置顶',
     searchPlaceholder: '搜索文章、标签…',
     minRead: '分钟阅读',
     read: '阅读文章',

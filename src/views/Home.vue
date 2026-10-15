@@ -1002,6 +1002,9 @@ onBeforeUnmount(() => {
   z-index: 10;
 
   opacity: 0.45;
+
+  /* 纯装饰：透明盒体会覆盖右上角主题按钮的热区，必须放行指针事件 */
+  pointer-events: none;
 }
 
 .corner--tl {
