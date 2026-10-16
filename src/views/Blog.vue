@@ -61,7 +61,6 @@ const filteredPosts = computed(() => {
   <section class="blog">
     <header class="blog-hero">
       <div>
-        <div class="eyebrow">{{ t('blog.eyebrow') }}</div>
         <h1>{{ t('blog.title') }}</h1>
         <p>{{ t('blog.description') }}</p>
       </div>
@@ -138,7 +137,6 @@ const filteredPosts = computed(() => {
   padding-bottom: 48px;
   border-bottom: 1px solid var(--line);
 }
-.eyebrow,
 .query,
 .meta,
 .note-row__arrow,
@@ -146,9 +144,6 @@ const filteredPosts = computed(() => {
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   letter-spacing: 0.13em;
-}
-.eyebrow {
-  color: var(--accent);
 }
 .blog h1 {
   margin: 14px 0 0;

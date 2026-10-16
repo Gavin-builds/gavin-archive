@@ -58,7 +58,6 @@ export default {
   profile: {
     title: 'PROFILE',
     subtitle: 'ABOUT ME',
-    sectionLabel: '/ 01 PROFILE',
 
     role: 'AI FULL-STACK ENGINEER',
 
@@ -98,8 +97,6 @@ export default {
     title: 'PROJECT CASE FILES',
     subtitle: 'Things I am building and archiving',
 
-    sectionLabel: '/ 02 PROJECT ARCHIVE',
-    eyebrow: '/ 02 CASE FILES',
     indexed: 'INDEXED',
     caseFiles: 'CASE FILES',
     indexPrefix: 'INDEX / {filter}',
@@ -170,7 +167,6 @@ export default {
   github: {
     title: 'GITHUB',
     subtitle: 'Open source and code activity',
-    sectionLabel: '/ 05 NETWORK',
     sourceNode: 'SOURCE NODE',
     online: 'ONLINE',
     statsRepos: 'REPOSITORIES',
@@ -189,7 +185,6 @@ export default {
 
   pulse: {
     title: 'PULSE',
-    eyebrow: '/ 03 LIVE PULSE',
     description:
       'What I am researching, reading, learning and listening to right now, all in one place.',
     all: 'ALL',
@@ -227,7 +222,6 @@ export default {
     title: 'BLOG',
     subtitle: 'Technical articles, development logs and thoughts',
     description: 'Technical articles, development logs and the process behind building.',
-    eyebrow: '/ 04 DEVELOPMENT LOG',
     querySearch: 'QUERY / SEARCH',
     entriesIndexed: '{n} ENTRIES INDEXED',
     latestNote: 'LATEST NOTE / {date}',

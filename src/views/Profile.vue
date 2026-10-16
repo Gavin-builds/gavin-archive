@@ -28,10 +28,6 @@ const links = [
 <template>
   <section class="profile">
     <header class="profile__header">
-      <div class="eyebrow">
-        {{ t('profile.sectionLabel') }}
-      </div>
-
       <h1>
         GavinLin
       </h1>
@@ -127,7 +123,6 @@ const links = [
   border-bottom: 1px solid var(--line);
 }
 
-.eyebrow,
 .label {
   color: var(--accent);
 

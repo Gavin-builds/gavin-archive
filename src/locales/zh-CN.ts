@@ -58,7 +58,6 @@ export default {
   profile: {
     title: '个人档案',
     subtitle: '关于我',
-    sectionLabel: '/ 01 个人档案',
 
     role: 'AI 全栈工程师',
 
@@ -98,8 +97,6 @@ export default {
     title: '项目档案',
     subtitle: '正在构建与归档的项目',
 
-    sectionLabel: '/ 02 项目档案',
-    eyebrow: '/ 02 案例档案',
     indexed: '已索引',
     caseFiles: '案例档案',
     indexPrefix: '索引 / {filter}',
@@ -170,7 +167,6 @@ export default {
   github: {
     title: 'GitHub',
     subtitle: '开源与代码活动',
-    sectionLabel: '/ 05 网络节点',
     sourceNode: '源节点',
     online: '在线',
     statsRepos: '仓库',
@@ -189,7 +185,6 @@ export default {
 
   pulse: {
     title: '脉搏',
-    eyebrow: '/ 03 实时脉搏',
     description:
       '此刻正在研究什么、读什么、学什么、听什么，都记录在这里。',
     all: '全部',
@@ -227,7 +222,6 @@ export default {
     title: '博客',
     subtitle: '技术文章、开发记录与思考',
     description: '技术文章、开发日志与构建过程。',
-    eyebrow: '/ 04 开发日志',
     querySearch: '查询 / 搜索',
     entriesIndexed: '{n} 条已索引',
     latestNote: '最新笔记 / {date}',

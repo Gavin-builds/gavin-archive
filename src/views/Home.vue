@@ -19,7 +19,7 @@ const { theme } = useTheme();
 const { play: playGlitchTransition } = useGlitchTransition();
 
 // 右侧档案指标：年份取所有数据中的最新记录年份，
-// 脉搏数取脉搏条目数，活跃核心取处于 BUILDING 状态的项目数
+// 脉搏数取脉搏条目数，当前项目取项目总数
 const pad2 = (value: number) => String(value).padStart(2, "0");
 
 const latestYear = computed(() => {
@@ -33,9 +33,7 @@ const latestYear = computed(() => {
 
 const pulseCount = computed(() => pad2(pulseItems.length));
 
-const activeCoreCount = computed(
-  () => pad2(projects.filter((project) => project.status === "BUILDING").length),
-);
+const activeCoreCount = computed(() => pad2(projects.length));
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 const scene = ref<HTMLElement | null>(null);

@@ -19,7 +19,6 @@ const formatDate = (value: string) =>
   <section class="github">
     <header class="header">
       <div>
-        <div class="eyebrow">{{ t("github.sectionLabel") }}</div>
         <h1>{{ t("github.title") }}</h1>
         <p>{{ t("github.subtitle") }}</p>
       </div>
@@ -103,7 +102,6 @@ const formatDate = (value: string) =>
   border-bottom: 1px solid var(--line);
   overflow: hidden;
 }
-.eyebrow,
 .section-label {
   color: var(--accent);
   font-family: var(--font-mono);

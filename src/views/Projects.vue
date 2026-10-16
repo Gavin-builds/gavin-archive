@@ -42,7 +42,6 @@ const filteredProjects = computed(() => {
   <section class="projects">
     <header class="archive-intro">
       <div>
-        <div class="eyebrow">{{ t("projects.eyebrow") }}</div>
         <h1>
           {{ t("projects.title") }}
         </h1>
@@ -97,7 +96,6 @@ const filteredProjects = computed(() => {
   padding-bottom: 48px;
   border-bottom: 1px solid var(--line);
 }
-.eyebrow,
 .filter-row {
   color: var(--accent);
   font-family: var(--font-mono);

@@ -74,7 +74,6 @@ const ecgPath =
   <section class="pulse">
     <header class="pulse-hero">
       <div>
-        <div class="eyebrow">{{ t("pulse.eyebrow") }}</div>
         <h1>{{ t("pulse.title") }}</h1>
         <p>{{ t("pulse.description") }}</p>
       </div>
@@ -234,7 +233,6 @@ const ecgPath =
   padding-bottom: 48px;
   border-bottom: 1px solid var(--line);
 }
-.eyebrow,
 .pulse-index,
 .pulse-row__meta,
 .pulse-row__signal,
@@ -243,9 +241,6 @@ const ecgPath =
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   letter-spacing: 0.13em;
-}
-.eyebrow {
-  color: var(--accent);
 }
 .pulse h1 {
   margin: 14px 0 0;
