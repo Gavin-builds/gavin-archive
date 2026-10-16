@@ -1,6 +1,5 @@
 export default {
   common: {
-    online: 'SYSTEM ONLINE',
     loading: 'LOADING',
     close: 'CLOSE',
     menu: 'MENU',
@@ -11,10 +10,9 @@ export default {
   nav: {
     profile: 'PROFILE',
     projects: 'PROJECTS',
-    lab: 'LAB',
+    pulse: 'PULSE',
     blog: 'BLOG',
     github: 'GITHUB',
-    about: 'ABOUT',
   },
 
   home: {
@@ -32,8 +30,8 @@ export default {
 
     archiveLabel: 'ARCHIVE',
     year: 'YEAR',
-    experiments: 'EXPERIMENTS',
-    activeCore: 'ACTIVE CORE',
+    pulse: 'PULSE',
+    activeCore: 'CURRENT PROJECT',
 
     initializing: '// INITIALIZING',
     archiveId: 'ARCHIVE_001',
@@ -86,6 +84,14 @@ export default {
     backend: 'BACKEND',
     ai: 'AI',
     engineering: 'ENGINEERING',
+
+    whatIBuild: 'WHAT I BUILD',
+    whatIBuildText: 'Developer tools, AI applications, independent products and technical experiments.',
+    howIWork: 'HOW I WORK',
+    howIWorkText: 'Start with the smallest useful version, validate ideas through real projects, and let the work speak.',
+    contact: 'CONTACT',
+    emailLink: 'Email',
+    archiveText: 'A living developer archive documenting what I build, learn and think about.',
   },
 
   projects: {
@@ -161,31 +167,6 @@ export default {
     email: 'EMAIL ↗',
   },
 
-  about: {
-    title: 'ABOUT',
-    subtitle: 'ABOUT GAVIN ARCHIVE',
-
-    eyebrow: '/ 06 SYSTEM INFO',
-    contact: 'CONTACT',
-    emailLink: 'Email',
-    archive: 'ARCHIVE',
-
-    description:
-      'Gavin Archive is a living developer archive for projects, experiments, articles, code and the process behind building them.',
-    whatIBuild: 'WHAT I BUILD',
-    whatIBuildText: 'Developer tools, AI applications, independent products and technical experiments.',
-    howIWork: 'HOW I WORK',
-    howIWorkText: 'Start with the smallest useful version, validate ideas through real projects, and let the work speak.',
-    now: 'NOW',
-    currentlyBuilding: 'CURRENTLY BUILDING',
-    buildingValue: 'Gavin Archive / AI Developer Tools',
-    currentlyLearning: 'CURRENTLY LEARNING',
-    learningValue: 'AI Engineering / System Design / English',
-    exploring: 'CURRENTLY EXPLORING',
-    exploringValue: 'Open Source / Indie Development / Japan',
-    archiveText: 'A living archive of what I build, learn and explore.',
-  },
-
   github: {
     title: 'GITHUB',
     subtitle: 'Open source and code activity',
@@ -206,36 +187,39 @@ export default {
     noDescription: 'No description',
   },
 
-  lab: {
-    title: 'EXPERIMENTAL LAB',
-    subtitle: 'Experiments, research and unfinished ideas',
-    description: 'Experiments, prototypes and ideas that are still being tested.',
+  pulse: {
+    title: 'PULSE',
+    eyebrow: '/ 03 LIVE PULSE',
+    description:
+      'What I am researching, reading, learning and listening to right now, all in one place.',
     all: 'ALL',
-    relatedProject: 'OPEN RELATED CASE',
-    empty: 'NO EXPERIMENTS FOUND',
-    eyebrow: '/ 03 RESEARCH NOTEBOOK',
-    runtime: 'LAB.RUNTIME',
-    active: 'ACTIVE',
-    cycle: 'OBSERVE → ITERATE → ARCHIVE',
-    notebookPrefix: 'NOTEBOOK / {filter}',
-    expToken: 'EXP / {n}',
+    monitor: 'PULSE.MONITOR',
+    live: 'LIVE',
+    lastSync: 'LAST SYNC',
+    feedPrefix: 'FEED / {filter}',
+    pulseToken: 'PULSE / {n}',
     statusLabel: 'STATUS',
     open: 'OPEN ↗',
-    emptyResults: 'NO EXPERIMENTS / 0 RESULTS',
-    drawerEyebrow: 'LAB NOTE',
-    fields: {
-      question: 'QUESTION',
-      hypothesis: 'HYPOTHESIS',
-      observation: 'OBSERVATION',
-      conclusion: 'CONCLUSION',
+    emptyResults: 'NO SIGNAL / 0 RESULTS',
+    drawerEyebrow: 'PULSE LOG',
+    relatedProject: 'OPEN RELATED CASE',
+    categories: {
+      RESEARCH: 'RESEARCH',
+      READING: 'READING',
+      LEARNING: 'LEARNING',
+      LISTENING: 'MUSIC',
     },
     status: {
-      EXPERIMENT: 'EXPERIMENT',
-      TESTING: 'TESTING',
-      PROMISING: 'PROMISING',
+      ACTIVE: 'ACTIVE',
+      ONGOING: 'ONGOING',
       PAUSED: 'PAUSED',
-      FAILED: 'FAILED',
-      ARCHIVED: 'ARCHIVED',
+      DONE: 'DONE',
+    },
+    fields: {
+      source: 'SOURCE',
+      progress: 'CURRENT PROGRESS',
+      thought: 'THOUGHT',
+      nextStep: 'NEXT STEP',
     },
   },
 

@@ -7,7 +7,7 @@ import ThemeToggle from "../components/archive/ThemeToggle.vue";
 import { useTheme } from "../composables/useTheme";
 import { useGlitchTransition } from "../composables/useGlitchTransition";
 import { projects } from "../data/projects";
-import { labExperiments } from "../data/lab";
+import { pulseItems } from "../data/pulse";
 import { blogPosts } from "../data/blog";
 
 const { t } = useI18n();
@@ -19,19 +19,19 @@ const { theme } = useTheme();
 const { play: playGlitchTransition } = useGlitchTransition();
 
 // 右侧档案指标：年份取所有数据中的最新记录年份，
-// 实验数取实验室条目数，活跃核心取处于 BUILDING 状态的项目数
+// 脉搏数取脉搏条目数，活跃核心取处于 BUILDING 状态的项目数
 const pad2 = (value: number) => String(value).padStart(2, "0");
 
 const latestYear = computed(() => {
   const dates = [
     ...projects.map((project) => project.date),
-    ...labExperiments.map((experiment) => experiment.date),
+    ...pulseItems.map((entry) => entry.date),
     ...blogPosts.map((post) => post.date),
   ];
   return dates.length ? dates.sort().pop()!.slice(0, 4) : "";
 });
 
-const experimentCount = computed(() => pad2(labExperiments.length));
+const pulseCount = computed(() => pad2(pulseItems.length));
 
 const activeCoreCount = computed(
   () => pad2(projects.filter((project) => project.status === "BUILDING").length),
@@ -329,8 +329,8 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="panel__metric">
-        <span>{{ experimentCount }}</span>
-        <small>{{ t("home.experiments") }}</small>
+        <span>{{ pulseCount }}</span>
+        <small>{{ t("home.pulse") }}</small>
       </div>
 
       <div class="panel__metric">

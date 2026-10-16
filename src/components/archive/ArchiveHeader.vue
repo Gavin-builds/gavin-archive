@@ -14,10 +14,9 @@ interface NavLink {
 const navLinks: NavLink[] = [
   { labelKey: "nav.profile", path: "/archive/profile" },
   { labelKey: "nav.projects", path: "/archive/projects" },
-  { labelKey: "nav.lab", path: "/archive/lab" },
+  { labelKey: "nav.pulse", path: "/archive/pulse" },
   { labelKey: "nav.blog", path: "/archive/blog" },
   { labelKey: "nav.github", path: "/archive/github" },
-  { labelKey: "nav.about", path: "/archive/about" },
 ];
 
 const route = useRoute();

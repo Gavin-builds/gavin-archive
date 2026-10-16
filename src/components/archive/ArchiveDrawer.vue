@@ -63,7 +63,7 @@ onBeforeUnmount(() => {
           <div class="drawer__body">
             <slot />
           </div>
-          <div class="drawer__footer">{{ t('archive.token') }} // {{ t('common.online') }}</div>
+          <div class="drawer__footer">{{ t('archive.token') }}</div>
         </aside>
       </div>
     </Transition>

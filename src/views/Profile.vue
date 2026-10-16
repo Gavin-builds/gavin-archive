@@ -18,6 +18,11 @@ const skillGroups = [
   { titleKey: 'profile.ai', items: 'LLM · AI Application · AI Agents' },
   { titleKey: 'profile.engineering', items: 'Git · Docker · API · PWA' },
 ] as const
+
+const links = [
+  { labelKey: 'nav.github', href: 'https://github.com/Gavin-builds' },
+  { labelKey: 'profile.emailLink', href: 'mailto:lejob@qq.com' },
+]
 </script>
 
 <template>
@@ -60,6 +65,39 @@ const skillGroups = [
             {{ t(key) }}
           </li>
         </ul>
+      </CyberCard>
+
+      <CyberCard :label="t('profile.whatIBuild')">
+        <p>
+          {{ t('profile.whatIBuildText') }}
+        </p>
+      </CyberCard>
+
+      <CyberCard :label="t('profile.howIWork')">
+        <p>
+          {{ t('profile.howIWorkText') }}
+        </p>
+      </CyberCard>
+
+      <CyberCard :label="t('profile.contact')">
+        <div class="links">
+          <a
+            v-for="link in links"
+            :key="link.href"
+            :href="link.href"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {{ t(link.labelKey) }} ↗
+          </a>
+        </div>
+      </CyberCard>
+
+      <CyberCard :label="t('archive.token')" :hoverable="false">
+        <p class="mono">GAVIN ARCHIVE / {{ t('home.footer.version') }}</p>
+        <p>
+          {{ t('profile.archiveText') }}
+        </p>
       </CyberCard>
     </div>
 
@@ -196,6 +234,53 @@ const skillGroups = [
   color: var(--text-secondary);
 
   line-height: 1.7;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+
+  margin-top: 4px;
+}
+
+.links a {
+  display: flex;
+  justify-content: space-between;
+
+  padding: 12px 0;
+
+  border-bottom: 1px solid var(--line);
+
+  color: var(--accent);
+
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  text-decoration: none;
+
+  transition:
+    color var(--transition-fast),
+    text-shadow var(--transition-fast);
+}
+
+.links a:last-child {
+  border-bottom: none;
+}
+
+.links a:hover {
+  text-shadow: 0 0 10px rgba(var(--accent-rgb), 0.5);
+}
+
+.mono {
+  color: var(--accent) !important;
+
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .links a {
+    transition: none;
+  }
 }
 
 @media (max-width: 700px) {

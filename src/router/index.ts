@@ -52,10 +52,10 @@ const router = createRouter({
         },
 
         {
-          path: 'lab',
-          name: 'lab',
-          component: () => import('../views/Lab.vue'),
-          meta: { titleKey: 'lab.title' },
+          path: 'pulse',
+          name: 'pulse',
+          component: () => import('../views/Pulse.vue'),
+          meta: { titleKey: 'pulse.title' },
         },
 
         {
@@ -77,13 +77,6 @@ const router = createRouter({
           name: 'github',
           component: () => import('../views/GitHub.vue'),
           meta: { titleKey: 'github.title' },
-        },
-
-        {
-          path: 'about',
-          name: 'about',
-          component: () => import('../views/About.vue'),
-          meta: { titleKey: 'about.title' },
         },
       ],
     },

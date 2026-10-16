@@ -1,6 +1,5 @@
 export default {
   common: {
-    online: '系统在线',
     loading: '加载中',
     close: '关闭',
     menu: '菜单',
@@ -11,10 +10,9 @@ export default {
   nav: {
     profile: '个人档案',
     projects: '项目',
-    lab: '实验室',
+    pulse: '脉搏',
     blog: '博客',
     github: 'GitHub',
-    about: '关于',
   },
 
   home: {
@@ -32,8 +30,8 @@ export default {
 
     archiveLabel: '档案',
     year: '年份',
-    experiments: '实验',
-    activeCore: '当前核心',
+    pulse: '脉搏',
+    activeCore: '当前项目',
 
     initializing: '// 正在初始化',
     archiveId: 'ARCHIVE_001',
@@ -86,6 +84,14 @@ export default {
     backend: '后端',
     ai: 'AI',
     engineering: '工程能力',
+
+    whatIBuild: '我构建什么',
+    whatIBuildText: '开发者工具、AI 应用、独立产品与实验性软件。',
+    howIWork: '我如何工作',
+    howIWorkText: '先做最小可用版本，再通过真实项目验证想法，让代码和结果证明能力。',
+    contact: '联系方式',
+    emailLink: '邮箱',
+    archiveText: '一个持续更新的开发者数字档案，记录所构建、所学与所想。',
   },
 
   projects: {
@@ -161,31 +167,6 @@ export default {
     email: '邮箱 ↗',
   },
 
-  about: {
-    title: '关于',
-    subtitle: '关于 Gavin Archive',
-
-    eyebrow: '/ 06 系统信息',
-    contact: '联系方式',
-    emailLink: '邮箱',
-    archive: '档案',
-
-    description:
-      'Gavin Archive 是一个持续更新的开发者数字档案，用来记录项目、实验、文章、代码与开发过程。',
-    whatIBuild: '我构建什么',
-    whatIBuildText: '开发者工具、AI 应用、独立产品与实验性软件。',
-    howIWork: '我如何工作',
-    howIWorkText: '先做最小可用版本，再通过真实项目验证想法，让代码和结果证明能力。',
-    now: 'NOW',
-    currentlyBuilding: '正在构建',
-    buildingValue: 'Gavin Archive / AI Developer Tools',
-    currentlyLearning: '正在学习',
-    learningValue: 'AI Engineering / System Design / English',
-    exploring: '正在探索',
-    exploringValue: 'Open Source / Indie Development / Japan',
-    archiveText: '一个持续更新的开发者数字档案。',
-  },
-
   github: {
     title: 'GitHub',
     subtitle: '开源与代码活动',
@@ -206,36 +187,39 @@ export default {
     noDescription: '暂无描述',
   },
 
-  lab: {
-    title: '实验记录',
-    subtitle: '实验、研究与未完成想法',
-    description: '记录正在验证、尚未成熟或最终失败的想法。',
+  pulse: {
+    title: '脉搏',
+    eyebrow: '/ 03 实时脉搏',
+    description:
+      '此刻正在研究什么、读什么、学什么、听什么，都记录在这里。',
     all: '全部',
-    relatedProject: '查看关联项目',
-    empty: '暂无实验',
-    eyebrow: '/ 03 研究笔记',
-    runtime: '实验室.运行时',
-    active: '运行中',
-    cycle: '观察 → 迭代 → 归档',
-    notebookPrefix: '笔记 / {filter}',
-    expToken: '实验 / {n}',
+    monitor: '脉搏.监视器',
+    live: '实时',
+    lastSync: '上次同步',
+    feedPrefix: '信号 / {filter}',
+    pulseToken: 'PULSE / {n}',
     statusLabel: '状态',
     open: '打开 ↗',
-    emptyResults: '无实验 / 0 条结果',
-    drawerEyebrow: '实验笔记',
-    fields: {
-      question: '问题',
-      hypothesis: '假设',
-      observation: '观察',
-      conclusion: '结论',
+    emptyResults: '无信号 / 0 条结果',
+    drawerEyebrow: '脉搏日志',
+    relatedProject: '查看关联项目',
+    categories: {
+      RESEARCH: '研究',
+      READING: '阅读',
+      LEARNING: '学习',
+      LISTENING: '音乐',
     },
     status: {
-      EXPERIMENT: '实验中',
-      TESTING: '测试中',
-      PROMISING: '有潜力',
+      ACTIVE: '进行中',
+      ONGOING: '持续推进',
       PAUSED: '暂停',
-      FAILED: '失败',
-      ARCHIVED: '已归档',
+      DONE: '完成',
+    },
+    fields: {
+      source: '来源',
+      progress: '当前进展',
+      thought: '思考',
+      nextStep: '下一步',
     },
   },
 
