@@ -242,30 +242,30 @@ const resetScrollTop = () => {
 }
 
 /* =========================
-   页面转场：故障位移 + 切片裁切
+   页面转场：跟随扫描光束的纵向揭示
+   enter：可见区从顶部向下扩展（inset bottom 100% → 0）
+   leave：可见区向底部收束（inset top 0 → 100%），像被光束扫过擦除
 ========================= */
 
 .archive-page-enter-active {
   transition:
     opacity 280ms steps(5, end),
-    transform 340ms cubic-bezier(0.22, 0.68, 0.24, 1),
-    clip-path 340ms cubic-bezier(0.7, 0, 0.3, 1);
+    clip-path 440ms cubic-bezier(0.7, 0, 0.3, 1);
 }
 
 .archive-page-leave-active {
   transition:
-    opacity 150ms steps(2, end),
-    transform 180ms cubic-bezier(0.55, 0, 0.45, 1);
+    opacity 160ms steps(2, end),
+    clip-path 180ms cubic-bezier(0.55, 0, 0.45, 1);
 }
 
 .archive-page-leave-to {
   opacity: 0;
-  transform: translateX(-12px);
+  clip-path: inset(100% 0 0 0);
 }
 
 .archive-page-enter-from {
   opacity: 0;
-  transform: translateX(16px);
   clip-path: inset(0 0 100% 0);
 }
 
@@ -404,7 +404,6 @@ const resetScrollTop = () => {
 
   .archive-page-enter-from,
   .archive-page-leave-to {
-    transform: none;
     clip-path: none;
   }
 
