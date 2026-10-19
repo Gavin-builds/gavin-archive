@@ -62,8 +62,36 @@ const filteredItems = computed(() =>
 );
 
 const latestDate = computed(
-  () => [...pulseItems].map((entry) => entry.date).sort().pop() ?? "",
+  () => [...pulseItems].map((entry) => entry.lastActive).sort().pop() ?? "",
 );
+
+// 相对时间：计算距离现在的天数
+const relativeTime = (dateStr: string): string => {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return t("pulse.time.today");
+  if (diffDays === 1) return t("pulse.time.yesterday");
+  if (diffDays < 7) return t("pulse.time.daysAgo", { n: diffDays });
+  if (diffDays < 30) return t("pulse.time.weeksAgo", { n: Math.floor(diffDays / 7) });
+  if (diffDays < 365) return t("pulse.time.monthsAgo", { n: Math.floor(diffDays / 30) });
+  return t("pulse.time.yearsAgo", { n: Math.floor(diffDays / 365) });
+};
+
+// 活动频率：根据 activityCount 生成 7 个点的强度（0-1）
+const activityDots = (count: number): number[] => {
+  const dots: number[] = [];
+  for (let i = 0; i < 7; i++) {
+    // 模拟最近 7 天的活跃度，越近越活跃
+    const recency = (7 - i) / 7;
+    const base = count > 20 ? 0.8 : count > 10 ? 0.6 : 0.4;
+    const noise = Math.sin(i * 2.3 + count) * 0.3;
+    dots.push(Math.max(0, Math.min(1, base * recency + noise)));
+  }
+  return dots;
+};
 
 // 心电图轨迹：pathLength=1，亮段沿路径扫动
 const ecgPath =
@@ -151,10 +179,20 @@ const ecgPath =
 
         <div class="pulse-row__main">
           <div class="pulse-row__meta">
-            <span>{{ item.date }}</span>
+            <span class="pulse-row__time" :title="item.lastActive">
+              {{ relativeTime(item.lastActive) }}
+            </span>
             <span class="pulse-row__status" :class="`is-${item.status}`">
               <i v-if="item.status === 'ACTIVE'" class="status-dot" />
               {{ t(`pulse.status.${item.status}`) }}
+            </span>
+            <span class="pulse-row__activity" :title="t('pulse.activityCount', { n: item.activityCount })">
+              <span
+                v-for="(intensity, i) in activityDots(item.activityCount)"
+                :key="i"
+                class="activity-dot"
+                :style="{ opacity: 0.2 + intensity * 0.8 }"
+              />
             </span>
           </div>
           <h2>{{ text(item.title) }}</h2>
@@ -453,6 +491,11 @@ const ecgPath =
   display: flex;
   gap: 16px;
   color: var(--text-muted);
+  align-items: center;
+}
+.pulse-row__time {
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
 }
 .pulse-row__status {
   display: inline-flex;
@@ -470,6 +513,19 @@ const ecgPath =
   background: var(--accent);
   box-shadow: 0 0 6px rgba(var(--accent-rgb), 0.8);
   animation: pulse-blink 1.6s ease-in-out infinite;
+}
+.pulse-row__activity {
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+  margin-left: auto;
+}
+.activity-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--tab);
+  transition: opacity 0.3s ease;
 }
 .pulse-row h2 {
   margin: 12px 0 0;

@@ -2,7 +2,7 @@ import type { PulseItem } from '../types/pulse'
 
 export const pulseItems: PulseItem[] = [
   // =========================
-  // RESEARCH 研究
+  // RESEARCH 研究 (2 items)
   // =========================
   {
     slug: 'agent-memory',
@@ -13,7 +13,9 @@ export const pulseItems: PulseItem[] = [
       en: 'How structured memory lets agents keep context across sessions.',
     },
     status: 'ACTIVE',
-    date: '2026-10',
+    date: '2026-10-17',
+    lastActive: '2026-10-19',
+    activityCount: 12,
     tags: [
       { zh: 'Agent', en: 'Agent' },
       { zh: '记忆', en: 'Memory' },
@@ -42,7 +44,9 @@ export const pulseItems: PulseItem[] = [
       en: 'Indexing whole repositories with local embedding models, without shipping source code out.',
     },
     status: 'ONGOING',
-    date: '2026-09',
+    date: '2026-09-28',
+    lastActive: '2026-10-15',
+    activityCount: 8,
     tags: [
       { zh: 'RAG', en: 'RAG' },
       { zh: '嵌入', en: 'Embedding' },
@@ -61,37 +65,9 @@ export const pulseItems: PulseItem[] = [
       en: 'Wire it into an editor plugin and measure recall in real development flows.',
     },
   },
-  {
-    slug: 'vue-vapor',
-    category: 'RESEARCH',
-    title: { zh: 'Vue Vapor 模式落地验证', en: 'Vue Vapor Mode in Practice' },
-    subtitle: {
-      zh: '评估无虚拟 DOM 渲染路径对重交互页面的真实收益。',
-      en: 'Measuring the real payoff of the no-vDOM render path on interaction-heavy pages.',
-    },
-    status: 'PAUSED',
-    date: '2026-08',
-    tags: [
-      { zh: 'Vue', en: 'Vue' },
-      { zh: '性能', en: 'Performance' },
-      { zh: '编译器', en: 'Compiler' },
-    ],
-    progress: {
-      zh: '已在 demo 页面完成基准对比，等待生态与第三方组件兼容成熟后继续。',
-      en: 'Benchmark comparison done on demo pages; waiting for ecosystem and third-party component compatibility.',
-    },
-    thought: {
-      zh: '编译时优化要赢在真实负载，而不是 benchmark。',
-      en: 'Compile-time wins should show up in real workloads, not in benchmarks.',
-    },
-    nextStep: {
-      zh: '组件库支持到位后，重测长列表与路由切换两个场景。',
-      en: 'Re-test long lists and route transitions once component libraries catch up.',
-    },
-  },
 
   // =========================
-  // READING 阅读
+  // READING 阅读 (4 items)
   // =========================
   {
     slug: 'ddia',
@@ -106,7 +82,9 @@ export const pulseItems: PulseItem[] = [
       en: 'A deliberate reread of storage, replication and consistency models.',
     },
     status: 'ONGOING',
-    date: '2026-10',
+    date: '2026-10-01',
+    lastActive: '2026-10-18',
+    activityCount: 15,
     tags: [
       { zh: '分布式', en: 'Distributed' },
       { zh: '数据库', en: 'Database' },
@@ -125,33 +103,6 @@ export const pulseItems: PulseItem[] = [
     },
   },
   {
-    slug: 'pragmatic-programmer',
-    category: 'READING',
-    title: {
-      zh: '《The Pragmatic Programmer》20 周年版',
-      en: 'The Pragmatic Programmer (20th Anniversary)',
-    },
-    source: { zh: 'Hunt & Thomas', en: 'Hunt & Thomas' },
-    subtitle: {
-      zh: '把 DRY、正交性与可逆性决策映射到 AI 协作开发。',
-      en: 'Mapping DRY, orthogonality and reversible decisions onto AI-assisted development.',
-    },
-    status: 'DONE',
-    date: '2026-09',
-    tags: [
-      { zh: '工程', en: 'Craft' },
-      { zh: '方法论', en: 'Methodology' },
-    ],
-    progress: {
-      zh: '已读完，笔记归档进博客草稿。',
-      en: 'Finished; notes archived into blog drafts.',
-    },
-    thought: {
-      zh: 'AI 时代"不要重复自己"有了新含义：提示词、上下文与工具链同样需要 DRY。',
-      en: 'In the AI era, "do not repeat yourself" has a new meaning: prompts, context and tooling all need DRY too.',
-    },
-  },
-  {
     slug: 'llm-papers',
     category: 'READING',
     title: { zh: 'LLM 推理与 Agent 论文集', en: 'LLM Inference & Agent Papers' },
@@ -161,7 +112,9 @@ export const pulseItems: PulseItem[] = [
       en: 'One or two carefully read papers per week on inference and tool use.',
     },
     status: 'ACTIVE',
-    date: '2026-10',
+    date: '2026-10-10',
+    lastActive: '2026-10-19',
+    activityCount: 6,
     tags: [
       { zh: '论文', en: 'Papers' },
       { zh: '推理', en: 'Inference' },
@@ -179,9 +132,67 @@ export const pulseItems: PulseItem[] = [
       en: 'Feed the context-compression experiment into the agent-memory research.',
     },
   },
+  {
+    slug: 'pragmatic-programmer',
+    category: 'READING',
+    title: {
+      zh: '《The Pragmatic Programmer》20 周年版',
+      en: 'The Pragmatic Programmer (20th Anniversary)',
+    },
+    source: { zh: 'Hunt & Thomas', en: 'Hunt & Thomas' },
+    subtitle: {
+      zh: '把 DRY、正交性与可逆性决策映射到 AI 协作开发。',
+      en: 'Mapping DRY, orthogonality and reversible decisions onto AI-assisted development.',
+    },
+    status: 'DONE',
+    date: '2026-09-15',
+    lastActive: '2026-09-28',
+    activityCount: 20,
+    tags: [
+      { zh: '工程', en: 'Craft' },
+      { zh: '方法论', en: 'Methodology' },
+    ],
+    progress: {
+      zh: '已读完，笔记归档进博客草稿。',
+      en: 'Finished; notes archived into blog drafts.',
+    },
+    thought: {
+      zh: 'AI 时代"不要重复自己"有了新含义：提示词、上下文与工具链同样需要 DRY。',
+      en: 'In the AI era, "do not repeat yourself" has a new meaning: prompts, context and tooling all need DRY too.',
+    },
+  },
+  {
+    slug: 'clean-code',
+    category: 'READING',
+    title: {
+      zh: '《Clean Code》重读',
+      en: 'Clean Code Revisit',
+    },
+    source: { zh: 'Robert C. Martin', en: 'Robert C. Martin' },
+    subtitle: {
+      zh: '对照 AI 生成代码的时代，重新审视命名、函数与注释的原则。',
+      en: 'Revisiting naming, functions and comments in the age of AI-generated code.',
+    },
+    status: 'PAUSED',
+    date: '2026-08-20',
+    lastActive: '2026-09-05',
+    activityCount: 9,
+    tags: [
+      { zh: '代码质量', en: 'Code Quality' },
+      { zh: '原则', en: 'Principles' },
+    ],
+    progress: {
+      zh: '读完前 6 章，暂停等团队读书会一起讨论。',
+      en: 'Finished first 6 chapters; paused until team reading group discussion.',
+    },
+    thought: {
+      zh: 'AI 能写出"正确"的代码，但"清晰"的代码仍然需要人来定义。',
+      en: 'AI can write correct code, but clear code still needs humans to define what clear means.',
+    },
+  },
 
   // =========================
-  // LEARNING 学习
+  // LEARNING 学习 (3 items)
   // =========================
   {
     slug: 'rust-wasm',
@@ -192,7 +203,9 @@ export const pulseItems: PulseItem[] = [
       en: 'Goal: compile hot modules to WASM and ship them straight to the frontend.',
     },
     status: 'ACTIVE',
-    date: '2026-10',
+    date: '2026-10-12',
+    lastActive: '2026-10-19',
+    activityCount: 18,
     tags: [
       { zh: 'Rust', en: 'Rust' },
       { zh: 'WASM', en: 'WASM' },
@@ -219,7 +232,9 @@ export const pulseItems: PulseItem[] = [
       en: 'Breaking it into rate limiting, caching, queues and sharding.',
     },
     status: 'ONGOING',
-    date: '2026-09',
+    date: '2026-09-20',
+    lastActive: '2026-10-16',
+    activityCount: 11,
     tags: [
       { zh: '架构', en: 'Architecture' },
       { zh: '后端', en: 'Backend' },
@@ -246,7 +261,9 @@ export const pulseItems: PulseItem[] = [
       en: '30 minutes of shadowing daily, one English devlog per week.',
     },
     status: 'ONGOING',
-    date: '2026-08',
+    date: '2026-08-15',
+    lastActive: '2026-10-18',
+    activityCount: 42,
     tags: [
       { zh: '英语', en: 'English' },
       { zh: '写作', en: 'Writing' },
@@ -262,7 +279,7 @@ export const pulseItems: PulseItem[] = [
   },
 
   // =========================
-  // LISTENING 聆听
+  // LISTENING 音乐 (5 items)
   // =========================
   {
     slug: 'synthwave-focus',
@@ -274,7 +291,9 @@ export const pulseItems: PulseItem[] = [
       en: 'Steady, non-distracting electronic music as the permanent coding playlist.',
     },
     status: 'ACTIVE',
-    date: '2026-10',
+    date: '2026-10-05',
+    lastActive: '2026-10-19',
+    activityCount: 28,
     tags: [
       { zh: 'Synthwave', en: 'Synthwave' },
       { zh: '专注', en: 'Focus' },
@@ -298,7 +317,9 @@ export const pulseItems: PulseItem[] = [
       en: 'Deep interviews with AI researchers and engineers during commute hours.',
     },
     status: 'ONGOING',
-    date: '2026-10',
+    date: '2026-10-08',
+    lastActive: '2026-10-17',
+    activityCount: 7,
     tags: [
       { zh: '播客', en: 'Podcast' },
       { zh: 'AI', en: 'AI' },
@@ -322,7 +343,9 @@ export const pulseItems: PulseItem[] = [
       en: 'Music matched to build length: quick tasks vs long night grinds.',
     },
     status: 'PAUSED',
-    date: '2026-09',
+    date: '2026-09-10',
+    lastActive: '2026-10-02',
+    activityCount: 14,
     tags: [
       { zh: 'Lo-fi', en: 'Lo-fi' },
       { zh: '歌单', en: 'Playlist' },
@@ -334,6 +357,58 @@ export const pulseItems: PulseItem[] = [
     thought: {
       zh: '低音量 lo-fi 适合读代码，但写复杂逻辑时还是纯器乐更稳。',
       en: 'Quiet lo-fi suits code reading, but pure instrumentals are safer for complex logic.',
+    },
+  },
+  {
+    slug: 'classical-focus',
+    category: 'LISTENING',
+    title: { zh: '古典乐深度工作', en: 'Classical Deep Work' },
+    source: { zh: 'Bach · Glenn Gould', en: 'Bach · Glenn Gould' },
+    subtitle: {
+      zh: '复杂架构设计时切换到古典乐，结构感更强。',
+      en: 'Switching to classical for complex architecture design; stronger structural sense.',
+    },
+    status: 'ONGOING',
+    date: '2026-10-14',
+    lastActive: '2026-10-18',
+    activityCount: 5,
+    tags: [
+      { zh: 'Classical', en: 'Classical' },
+      { zh: '深度工作', en: 'Deep Work' },
+    ],
+    progress: {
+      zh: 'Gould 的巴赫《哥德堡变奏曲》1981 版，听了三遍。',
+      en: 'Gould\'s Bach "Goldberg Variations" 1981 recording, listened three times.',
+    },
+    thought: {
+      zh: '巴赫的对位法像代码的模块化，每个声部独立又和谐。',
+      en: 'Bach\'s counterpoint is like modular code; each voice is independent yet harmonious.',
+    },
+  },
+  {
+    slug: 'ambient-texture',
+    category: 'LISTENING',
+    title: { zh: 'Ambient 纹理音景', en: 'Ambient Texture Soundscape' },
+    source: { zh: 'Brian Eno · Aphex Twin', en: 'Brian Eno · Aphex Twin' },
+    subtitle: {
+      zh: '无旋律的环境音乐，适合长时间沉浸式阅读。',
+      en: 'Melody-free ambient music for long immersive reading sessions.',
+    },
+    status: 'ACTIVE',
+    date: '2026-10-16',
+    lastActive: '2026-10-19',
+    activityCount: 4,
+    tags: [
+      { zh: 'Ambient', en: 'Ambient' },
+      { zh: '阅读', en: 'Reading' },
+    ],
+    progress: {
+      zh: 'Brian Eno《Music for Airports》循环中。',
+      en: 'Brian Eno "Music for Airports" on loop.',
+    },
+    thought: {
+      zh: '环境音乐的极致：存在但不打扰，像空气一样。',
+      en: 'The pinnacle of ambient: present but not distracting, like air itself.',
     },
   },
 ]

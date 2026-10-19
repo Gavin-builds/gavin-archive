@@ -5,6 +5,7 @@ export default {
     menu: 'MENU',
     lightMode: 'SWITCH TO LIGHT MODE',
     darkMode: 'SWITCH TO DARK MODE',
+    backToTop: 'BACK TO TOP',
   },
 
   nav: {
@@ -216,6 +217,15 @@ export default {
       thought: 'THOUGHT',
       nextStep: 'NEXT STEP',
     },
+    time: {
+      today: 'Today',
+      yesterday: 'Yesterday',
+      daysAgo: '{n} days ago',
+      weeksAgo: '{n} weeks ago',
+      monthsAgo: '{n} months ago',
+      yearsAgo: '{n} years ago',
+    },
+    activityCount: '{n} activities in last 7 days',
   },
 
   blog: {

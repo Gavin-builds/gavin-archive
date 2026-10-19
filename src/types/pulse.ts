@@ -11,6 +11,8 @@ export interface PulseItem {
   subtitle: LocalizedText
   status: PulseStatus
   date: string
+  lastActive: string
+  activityCount: number
   tags: LocalizedText[]
   source?: LocalizedText
   progress?: LocalizedText

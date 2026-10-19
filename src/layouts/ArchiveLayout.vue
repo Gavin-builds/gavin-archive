@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
 
 import ArchiveHeader from "../components/archive/ArchiveHeader.vue";
 import ArchiveFooter from "../components/archive/ArchiveFooter.vue";
 import CyberParticles from "../components/archive/CyberParticles.vue";
 
 const route = useRoute();
+const { t } = useI18n();
 
 // 路由切换时的赛博扫描光束，每次 fullPath 变化重播
 const sweepKey = ref(0);
@@ -28,6 +30,27 @@ const onSweepEnd = (event: AnimationEvent) => {
 // 页面采用自然文档流，路由切换时把窗口滚动复位到顶部
 const resetScrollTop = () => {
   window.scrollTo(0, 0);
+};
+
+// 回到顶部按钮：滚过半个视口才出现，passive 监听零阻塞
+const showBackTop = ref(false);
+
+const onScroll = () => {
+  showBackTop.value = window.scrollY > window.innerHeight * 0.5;
+};
+
+onMounted(() => {
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("scroll", onScroll);
+});
+
+const backToTop = () => {
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
 };
 </script>
 
@@ -72,6 +95,20 @@ const resetScrollTop = () => {
     </main>
 
     <ArchiveFooter />
+
+    <!-- 回到顶部：赛博终端按钮（切角边框 + 霓虹辉光） -->
+    <Transition name="back-top">
+      <button
+        v-if="showBackTop"
+        type="button"
+        class="back-top"
+        :aria-label="t('common.backToTop')"
+        @click="backToTop"
+      >
+        <span class="back-top__arrow" aria-hidden="true">↑</span>
+        <span class="back-top__label" aria-hidden="true">TOP</span>
+      </button>
+    </Transition>
   </div>
 </template>
 
@@ -380,6 +417,93 @@ const resetScrollTop = () => {
   }
 }
 
+/* =========================
+   回到顶部按钮（赛博终端风格）
+========================= */
+
+.back-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 50;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+
+  width: 46px;
+  padding: 10px 0 7px;
+
+  /* 切角：右上 / 左下 45° 斜切，clip-path 同时裁掉边框角 */
+  clip-path: polygon(
+    0 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% 100%,
+    10px 100%,
+    0 calc(100% - 10px)
+  );
+
+  border: 1px solid var(--accent-line);
+  background: color-mix(in srgb, var(--accent) 7%, var(--bg));
+
+  color: var(--accent);
+
+  font-family: var(--font-mono);
+
+  cursor: pointer;
+
+  /* drop-shadow 跟随 clip-path 裁切后的形状发光（box-shadow 会被裁掉） */
+  filter: drop-shadow(0 0 6px rgba(var(--accent-rgb), 0.22));
+
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    filter var(--transition-fast);
+}
+
+.back-top__arrow {
+  font-size: 14px;
+  line-height: 1;
+
+  transition: transform var(--transition-fast);
+}
+
+.back-top__label {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+}
+
+.back-top:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 16%, var(--bg));
+
+  filter: drop-shadow(0 0 12px rgba(var(--accent-rgb), 0.5));
+}
+
+.back-top:hover .back-top__arrow {
+  transform: translateY(-2px);
+}
+
+.back-top:active {
+  background: color-mix(in srgb, var(--accent) 26%, var(--bg));
+}
+
+/* 出现 / 收起：从右下角上滑淡入 */
+.back-top-enter-active,
+.back-top-leave-active {
+  transition:
+    opacity 240ms ease,
+    transform 240ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.back-top-enter-from,
+.back-top-leave-to {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
 @media (max-width: 1180px) {
   .hud-coord {
     display: none;
@@ -409,6 +533,13 @@ const resetScrollTop = () => {
 
   .page-sweep {
     display: none;
+  }
+
+  .back-top,
+  .back-top__arrow,
+  .back-top-enter-active,
+  .back-top-leave-active {
+    transition: none;
   }
 }
 </style>

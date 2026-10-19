@@ -5,6 +5,7 @@ export default {
     menu: '菜单',
     lightMode: '切换浅色模式',
     darkMode: '切换深色模式',
+    backToTop: '回到顶部',
   },
 
   nav: {
@@ -216,6 +217,15 @@ export default {
       thought: '思考',
       nextStep: '下一步',
     },
+    time: {
+      today: '今天',
+      yesterday: '昨天',
+      daysAgo: '{n} 天前',
+      weeksAgo: '{n} 周前',
+      monthsAgo: '{n} 个月前',
+      yearsAgo: '{n} 年前',
+    },
+    activityCount: '近 7 天 {n} 次活动',
   },
 
   blog: {
