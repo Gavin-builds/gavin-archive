@@ -3,7 +3,7 @@ import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
 import ArchiveDrawer from "../components/archive/ArchiveDrawer.vue";
-import { pulseItems } from "../data/pulse";
+import { pulseItems } from "../stores/content";
 import type { PulseCategory, PulseItem } from "../types/pulse";
 import { localize } from "../types/content";
 

@@ -3,7 +3,7 @@ import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 import ProjectCard from "../components/projects/ProjectCard.vue";
-import { projects } from "../data/projects";
+import { projects } from "../stores/content";
 import type { ProjectCategory } from "../types/project";
 
 const { t } = useI18n();

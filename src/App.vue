@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { watch } from 'vue'
+import { onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
 import GlitchTransition from './components/GlitchTransition.vue'
+import { loadContent } from './stores/content'
 
 const route = useRoute()
 const { t, locale } = useI18n()
+
+// 先用本地静态数据渲染首屏，再异步拉取 Strapi 内容覆盖
+onMounted(() => {
+  void loadContent()
+})
 
 const BRAND = 'GAVIN ARCHIVE'
 

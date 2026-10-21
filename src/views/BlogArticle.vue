@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
-import { getBlogPostBySlug } from "../data/blog";
+import { getBlogPostBySlug } from "../stores/content";
 import { localize } from "../types/content";
 
 const route = useRoute();

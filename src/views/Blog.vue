@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { blogPosts } from "../data/blog";
+import { blogPosts } from "../stores/content";
 import { localize } from "../types/content";
 
 const { t, locale } = useI18n();

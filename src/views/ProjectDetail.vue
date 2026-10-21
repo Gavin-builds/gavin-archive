@@ -3,7 +3,7 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import ProjectStatus from "../components/projects/ProjectStatus.vue";
-import { getProjectBySlug } from "../data/projects";
+import { getProjectBySlug } from "../stores/content";
 import { localize } from "../types/content";
 
 const route = useRoute();

@@ -6,9 +6,7 @@ import { useI18n } from "vue-i18n";
 import ThemeToggle from "../components/archive/ThemeToggle.vue";
 import { useTheme } from "../composables/useTheme";
 import { useGlitchTransition } from "../composables/useGlitchTransition";
-import { projects } from "../data/projects";
-import { pulseItems } from "../data/pulse";
-import { blogPosts } from "../data/blog";
+import { blogPosts, projects, pulseItems } from "../stores/content";
 
 const { t } = useI18n();
 
