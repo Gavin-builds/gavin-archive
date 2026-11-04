@@ -40,3 +40,25 @@ export const fetchCollection = async (
 
   return body.data ?? []
 }
+
+/**
+ * 请求一个单类型（返回对象而不是数组），例如 `/api/ui-text?locale=zh-CN`。
+ * 未播种时 Strapi 返回 `data: null`，这里统一收敛成 null。
+ */
+export const fetchSingle = async (
+  endpoint: string,
+  params: Record<string, string>,
+): Promise<StrapiEntry | null> => {
+  const query = new URLSearchParams(params)
+  const url = `${STRAPI_URL}/api/${endpoint}?${query.toString()}`
+
+  const response = await fetch(url)
+
+  if (!response.ok) {
+    throw new StrapiRequestError(`请求 ${url} 失败（HTTP ${response.status}）`, response.status)
+  }
+
+  const body = (await response.json()) as { data?: StrapiEntry | null }
+
+  return body.data ?? null
+}

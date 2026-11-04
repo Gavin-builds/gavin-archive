@@ -1,7 +1,8 @@
 import { reactive, ref } from 'vue'
 
-import { fetchCollection } from '../api/strapi'
+import { fetchCollection, fetchSingle } from '../api/strapi'
 import type { StrapiEntry } from '../api/strapi'
+import { i18n } from '../locales'
 import { blogPosts as fallbackBlogPosts } from '../data/blog'
 import { projects as fallbackProjects } from '../data/projects'
 import { pulseItems as fallbackPulseItems } from '../data/pulse'
@@ -226,6 +227,25 @@ const replaceAll = <T>(target: T[], items: T[]) => {
 }
 
 /**
+ * 从 Strapi 拉取 ui-text 单类型的整包文案，合并进 vue-i18n。
+ *
+ * mergeLocaleMessage 是深合并：后端返回的 key 覆盖本地文案，
+ * 后端缺失的 key 保留本地 zh-CN.ts / en-US.ts 的值。
+ */
+const loadUiText = async (): Promise<void> => {
+  const [zhEntry, enEntry] = await Promise.all([
+    fetchSingle('ui-text', { locale: LOCALES.zh, status: 'published' }),
+    fetchSingle('ui-text', { locale: LOCALES.en, status: 'published' }),
+  ])
+
+  const zhMessages = zhEntry?.messages as Record<string, unknown> | undefined
+  const enMessages = enEntry?.messages as Record<string, unknown> | undefined
+
+  if (zhMessages) i18n.global.mergeLocaleMessage('zh', zhMessages)
+  if (enMessages) i18n.global.mergeLocaleMessage('en', enMessages)
+}
+
+/**
  * 从 Strapi 加载全部归档内容。失败时保留 `src/data` 的静态数据兜底，
  * 只打印一条告警，不影响页面渲染。
  */
@@ -250,5 +270,13 @@ export const loadContent = async (): Promise<void> => {
     console.warn('[content] Strapi 内容加载失败，继续使用本地静态数据兜底。', error)
   } finally {
     contentLoading.value = false
+  }
+
+  // UI 文案与内容数据相互独立：拉取失败只回退到本地 locales 文件，
+  // 不影响上面项目 / 脉搏 / 博客的加载结果。
+  try {
+    await loadUiText()
+  } catch (error) {
+    console.warn('[content] Strapi UI 文案加载失败，继续使用本地文案兜底。', error)
   }
 }
