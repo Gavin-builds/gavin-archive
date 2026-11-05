@@ -1,14 +1,23 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, computed, ref } from "vue";
+import { onMounted, onBeforeUnmount, computed, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 
 import ThemeToggle from "../components/archive/ThemeToggle.vue";
 import { useTheme } from "../composables/useTheme";
 import { useGlitchTransition } from "../composables/useGlitchTransition";
-import { blogPosts, projects, pulseItems } from "../stores/content";
+import {
+  blogPosts,
+  ensureBlogPosts,
+  ensureProjects,
+  ensurePulseItems,
+  projectFeed,
+  projects,
+  pulseFeed,
+  pulseItems,
+} from "../stores/content";
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const router = useRouter();
 
@@ -29,9 +38,21 @@ const latestYear = computed(() => {
   return dates.length ? dates.sort().pop()!.slice(0, 4) : "";
 });
 
-const pulseCount = computed(() => pad2(pulseItems.length));
+const pulseCount = computed(() => pad2(pulseFeed.total));
 
-const activeCoreCount = computed(() => pad2(projects.length));
+const activeCoreCount = computed(() => pad2(projectFeed.total));
+
+// 首屏指标需要各集合的第一页数据（总数来自分页 meta）
+const loadMetrics = () =>
+  Promise.all([ensureProjects(), ensurePulseItems(), ensureBlogPosts()]);
+
+onMounted(() => {
+  void loadMetrics();
+});
+
+watch(locale, () => {
+  void loadMetrics();
+});
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 const scene = ref<HTMLElement | null>(null);

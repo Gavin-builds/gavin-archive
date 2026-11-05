@@ -4,14 +4,14 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
 import GlitchTransition from './components/GlitchTransition.vue'
-import { loadContent } from './stores/content'
+import { loadUiText } from './stores/content'
 
 const route = useRoute()
 const { t, locale } = useI18n()
 
-// 先用本地静态数据渲染首屏，再异步拉取 Strapi 内容覆盖
+// 仅预取 ui-text 文案；列表与详情由各自页面按需、按页请求
 onMounted(() => {
-  void loadContent()
+  void loadUiText()
 })
 
 const BRAND = 'GAVIN ARCHIVE'
@@ -28,6 +28,11 @@ watch(
   syncDocumentTitle,
   { immediate: true },
 )
+
+// ui-text 也只拉取当前语言；切换语言后重新请求该语言文案
+watch(locale, () => {
+  void loadUiText()
+})
 </script>
 
 <template>

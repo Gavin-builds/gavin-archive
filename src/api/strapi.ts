@@ -9,6 +9,19 @@ export const STRAPI_URL = RAW_BASE_URL.replace(/\/+$/, '')
 /** Strapi 返回的单条记录；字段随内容类型变化，这里保持宽松类型 */
 export type StrapiEntry = Record<string, any>
 
+/** Strapi 集合接口的分页元信息 */
+export interface StrapiPagination {
+  page: number
+  pageSize: number
+  pageCount: number
+  total: number
+}
+
+export interface StrapiCollectionResult {
+  data: StrapiEntry[]
+  pagination: StrapiPagination
+}
+
 export class StrapiRequestError extends Error {
   readonly status: number
 
@@ -21,12 +34,15 @@ export class StrapiRequestError extends Error {
 
 /**
  * 请求一个集合。`params` 会原样拼进 query string，
- * 例如 `{ locale: 'zh-CN', 'pagination[pageSize]': '100' }`。
+ * 例如 `{ locale: 'zh-CN', 'pagination[page]': '1', 'pagination[pageSize]': '10' }`。
+ *
+ * 除了记录本身，这里还返回 `meta.pagination`，让调用方据此判断是否还有下一页，
+ * 而不是一次性把整张表拉下来。
  */
 export const fetchCollection = async (
   endpoint: string,
   params: Record<string, string>,
-): Promise<StrapiEntry[]> => {
+): Promise<StrapiCollectionResult> => {
   const query = new URLSearchParams(params)
   const url = `${STRAPI_URL}/api/${endpoint}?${query.toString()}`
 
@@ -36,9 +52,20 @@ export const fetchCollection = async (
     throw new StrapiRequestError(`请求 ${url} 失败（HTTP ${response.status}）`, response.status)
   }
 
-  const body = (await response.json()) as { data?: StrapiEntry[] }
+  const body = (await response.json()) as {
+    data?: StrapiEntry[]
+    meta?: { pagination?: StrapiPagination }
+  }
 
-  return body.data ?? []
+  return {
+    data: body.data ?? [],
+    pagination: body.meta?.pagination ?? {
+      page: Number(params['pagination[page]'] ?? 1),
+      pageSize: Number(params['pagination[pageSize]'] ?? 0),
+      pageCount: 0,
+      total: 0,
+    },
+  }
 }
 
 /**

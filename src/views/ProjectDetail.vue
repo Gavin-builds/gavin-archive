@@ -1,17 +1,41 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import ProjectStatus from "../components/projects/ProjectStatus.vue";
-import { getProjectBySlug } from "../stores/content";
+import { loadProjectBySlug } from "../stores/content";
 import { localize } from "../types/content";
+import type { Project } from "../types/project";
 
 const route = useRoute();
 const { t, locale } = useI18n();
-const project = computed(() =>
-  typeof route.params.slug === "string"
-    ? getProjectBySlug(route.params.slug)
-    : undefined,
+const project = ref<Project | undefined>(undefined);
+const loading = ref(true);
+
+// slug 或语言变化时都重新请求当前语言的项目详情
+watch(
+  [() => route.params.slug, locale],
+  ([slug]) => {
+    if (typeof slug !== "string") {
+      project.value = undefined;
+      loading.value = false;
+      return;
+    }
+
+    project.value = undefined;
+    loading.value = true;
+
+    const requestedLocale = locale.value;
+
+    void loadProjectBySlug(slug).then((item) => {
+      // 跳过语言或路由已变化后返回的过期结果
+      if (requestedLocale !== locale.value || slug !== route.params.slug) return;
+
+      project.value = item;
+      loading.value = false;
+    });
+  },
+  { immediate: true },
 );
 const text = (value: { zh: string; en: string }) =>
   localize(value, locale.value);
@@ -158,6 +182,9 @@ const text = (value: { zh: string; en: string }) =>
         </div>
       </aside>
     </div>
+  </section>
+  <section v-else-if="loading" class="not-found">
+    <div class="eyebrow">{{ t("common.loading") }}</div>
   </section>
   <section v-else class="not-found">
     <div class="eyebrow">{{ t("projects.notFoundError") }}</div>

@@ -1,8 +1,8 @@
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
 
 import { fetchCollection, fetchSingle } from '../api/strapi'
 import type { StrapiEntry } from '../api/strapi'
-import { i18n } from '../locales'
+import { getLocale, i18n } from '../locales'
 import { blogPosts as fallbackBlogPosts } from '../data/blog'
 import { projects as fallbackProjects } from '../data/projects'
 import { pulseItems as fallbackPulseItems } from '../data/pulse'
@@ -18,27 +18,57 @@ import type { PulseCategory, PulseItem, PulseStatus } from '../types/pulse'
  * `{ zh, en }` 的 LocalizedText。这里在读取后把两种语言按 documentId 配对合并，
  * 还原成前端原有的数据结构，因此所有视图与组件都不需要改写。
  *
- * `src/data` 下的静态数据作为兜底：请求失败时页面照常渲染，不会白屏。
+ * 数据按页加载：列表每次只请求 10 条，触底后请求下一页。
+ * `src/data` 下的静态数据只在首屏请求失败时兜底展示，后端可用时完全不参与渲染。
  */
 
 const LOCALES = { zh: 'zh-CN', en: 'en-US' } as const
 
-const PAGE_SIZE = '100'
+/** 当前界面语言对应的 Strapi locale */
+type AppLocale = keyof typeof LOCALES
 
-export const projects = reactive<Project[]>([...fallbackProjects])
-export const pulseItems = reactive<PulseItem[]>([...fallbackPulseItems])
-export const blogPosts = reactive<BlogPost[]>([...fallbackBlogPosts])
+const activeLocale = (): AppLocale => getLocale()
 
-/** 是否正在从 Strapi 拉取数据 */
-export const contentLoading = ref(false)
-/** 当前数据来源：静态文件兜底 or Strapi */
-export const contentSource = ref<'static' | 'strapi'>('static')
+/** 列表每页条数 */
+export const PAGE_SIZE = 10
 
-export const getProjectBySlug = (slug: string): Project | undefined =>
-  projects.find((project) => project.slug === slug)
+/** 单个集合的分页状态 */
+export interface FeedState {
+  /** 已加载到第几页 */
+  page: number
+  pageSize: number
+  pageCount: number
+  total: number
+  /** 是否还有下一页 */
+  hasMore: boolean
+  loading: boolean
+  /** 首屏请求是否已有结果（成功或失败兜底） */
+  initialized: boolean
+  /** 当前数据来源：等待 / Strapi / 静态兜底 */
+  source: 'pending' | 'strapi' | 'static'
+  /** 这批数据的语言；语言切换后与当前界面语言不一致就会重载 */
+  locale: AppLocale | null
+}
 
-export const getBlogPostBySlug = (slug: string): BlogPost | undefined =>
-  blogPosts.find((post) => post.slug === slug)
+const createFeedState = (): FeedState => ({
+  page: 0,
+  pageSize: PAGE_SIZE,
+  pageCount: 0,
+  total: 0,
+  hasMore: false,
+  loading: false,
+  initialized: false,
+  source: 'pending',
+  locale: null,
+})
+
+export const projects = reactive<Project[]>([])
+export const pulseItems = reactive<PulseItem[]>([])
+export const blogPosts = reactive<BlogPost[]>([])
+
+export const projectFeed = reactive<FeedState>(createFeedState())
+export const pulseFeed = reactive<FeedState>(createFeedState())
+export const blogFeed = reactive<FeedState>(createFeedState())
 
 // ------------------------------------------------------------------ 合并工具
 
@@ -192,39 +222,211 @@ const toBlogPost = (pair: LocalePair): BlogPost => ({
 
 // ------------------------------------------------------------------ 拉取
 
-/** 同时拉取两种语言，再按 documentId 配对 */
-const fetchPairs = async (endpoint: string): Promise<LocalePair[]> => {
-  const [zhEntries, enEntries] = await Promise.all([
-    fetchCollection(endpoint, {
-      locale: LOCALES.zh,
-      status: 'published',
-      'pagination[pageSize]': PAGE_SIZE,
-    }),
-    fetchCollection(endpoint, {
-      locale: LOCALES.en,
-      status: 'published',
-      'pagination[pageSize]': PAGE_SIZE,
-    }),
-  ])
-
-  const pairs = new Map<string, LocalePair>()
-
-  for (const entry of zhEntries) {
-    const key = String(entry.documentId)
-    pairs.set(key, { ...pairs.get(key), zh: entry })
+const buildListParams = (page: number, sort: string[]): Record<string, string> => {
+  const params: Record<string, string> = {
+    status: 'published',
+    'pagination[page]': String(page),
+    'pagination[pageSize]': String(PAGE_SIZE),
   }
 
-  for (const entry of enEntries) {
-    const key = String(entry.documentId)
-    pairs.set(key, { ...pairs.get(key), en: entry })
+  sort.forEach((value, index) => {
+    params[`sort[${index}]`] = value
+  })
+
+  return params
+}
+
+/** 只拉取当前界面语言的一页数据 */
+const fetchPage = async (
+  endpoint: string,
+  page: number,
+  sort: string[],
+  locale: AppLocale,
+): Promise<{ entries: StrapiEntry[]; total: number; pageCount: number }> => {
+  const params = buildListParams(page, sort)
+  const result = await fetchCollection(endpoint, { ...params, locale: LOCALES[locale] })
+
+  return {
+    entries: result.data,
+    total: result.pagination.total,
+    pageCount: result.pagination.pageCount,
+  }
+}
+
+/** 按 slug 拉取当前界面语言的单条记录 */
+const fetchBySlug = async (
+  endpoint: string,
+  slug: string,
+  locale: AppLocale,
+): Promise<LocalePair | null> => {
+  const params: Record<string, string> = {
+    status: 'published',
+    'filters[slug][$eq]': slug,
+    'pagination[pageSize]': '1',
   }
 
-  return [...pairs.values()]
+  const result = await fetchCollection(endpoint, { ...params, locale: LOCALES[locale] })
+  const entry = result.data[0]
+
+  if (!entry) return null
+
+  return { [locale]: entry } as LocalePair
 }
 
-const replaceAll = <T>(target: T[], items: T[]) => {
-  target.splice(0, target.length, ...items)
+/**
+ * 加载一页。
+ *
+ * - 尚未初始化时请求第 1 页；已初始化且还有下一页时请求下一页。
+ * - 首屏请求失败才使用 `fallback` 静态数据；后续页失败只停止继续加载。
+ */
+const loadPage = async <T>(
+  endpoint: string,
+  sort: string[],
+  target: T[],
+  state: FeedState,
+  fallback: T[],
+  toItem: (pair: LocalePair) => T,
+): Promise<void> => {
+  if (state.loading) return
+
+  const locale = activeLocale()
+
+  // 语言切换：清空旧语言的数据，从第一页重新加载
+  if (state.source === 'strapi' && state.locale !== locale) {
+    target.splice(0, target.length)
+    Object.assign(state, createFeedState(), { locale })
+  }
+
+  if (state.initialized && !state.hasMore) return
+
+  const page = state.initialized ? state.page + 1 : 1
+
+  state.loading = true
+
+  try {
+    const { entries, total, pageCount } = await fetchPage(endpoint, page, sort, locale)
+
+    // 请求期间切换了语言：丢弃本次结果，在 finally 中按新语言重载
+    if (locale !== activeLocale()) return
+
+    target.push(...entries.map((entry) => toItem({ [locale]: entry } as LocalePair)))
+
+    state.page = page
+    state.total = total
+    state.pageCount = pageCount
+    state.hasMore = page < pageCount
+    state.source = 'strapi'
+  } catch (error) {
+    if (locale !== activeLocale()) return
+
+    if (!state.initialized) {
+      target.splice(0, target.length, ...fallback)
+      state.total = fallback.length
+      state.pageCount = 1
+      state.hasMore = false
+      state.source = 'static'
+    } else {
+      state.hasMore = false
+    }
+
+    console.warn(`[content] ${endpoint} 第 ${page} 页加载失败`, error)
+  } finally {
+    state.loading = false
+
+    if (locale !== activeLocale()) {
+      target.splice(0, target.length)
+      Object.assign(state, createFeedState())
+      void loadPage(endpoint, sort, target, state, fallback, toItem)
+    } else {
+      state.initialized = true
+      state.locale = locale
+    }
+  }
 }
+
+// ------------------------------------------------------------------ 列表
+
+export const ensureProjects = (): Promise<void> =>
+  loadPage('projects', ['featured:desc', 'date:desc'], projects, projectFeed, fallbackProjects, toProject)
+
+export const loadMoreProjects = (): Promise<void> =>
+  loadPage('projects', ['featured:desc', 'date:desc'], projects, projectFeed, fallbackProjects, toProject)
+
+export const ensurePulseItems = (): Promise<void> =>
+  loadPage('pulses', ['lastActive:desc'], pulseItems, pulseFeed, fallbackPulseItems, toPulseItem)
+
+export const loadMorePulseItems = (): Promise<void> =>
+  loadPage('pulses', ['lastActive:desc'], pulseItems, pulseFeed, fallbackPulseItems, toPulseItem)
+
+export const ensureBlogPosts = (): Promise<void> =>
+  loadPage('blog-posts', ['pinned:desc', 'date:desc'], blogPosts, blogFeed, fallbackBlogPosts, toBlogPost)
+
+export const loadMoreBlogPosts = (): Promise<void> =>
+  loadPage('blog-posts', ['pinned:desc', 'date:desc'], blogPosts, blogFeed, fallbackBlogPosts, toBlogPost)
+
+// ------------------------------------------------------------------ 详情
+
+const projectDetails = new Map<string, Project>()
+const blogPostDetails = new Map<string, BlogPost>()
+
+/**
+ * 按 slug 加载项目详情。
+ *
+ * 列表只加载了部分页，深链接的项目可能还没进列表，因此这里单独按 slug 请求。
+ * 请求失败时才回退到 `src/data/projects.ts`。
+ */
+export const loadProjectBySlug = async (slug: string): Promise<Project | undefined> => {
+  const locale = activeLocale()
+  const fromList = projectFeed.source === 'static' || projectFeed.locale === locale
+    ? projects.find((item) => item.slug === slug)
+    : undefined
+  const cached = fromList ?? projectDetails.get(`${locale}:${slug}`)
+
+  if (cached) return cached
+
+  try {
+    const pair = await fetchBySlug('projects', slug, locale)
+
+    if (!pair) return undefined
+
+    const project = toProject(pair)
+    projectDetails.set(`${locale}:${slug}`, project)
+
+    return project
+  } catch (error) {
+    console.warn('[content] 项目详情加载失败，使用本地静态数据兜底。', error)
+
+    return fallbackProjects.find((item) => item.slug === slug)
+  }
+}
+
+/** 按 slug 加载博客文章；列表未加载到该篇时单独请求 */
+export const loadBlogPostBySlug = async (slug: string): Promise<BlogPost | undefined> => {
+  const locale = activeLocale()
+  const fromList = blogFeed.source === 'static' || blogFeed.locale === locale
+    ? blogPosts.find((item) => item.slug === slug)
+    : undefined
+  const cached = fromList ?? blogPostDetails.get(`${locale}:${slug}`)
+
+  if (cached) return cached
+
+  try {
+    const pair = await fetchBySlug('blog-posts', slug, locale)
+
+    if (!pair) return undefined
+
+    const post = toBlogPost(pair)
+    blogPostDetails.set(`${locale}:${slug}`, post)
+
+    return post
+  } catch (error) {
+    console.warn('[content] 博客详情加载失败，使用本地静态数据兜底。', error)
+
+    return fallbackBlogPosts.find((item) => item.slug === slug)
+  }
+}
+
+// ------------------------------------------------------------------ UI 文案
 
 /**
  * 从 Strapi 拉取 ui-text 单类型的整包文案，合并进 vue-i18n。
@@ -232,51 +434,10 @@ const replaceAll = <T>(target: T[], items: T[]) => {
  * mergeLocaleMessage 是深合并：后端返回的 key 覆盖本地文案，
  * 后端缺失的 key 保留本地 zh-CN.ts / en-US.ts 的值。
  */
-const loadUiText = async (): Promise<void> => {
-  const [zhEntry, enEntry] = await Promise.all([
-    fetchSingle('ui-text', { locale: LOCALES.zh, status: 'published' }),
-    fetchSingle('ui-text', { locale: LOCALES.en, status: 'published' }),
-  ])
+export const loadUiText = async (): Promise<void> => {
+  const locale = activeLocale()
+  const entry = await fetchSingle('ui-text', { locale: LOCALES[locale], status: 'published' })
+  const messages = entry?.messages as Record<string, unknown> | undefined
 
-  const zhMessages = zhEntry?.messages as Record<string, unknown> | undefined
-  const enMessages = enEntry?.messages as Record<string, unknown> | undefined
-
-  if (zhMessages) i18n.global.mergeLocaleMessage('zh', zhMessages)
-  if (enMessages) i18n.global.mergeLocaleMessage('en', enMessages)
-}
-
-/**
- * 从 Strapi 加载全部归档内容。失败时保留 `src/data` 的静态数据兜底，
- * 只打印一条告警，不影响页面渲染。
- */
-export const loadContent = async (): Promise<void> => {
-  if (contentLoading.value) return
-
-  contentLoading.value = true
-
-  try {
-    const [projectPairs, pulsePairs, blogPairs] = await Promise.all([
-      fetchPairs('projects'),
-      fetchPairs('pulses'),
-      fetchPairs('blog-posts'),
-    ])
-
-    if (projectPairs.length) replaceAll(projects, projectPairs.map(toProject))
-    if (pulsePairs.length) replaceAll(pulseItems, pulsePairs.map(toPulseItem))
-    if (blogPairs.length) replaceAll(blogPosts, blogPairs.map(toBlogPost))
-
-    contentSource.value = 'strapi'
-  } catch (error) {
-    console.warn('[content] Strapi 内容加载失败，继续使用本地静态数据兜底。', error)
-  } finally {
-    contentLoading.value = false
-  }
-
-  // UI 文案与内容数据相互独立：拉取失败只回退到本地 locales 文件，
-  // 不影响上面项目 / 脉搏 / 博客的加载结果。
-  try {
-    await loadUiText()
-  } catch (error) {
-    console.warn('[content] Strapi UI 文案加载失败，继续使用本地文案兜底。', error)
-  }
+  if (messages) i18n.global.mergeLocaleMessage(locale, messages)
 }

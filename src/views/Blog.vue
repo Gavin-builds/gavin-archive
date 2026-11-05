@@ -1,7 +1,13 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { blogPosts } from "../stores/content";
+import { useInfiniteScroll } from "../composables/useInfiniteScroll";
+import {
+  blogFeed,
+  blogPosts,
+  ensureBlogPosts,
+  loadMoreBlogPosts,
+} from "../stores/content";
 import { localize } from "../types/content";
 
 const { t, locale } = useI18n();
@@ -35,6 +41,23 @@ onMounted(() => {
   window.addEventListener("keydown", handleShortcut);
 });
 
+const sentinel = ref<HTMLElement | null>(null);
+
+useInfiniteScroll(
+  sentinel,
+  () => blogFeed.hasMore && !blogFeed.loading,
+  loadMoreBlogPosts,
+);
+
+onMounted(async () => {
+  await ensureBlogPosts();
+});
+
+// 切换语言后重新请求当前语言的第 1 页
+watch(locale, () => {
+  void ensureBlogPosts();
+});
+
 onBeforeUnmount(() => {
   window.removeEventListener("keydown", handleShortcut);
 });
@@ -55,6 +78,11 @@ const filteredPosts = computed(() => {
   // 置顶文章排最前，其余保持数据原有日期序
   return [...list].sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)));
 });
+
+// 未搜索时显示服务端总数；搜索后按已加载的匹配结果计数
+const indexedCount = computed(() =>
+  query.value ? filteredPosts.value.length : blogFeed.total,
+);
 </script>
 
 <template>
@@ -81,7 +109,7 @@ const filteredPosts = computed(() => {
         </div>
         <small>{{
           t('blog.entriesIndexed', {
-            n: String(filteredPosts.length).padStart(2, '0'),
+            n: String(indexedCount).padStart(2, '0'),
           })
         }}</small></label
       >
@@ -123,9 +151,14 @@ const filteredPosts = computed(() => {
       </RouterLink>
     </div>
 
-    <div v-if="!filteredPosts.length" class="empty">{{
-      t('blog.queryReturned')
-    }}</div>
+    <div
+      v-if="!filteredPosts.length && blogFeed.initialized && !blogFeed.hasMore"
+      class="empty"
+    >{{ t('blog.queryReturned') }}</div>
+
+    <div ref="sentinel" class="feed-sentinel" aria-hidden="true">
+      <span v-if="blogFeed.loading">{{ t('common.loading') }}</span>
+    </div>
   </section>
 </template>
 
@@ -387,6 +420,16 @@ const filteredPosts = computed(() => {
   text-align: center;
   color: var(--text-muted);
   font-family: var(--font-mono);
+}
+.feed-sentinel {
+  display: flex;
+  justify-content: center;
+  min-height: 48px;
+  padding-top: 20px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.13em;
 }
 
 @media (max-width: 1180px) {

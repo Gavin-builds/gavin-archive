@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
 import ArchiveDrawer from "../components/archive/ArchiveDrawer.vue";
-import { pulseItems } from "../stores/content";
+import { useInfiniteScroll } from "../composables/useInfiniteScroll";
+import {
+  ensurePulseItems,
+  loadMorePulseItems,
+  pulseFeed,
+  pulseItems,
+} from "../stores/content";
 import type { PulseCategory, PulseItem } from "../types/pulse";
 import { localize } from "../types/content";
 
@@ -52,7 +58,7 @@ const filterLabel = (item: Filter) =>
 
 const countOf = (item: Filter) =>
   item === "ALL"
-    ? pulseItems.length
+    ? pulseFeed.total
     : pulseItems.filter((entry) => entry.category === item).length;
 
 const filteredItems = computed(() =>
@@ -64,6 +70,23 @@ const filteredItems = computed(() =>
 const latestDate = computed(
   () => [...pulseItems].map((entry) => entry.lastActive).sort().pop() ?? "",
 );
+
+const sentinel = ref<HTMLElement | null>(null);
+
+useInfiniteScroll(
+  sentinel,
+  () => pulseFeed.hasMore && !pulseFeed.loading,
+  loadMorePulseItems,
+);
+
+onMounted(async () => {
+  await ensurePulseItems();
+});
+
+// 切换语言后重新请求当前语言的第 1 页
+watch(locale, () => {
+  void ensurePulseItems();
+});
 
 // 相对时间：计算距离现在的天数
 const relativeTime = (dateStr: string): string => {
@@ -210,8 +233,15 @@ const ecgPath =
       </article>
     </div>
 
-    <div v-if="!filteredItems.length" class="empty">
+    <div
+      v-if="!filteredItems.length && pulseFeed.initialized && !pulseFeed.hasMore"
+      class="empty"
+    >
       {{ t("pulse.emptyResults") }}
+    </div>
+
+    <div ref="sentinel" class="feed-sentinel" aria-hidden="true">
+      <span v-if="pulseFeed.loading">{{ t("common.loading") }}</span>
     </div>
 
     <ArchiveDrawer
@@ -582,6 +612,16 @@ const ecgPath =
   text-align: center;
   color: var(--text-muted);
   font-family: var(--font-mono);
+}
+.feed-sentinel {
+  display: flex;
+  justify-content: center;
+  min-height: 48px;
+  padding-top: 20px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.14em;
 }
 
 /* =========================

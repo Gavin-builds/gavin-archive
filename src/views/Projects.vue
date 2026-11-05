@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
 import ProjectCard from "../components/projects/ProjectCard.vue";
-import { projects } from "../stores/content";
+import { useInfiniteScroll } from "../composables/useInfiniteScroll";
+import {
+  ensureProjects,
+  loadMoreProjects,
+  projectFeed,
+  projects,
+} from "../stores/content";
 import type { ProjectCategory } from "../types/project";
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 type Filter = "ALL" | ProjectCategory;
 const filter = ref<Filter>("ALL");
 const filters: Filter[] = [
@@ -36,6 +42,28 @@ const filteredProjects = computed(() => {
   // featured 项目排最前，其余保持原序
   return [...list].sort((a, b) => Number(b.featured) - Number(a.featured));
 });
+
+// 未筛选时显示服务端总数；筛选后按已加载的项目计数
+const indexedCount = computed(() =>
+  filter.value === "ALL" ? projectFeed.total : filteredProjects.value.length,
+);
+
+const sentinel = ref<HTMLElement | null>(null);
+
+useInfiniteScroll(
+  sentinel,
+  () => projectFeed.hasMore && !projectFeed.loading,
+  loadMoreProjects,
+);
+
+onMounted(async () => {
+  await ensureProjects();
+});
+
+// 切换语言后重新请求当前语言的第 1 页
+watch(locale, () => {
+  void ensureProjects();
+});
 </script>
 
 <template>
@@ -51,7 +79,7 @@ const filteredProjects = computed(() => {
       </div>
       <div class="archive-counter">
         <span>{{ t("projects.indexed") }}</span
-        ><strong>{{ String(filteredProjects.length).padStart(2, "0") }}</strong
+        ><strong>{{ String(indexedCount).padStart(2, "0") }}</strong
         ><small>{{ t("projects.caseFiles") }}</small>
       </div>
     </header>
@@ -81,9 +109,16 @@ const filteredProjects = computed(() => {
       />
     </div>
 
-    <div v-if="!filteredProjects.length" class="empty-state">
+    <div
+      v-if="!filteredProjects.length && projectFeed.initialized && !projectFeed.hasMore"
+      class="empty-state"
+    >
       <span>{{ t("projects.indexReturned") }}</span
       ><strong>{{ t("projects.empty") }}</strong>
+    </div>
+
+    <div ref="sentinel" class="feed-sentinel" aria-hidden="true">
+      <span v-if="projectFeed.loading">{{ t("common.loading") }}</span>
     </div>
   </section>
 </template>
@@ -184,6 +219,16 @@ const filteredProjects = computed(() => {
   display: block;
   margin-top: 8px;
   color: var(--accent);
+}
+.feed-sentinel {
+  display: flex;
+  justify-content: center;
+  min-height: 48px;
+  padding-top: 20px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.14em;
 }
 @media (max-width: 900px) {
   .archive-intro {
