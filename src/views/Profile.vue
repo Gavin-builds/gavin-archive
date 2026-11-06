@@ -89,7 +89,7 @@ const links = [
         </div>
       </CyberCard>
 
-      <CyberCard :label="t('archive.token')" :hoverable="false">
+      <CyberCard :label="t('archive.token')">
         <p class="mono">GAVIN ARCHIVE / {{ t('home.footer.version') }}</p>
         <p>
           {{ t('profile.archiveText') }}
@@ -107,7 +107,6 @@ const links = [
           v-for="group in skillGroups"
           :key="group.titleKey"
           :label="t(group.titleKey)"
-          :hoverable="false"
         >
           <p>{{ group.items }}</p>
         </CyberCard>

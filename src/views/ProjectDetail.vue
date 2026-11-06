@@ -207,6 +207,16 @@ const text = (value: { zh: string; en: string }) =>
   font-size: var(--fs-xs);
   text-decoration: none;
   letter-spacing: 0.08em;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+.back:hover,
+.not-found a:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 14px rgba(var(--accent-rgb), 0.35);
+  transform: translateX(-3px);
 }
 .back {
   margin-bottom: 42px;
